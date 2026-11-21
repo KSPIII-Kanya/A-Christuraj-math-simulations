@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="ta" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>குழந்தைகளுக்கான அணி பெருக்கல் பயிற்சி (Kids Matrix Multiplication Visualizer)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        lightBg: '#f8fafc',
+                        lightCard: '#ffffff',
+                        accentBlue: '#2563eb',
+                        accentGreen: '#059669',
+                        accentPurple: '#7c3aed',
+                        accentAmber: '#d97706',
+                        accentPink: '#db2777'
+                    },
+                    keyframes: {
+                        shake: {
+                            '0%, 100%': { transform: 'translateX(0)' },
+                            '20%, 60%': { transform: 'translateX(-6px)' },
+                            '40%, 80%': { transform: 'translateX(6px)' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 15px rgba(124, 58, 237, 0.3)' },
+                            '50%': { boxShadow: '0 0 25px rgba(124, 58, 237, 0.6)' }
+                        }
+                    },
+                    animation: {
+                        shake: 'shake 0.4s ease-in-out',
+                        pulseGlow: 'pulseGlow 2s infinite'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .matrix-cell {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .highlight-row {
+            background-color: rgba(37, 99, 235, 0.2) !important;
+            border-color: #2563eb !important;
+            transform: scale(1.06);
+            box-shadow: 0 0 12px rgba(37, 99, 235, 0.3);
+        }
+        .highlight-col {
+            background-color: rgba(5, 150, 105, 0.2) !important;
+            border-color: #059669 !important;
+            transform: scale(1.06);
+            box-shadow: 0 0 12px rgba(5, 150, 105, 0.3);
+        }
+        .highlight-target {
+            background-color: rgba(219, 39, 119, 0.2) !important;
+            border-color: #db2777 !important;
+            transform: scale(1.1);
+            box-shadow: 0 0 18px rgba(219, 39, 119, 0.4);
+        }
+        .highlight-completed {
+            background-color: rgba(124, 58, 237, 0.15) !important;
+            border-color: #7c3aed !important;
+        }
+    </style>
+</head>
+<body class="bg-lightBg text-slate-800 min-h-screen font-sans selection:bg-purple-500 selection:text-white">
+
+    <!-- Header / Title & Creator Credits -->
+    <header class="bg-lightCard border-b border-slate-200 py-4 px-6 shadow-sm">
+        <div class="max-w-7xl mx-auto flex flex-col gap-3">
+            
+            <!-- Creator Credits Banner -->
+            <div class="bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 border border-purple-200 text-purple-900 px-4 py-2 rounded-xl text-center text-xs md:text-sm font-bold shadow-xs tracking-wide">
+                ✨ படைப்பாளர்கள் (Creators): A.CHRISTURAJ (GHS, OTTIMEDU) & D.NEETHIRAJAN (GHSS, KANDAMANGALAM) ✨
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 flex items-center justify-center text-2xl shadow-md shadow-purple-500/20 text-white">
+                        🧮
+                    </div>
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600">
+                            குழந்தைகளுக்கான அணி பெருக்கல் பயிற்சி! 🌟
+                        </h1>
+                        <p class="text-xs md:text-sm text-slate-600 mt-0.5">
+                            விளையாடி மகிழ்வோம், கணிதத்தில் சாதிப்போம்! (Kid-Friendly Matrix Multiplication)
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Mode Switcher -->
+                <div class="flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
+                    <button id="tabPractice" onclick="switchMode('practice')" 
+                        class="px-4 py-2 rounded-xl text-xs md:text-sm font-bold transition-all duration-200 flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md">
+                        🎯 பயிற்சி முறை (Quiz Mode)
+                    </button>
+                    <button id="tabSimulate" onclick="switchMode('simulate')" 
+                        class="px-4 py-2 rounded-xl text-xs md:text-sm font-bold transition-all duration-200 flex items-center gap-2 text-slate-600 hover:text-slate-900">
+                        🎬 அனிமேஷன் (Simulation)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Left & Center: Dimensions & Matrix Display -->
+        <div class="lg:col-span-2 space-y-6">
+
+            <!-- Matrix Configuration Panel -->
+            <section class="bg-lightCard rounded-2xl p-5 border border-slate-200 shadow-md relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-purple-600/5 rounded-full blur-2xl"></div>
+
+                <h2 class="text-lg font-bold text-purple-700 mb-3 flex items-center gap-2">
+                    <span class="w-7 h-7 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center text-sm font-extrabold">1</span>
+                    அணிகளின் அளவை அமைப்போம் (Set Dimensions)
+                </h2>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <!-- Matrix A config -->
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-blue-600 uppercase tracking-wider">அணி A (Matrix A)</label>
+                        <div class="flex items-center gap-2">
+                            <div class="flex-1">
+                                <span class="text-xs text-slate-500 block mb-1">நிரை (Rows):</span>
+                                <input type="number" id="rowsA" min="1" max="4" value="2" 
+                                    class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-800 font-bold text-center focus:outline-none focus:border-blue-500">
+                            </div>
+                            <div class="flex-1">
+                                <span class="text-xs text-slate-500 block mb-1">நிரல் (Cols):</span>
+                                <input type="number" id="colsA" min="1" max="4" value="2" 
+                                    class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-800 font-bold text-center focus:outline-none focus:border-blue-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Matrix B config -->
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-emerald-600 uppercase tracking-wider">அணி B (Matrix B)</label>
+                        <div class="flex items-center gap-2">
+                            <div class="flex-1">
+                                <span class="text-xs text-slate-500 block mb-1">நிரை (Rows):</span>
+                                <input type="number" id="rowsB" min="1" max="4" value="2" 
+                                    class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-800 font-bold text-center focus:outline-none focus:border-emerald-500">
+                            </div>
+                            <div class="flex-1">
+                                <span class="text-xs text-slate-500 block mb-1">நிரல் (Cols):</span>
+                                <input type="number" id="colsB" min="1" max="4" value="2" 
+                                    class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-800 font-bold text-center focus:outline-none focus:border-emerald-500">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Validation Error Message Box -->
+                <div id="errorMsg" class="hidden mt-3 p-3 bg-red-50 border border-red-300 rounded-xl text-red-700 text-xs md:text-sm flex items-center gap-2">
+                    <span class="text-lg">⚠️</span>
+                    <span id="errorText">தவறு: அணி A இன் நிரல்களும் அணி B இன் நிரைகளும் சமமாக இருக்க வேண்டும்!</span>
+                </div>
+
+                <!-- Action Button -->
+                <div class="mt-4">
+                    <button id="btnGenerate" onclick="generateMatrices()" 
+                        class="w-full bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-black py-3 px-4 rounded-xl shadow-md transition duration-200 flex items-center justify-center gap-2 text-sm md:text-base">
+                        🎲 புதிய எண்களுடன் அணிகளை உருவாக்கு (Generate New Numbers)
+                    </button>
+                </div>
+            </section>
+
+            <!-- Matrix Visual Display Area -->
+            <section class="bg-lightCard rounded-2xl p-5 border border-slate-200 shadow-md">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-bold text-pink-600 flex items-center gap-2">
+                        <span class="w-7 h-7 rounded-full bg-pink-100 text-pink-700 flex items-center justify-center text-sm font-extrabold">2</span>
+                        அணிகள் மற்றும் பலன் (Matrices)
+                    </h2>
+                    <span class="text-xs bg-slate-100 text-slate-700 px-3 py-1 rounded-full border border-slate-200 font-medium">எண்களை மாற்றலாம் (Editable)</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center justify-items-center bg-slate-50 p-5 rounded-2xl border border-slate-200">
+                    
+                    <!-- Matrix A Container -->
+                    <div class="text-center w-full">
+                        <h3 class="text-xs font-bold text-blue-600 mb-2 uppercase tracking-wider">அணி A (Matrix A)</h3>
+                        <div id="containerMatrixA" class="inline-flex flex-col gap-2 p-3 bg-white/80 rounded-xl border border-slate-200 overflow-x-auto max-w-full">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Multiplication Sign -->
+                    <div class="text-3xl font-black text-purple-600 bg-white w-10 h-10 rounded-full flex items-center justify-center border border-slate-200 shadow-xs">
+                        ×
+                    </div>
+
+                    <!-- Matrix B Container -->
+                    <div class="text-center w-full">
+                        <h3 class="text-xs font-bold text-emerald-600 mb-2 uppercase tracking-wider">அணி B (Matrix B)</h3>
+                        <div id="containerMatrixB" class="inline-flex flex-col gap-2 p-3 bg-white/80 rounded-xl border border-slate-200 overflow-x-auto max-w-full">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Equals and Result Matrix -->
+                <div class="mt-6 flex flex-col items-center justify-center">
+                    <div class="text-3xl font-black text-purple-600 my-1">=</div>
+                    <div class="text-center w-full">
+                        <h3 class="text-xs font-bold text-pink-600 mb-2 uppercase tracking-wider">பெருக்கல் பலன் அணி C (Resultant Matrix C)</h3>
+                        <div id="containerMatrixC" class="inline-flex flex-col gap-2 p-4 bg-slate-50 rounded-2xl border border-slate-200 overflow-x-auto max-w-full shadow-inner">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulation Controls Bar (Hidden in Practice Mode) -->
+                <div id="simControls" class="hidden mt-6 pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-2">
+                        <button id="btnStart" onclick="startSimulation()" 
+                            class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-4 rounded-xl shadow-xs transition flex items-center gap-1.5 text-sm">
+                            ▶️ இயக்கு (Simulate)
+                        </button>
+                        <button id="btnPause" onclick="pauseSimulation()" disabled
+                            class="bg-slate-200 hover:bg-slate-300 text-slate-700 disabled:opacity-40 font-bold py-2 px-3 rounded-xl shadow-xs transition text-sm">
+                            ⏸️ இடைநிறுத்து
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button onclick="stepBackward()" class="bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 py-2 px-3 rounded-xl text-sm font-semibold transition shadow-xs">
+                            ◀ முந்தைய
+                        </button>
+                        <button onclick="stepForward()" class="bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 py-2 px-3 rounded-xl text-sm font-semibold transition shadow-xs">
+                            அடுத்த ▶
+                        </button>
+                        <button onclick="resetSimulation()" class="bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 py-2 px-3 rounded-xl text-sm transition">
+                            🔄 மீட்டமை
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-slate-600">வேகம்:</span>
+                        <select id="speedSelect" class="bg-white border border-slate-300 rounded-xl px-2 py-1.5 text-xs text-slate-700 focus:outline-none">
+                            <option value="1500">மெதுவாக</option>
+                            <option value="800" selected>நடுத்தர</option>
+                            <option value="300">வேகமாக</option>
+                        </select>
+                    </div>
+                </div>
+
+            </section>
+
+        </div>
+
+        <!-- Right Column: Interactive Practice Panel / Step Explanation Panel -->
+        <div class="space-y-6">
+            
+            <!-- PRACTICE MODE PANEL -->
+            <section id="panelPractice" class="bg-lightCard rounded-2xl p-5 border border-purple-200 shadow-xl flex flex-col h-full min-h-[480px] relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-pink-500/5 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="flex justify-between items-center border-b border-slate-100 pb-3 mb-4">
+                    <h2 class="text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-purple-600 flex items-center gap-2">
+                        <span>⭐</span> குழந்தைகளுக்கான வினாடி-வினா!
+                    </h2>
+                    <span id="quizProgress" class="text-xs font-bold bg-purple-100 text-purple-700 border border-purple-200 px-3 py-1 rounded-full">
+                        கட்டம்: 1 / 4
+                    </span>
+                </div>
+
+                <!-- Quiz Card Container -->
+                <div class="flex-1 flex flex-col justify-between space-y-4">
+                    
+                    <!-- Question Prompt Box -->
+                    <div id="quizQuestionBox" class="bg-slate-50 rounded-2xl p-4 border border-slate-200 space-y-3">
+                        <div class="text-xs text-slate-500 font-bold uppercase tracking-wider flex items-center justify-between">
+                            <span id="targetCellLabel" class="text-pink-600">C[0][0] உறுப்பைக் கணக்கிடுக</span>
+                            <span class="text-amber-600 text-sm">💡 குறிப்பு</span>
+                        </div>
+
+                        <!-- Mathematical Hint Step -->
+                        <div id="quizHintText" class="text-base md:text-lg font-mono font-bold text-center py-2 text-purple-700 bg-white rounded-xl border border-slate-200 shadow-xs">
+                            (A1 × B1) + (A2 × B2) = ?
+                        </div>
+
+                        <p class="text-xs text-slate-600 text-center">
+                            நீல நிற வரிசையையும் பச்சை நிற பத்தியையும் பெருக்கி விடையைக் கண்டறி!
+                        </p>
+                    </div>
+
+                    <!-- Interactive Input Area -->
+                    <div id="inputArea" class="bg-slate-50 rounded-2xl p-4 border border-slate-200 space-y-3">
+                        <label class="block text-xs font-bold text-slate-700 text-center">உனது விடை என்ன? (Your Answer)</label>
+                        
+                        <div class="flex gap-2 justify-center items-center">
+                            <input type="number" id="childAnswerInput" placeholder="?" 
+                                class="w-28 h-14 bg-white border-2 border-purple-400 rounded-2xl text-center text-2xl font-black text-slate-800 focus:outline-none focus:border-pink-500 focus:ring-4 focus:ring-pink-500/20 transition-all shadow-inner">
+                            
+                            <button id="btnSubmitAnswer" onclick="checkChildAnswer()" 
+                                class="h-14 px-6 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-black text-lg rounded-2xl shadow-md transition duration-200 active:scale-95 flex items-center justify-center gap-1">
+                                சரிபார் ✔️
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Encouragement Feedback Card -->
+                    <div id="feedbackCard" class="min-h-[110px] p-4 rounded-2xl border text-center flex flex-col items-center justify-center transition-all duration-300 bg-slate-50 border-slate-200">
+                        <div id="feedbackIcon" class="text-3xl mb-1">🌟</div>
+                        <div id="feedbackText" class="text-sm font-bold text-slate-700">
+                            விடையை உள்ளீடு செய்து "சரிபார்" பொத்தானை அழுத்தவும்!
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- SIMULATION EXPLANATION PANEL (Hidden in Practice Mode) -->
+            <section id="panelSimulate" class="hidden bg-lightCard rounded-2xl p-5 border border-slate-200 shadow-xl flex-col h-full min-h-[480px]">
+                <h2 class="text-lg font-bold text-purple-700 mb-3 flex items-center gap-2 border-b border-slate-100 pb-3">
+                    <span class="w-7 h-7 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center text-sm font-extrabold">3</span>
+                    படிவாரியான விளக்கம்
+                </h2>
+
+                <div class="mb-4 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                    <div class="flex justify-between items-center text-xs text-slate-600 mb-1">
+                        <span>தற்போதைய நிலை:</span>
+                        <span id="progressText">0 / 0</span>
+                    </div>
+                    <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                        <div id="progressBar" class="bg-gradient-to-r from-purple-600 to-pink-600 h-full w-0 transition-all duration-300"></div>
+                    </div>
+                </div>
+
+                <div id="explanationBox" class="flex-1 bg-slate-50 rounded-xl p-4 border border-slate-200 font-mono text-sm space-y-3 overflow-y-auto max-h-[380px]">
+                    <div class="text-slate-500 text-center italic py-12">
+                        "இயக்கு (Simulate)" பொத்தானை அழுத்தவும்.
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+    </main>
+
+    <!-- Custom Modal for general alerts -->
+    <div id="modalOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-xs hidden items-center justify-center z-50 p-4">
+        <div class="bg-lightCard border border-slate-200 rounded-2xl max-w-sm w-full p-6 shadow-2xl space-y-4 text-center">
+            <div class="text-4xl">⚠️</div>
+            <h3 id="modalTitle" class="text-lg font-bold text-pink-600">கவனத்திற்கு</h3>
+            <p id="modalMessage" class="text-sm text-slate-600 leading-relaxed"></p>
+            <div class="pt-2">
+                <button onclick="closeModal()" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-2.5 rounded-xl text-sm transition">
+                    சரி (OK)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Global State Variables
+        let matrixA = [];
+        let matrixB = [];
+        let matrixC = [];
+        let simulationSteps = [];
+        let currentStepIndex = 0;
+        let simulationTimer = null;
+        let activeMode = 'practice'; // 'practice' or 'simulate'
+        let currentMistakeCount = 0; // Track student wrong attempts on current question
+
+        // Feedback Quotes
+        const wrongEncouragements = [
+            "மறுபடியும் முயற்சி செய்! உன்னால் முடியும்! 🌟",
+            "சிறிது பிழை! கவலைப்படாதே, மீண்டும் கணக்கிடு! 💪",
+            "அருகில் வந்துவிட்டாய்! மீண்டும் ஒருமுறை முயற்சி செய்! ✨",
+            "விடாமுயற்சி விஸ்வரூப வெற்றி! இன்னொரு முறை பார்! 🚀",
+            "தவறு என்பது கற்றலின் முதல் படி! முயற்சி செய்! 🌈"
+        ];
+
+        const rightPraises = [
+            "அற்புதம்! மிகச் சரியான விடை! 🎉👏",
+            "சூப்பர்! நீ ஒரு கணித மேதை! 🌟 🧠",
+            "அபாரமான கணக்கீடு! கலக்கிவிட்டாய்! 🚀 💯",
+            "மிகவும் அருமை! அடுத்த கட்டத்திற்கு செல்வோம்! ⭐ 🎈",
+            "சபாஷ்! சரியான விடை!  🎉"
+        ];
+
+        // Modal Helpers
+        function showModal(title, message) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerText = message;
+            document.getElementById('modalOverlay').classList.remove('hidden');
+            document.getElementById('modalOverlay').classList.add('flex');
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('flex');
+            document.getElementById('modalOverlay').classList.add('hidden');
+        }
+
+        // On window load
+        window.onload = function() {
+            generateMatrices();
+            // Enter key support for input
+            document.getElementById('childAnswerInput').addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') checkChildAnswer();
+            });
+        };
+
+        // Switch between Practice Mode and Simulation Mode
+        function switchMode(mode) {
+            activeMode = mode;
+            pauseSimulation();
+
+            const tabPractice = document.getElementById('tabPractice');
+            const tabSimulate = document.getElementById('tabSimulate');
+            const panelPractice = document.getElementById('panelPractice');
+            const panelSimulate = document.getElementById('panelSimulate');
+            const simControls = document.getElementById('simControls');
+
+            if (mode === 'practice') {
+                tabPractice.className = "px-4 py-2 rounded-xl text-xs md:text-sm font-bold transition-all duration-200 flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md";
+                tabSimulate.className = "px-4 py-2 rounded-xl text-xs md:text-sm font-bold transition-all duration-200 flex items-center gap-2 text-slate-600 hover:text-slate-900";
+                panelPractice.classList.remove('hidden');
+                panelPractice.classList.add('flex');
+                panelSimulate.classList.add('hidden');
+                panelSimulate.classList.remove('flex');
+                simControls.classList.add('hidden');
+                resetPracticeMode();
+            } else {
+                tabSimulate.className = "px-4 py-2 rounded-xl text-xs md:text-sm font-bold transition-all duration-200 flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md";
+                tabPractice.className = "px-4 py-2 rounded-xl text-xs md:text-sm font-bold transition-all duration-200 flex items-center gap-2 text-slate-600 hover:text-slate-900";
+                panelSimulate.classList.remove('hidden');
+                panelSimulate.classList.add('flex');
+                panelPractice.classList.add('hidden');
+                panelPractice.classList.remove('flex');
+                simControls.classList.remove('hidden');
+                resetSimulationState();
+            }
+        }
+
+        // Matrix Generation
+        function generateMatrices() {
+            pauseSimulation();
+            
+            const rowsA = parseInt(document.getElementById('rowsA').value);
+            const colsA = parseInt(document.getElementById('colsA').value);
+            const rowsB = parseInt(document.getElementById('rowsB').value);
+            const colsB = parseInt(document.getElementById('colsB').value);
+
+            const errorMsgDiv = document.getElementById('errorMsg');
+            const errorTextSpan = document.getElementById('errorText');
+
+            if (colsA !== rowsB) {
+                errorMsgDiv.classList.remove('hidden');
+                errorTextSpan.innerText = `தவறு: அணி A இன் நிரல்களும் (${colsA}) அணி B இன் நிரைகளும் (${rowsB}) சமமாக இருக்க வேண்டும்!`;
+                return;
+            } else {
+                errorMsgDiv.classList.add('hidden');
+            }
+
+            // Generate single digit random values (0-9)
+            matrixA = Array(rowsA).fill(0).map(() => Array(colsA).fill(0).map(() => Math.floor(Math.random() * 9) + 1));
+            matrixB = Array(rowsB).fill(0).map(() => Array(colsB).fill(0).map(() => Math.floor(Math.random() * 9) + 1));
+            matrixC = Array(rowsA).fill(0).map(() => Array(colsB).fill(0));
+
+            renderMatrices();
+            prepareSimulationSteps();
+
+            if (activeMode === 'practice') {
+                resetPracticeMode();
+            } else {
+                resetSimulationState();
+            }
+        }
+
+        function renderMatrices() {
+            renderMatrixGrid('containerMatrixA', matrixA, 'A');
+            renderMatrixGrid('containerMatrixB', matrixB, 'B');
+            renderMatrixGrid('containerMatrixC', matrixC, 'C', true);
+        }
+
+        function renderMatrixGrid(containerId, matrixData, prefix, isResult = false) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            matrixData.forEach((row, i) => {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'flex gap-2 justify-center';
+                row.forEach((val, j) => {
+                    const cell = document.createElement('input');
+                    cell.type = 'number';
+                    cell.value = val;
+                    cell.id = `cell_${prefix}_${i}_${j}`;
+                    cell.className = `matrix-cell w-11 h-11 md:w-12 md:h-12 text-center font-black rounded-xl border text-base transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-400 ${
+                        isResult 
+                            ? 'bg-slate-100 border-purple-200 text-purple-800' 
+                            : 'bg-white border-slate-300 text-slate-800 hover:border-slate-400 shadow-xs'
+                    }`;
+                    
+                    if (isResult) {
+                        cell.readOnly = true;
+                    } else {
+                        cell.addEventListener('input', (e) => {
+                            let newVal = parseInt(e.target.value) || 0;
+                            if (prefix === 'A') matrixA[i][j] = newVal;
+                            if (prefix === 'B') matrixB[i][j] = newVal;
+                            prepareSimulationSteps();
+                            if (activeMode === 'practice') resetPracticeMode(); else resetSimulationState();
+                        });
+                    }
+                    rowDiv.appendChild(cell);
+                });
+                container.appendChild(rowDiv);
+            });
+        }
+
+        // Precalculate all step steps
+        function prepareSimulationSteps() {
+            simulationSteps = [];
+            const rowsA = matrixA.length;
+            const colsA = matrixA[0].length;
+            const colsB = matrixB[0].length;
+
+            let tempC = Array(rowsA).fill(0).map(() => Array(colsB).fill(0));
+
+            for (let i = 0; i < rowsA; i++) {
+                for (let j = 0; j < colsB; j++) {
+                    let dotProductSteps = [];
+                    let sum = 0;
+                    for (let k = 0; k < colsA; k++) {
+                        let prod = matrixA[i][k] * matrixB[k][j];
+                        sum += prod;
+                        dotProductSteps.push({
+                            k: k,
+                            valA: matrixA[i][k],
+                            valB: matrixB[k][j],
+                            product: prod
+                        });
+                    }
+                    tempC[i][j] = sum;
+
+                    simulationSteps.push({
+                        row: i,
+                        col: j,
+                        steps: dotProductSteps,
+                        result: sum,
+                        snapshotC: JSON.parse(JSON.stringify(tempC))
+                    });
+                }
+            }
+        }
+
+        // ==========================================
+        // KIDS PRACTICE MODE LOGIC
+        // ==========================================
+        function resetPracticeMode() {
+            currentStepIndex = 0;
+            currentMistakeCount = 0;
+            clearHighlights();
+            resetResultCells();
+            setupPracticeStep(currentStepIndex);
+        }
+
+        function setupPracticeStep(index) {
+            clearHighlights();
+            currentMistakeCount = 0; // Reset mistake count for new step
+            if (index >= simulationSteps.length) {
+                showQuizCompletion();
+                return;
+            }
+
+            const step = simulationSteps[index];
+            const r = step.row;
+            const c = step.col;
+
+            // Highlight Matrix A Row
+            for (let k = 0; k < matrixA[0].length; k++) {
+                const cellA = document.getElementById(`cell_A_${r}_${k}`);
+                if (cellA) cellA.classList.add('highlight-row');
+            }
+
+            // Highlight Matrix B Column
+            for (let k = 0; k < matrixB.length; k++) {
+                const cellB = document.getElementById(`cell_B_${k}_${c}`);
+                if (cellB) cellB.classList.add('highlight-col');
+            }
+
+            // Highlight Target Cell in C
+            const cellC = document.getElementById(`cell_C_${r}_${c}`);
+            if (cellC) {
+                cellC.classList.add('highlight-target');
+                cellC.value = '?';
+            }
+
+            // Update Quiz UI text
+            document.getElementById('quizProgress').innerText = `கட்டம்: ${index + 1} / ${simulationSteps.length}`;
+            document.getElementById('targetCellLabel').innerText = `C[${r + 1}][${c + 1}] உறுப்பைக் கணக்கிடுக`;
+
+            // Default standard hint formula with summation
+            let hintFormula = step.steps.map(s => `(${s.valA} × ${s.valB})`).join(' + ');
+            document.getElementById('quizHintText').innerText = `${hintFormula} = ?`;
+
+            // Reset Input & Feedback
+            const inputEl = document.getElementById('childAnswerInput');
+            inputEl.value = '';
+            inputEl.focus();
+
+            setFeedback('🌟', 'விடையை உள்ளீடு செய்து "சரிபார்" பொத்தானை அழுத்தவும்!', 'slate');
+        }
+
+        function checkChildAnswer() {
+            if (currentStepIndex >= simulationSteps.length) return;
+
+            const inputEl = document.getElementById('childAnswerInput');
+            const userAnswer = parseInt(inputEl.value);
+            const currentStep = simulationSteps[currentStepIndex];
+
+            if (isNaN(userAnswer)) {
+                setFeedback('🤔', 'தயவுசெய்து ஒரு எண்ணை உள்ளீடு செய்!', 'amber');
+                shakeFeedbackCard();
+                return;
+            }
+
+            if (userAnswer === currentStep.result) {
+                // RIGHT ANSWER
+                triggerConfetti();
+                const praise = rightPraises[Math.floor(Math.random() * rightPraises.length)];
+                setFeedback('🎉', praise, 'emerald');
+
+                const r = currentStep.row;
+                const c = currentStep.col;
+                const cellC = document.getElementById(`cell_C_${r}_${c}`);
+                if (cellC) {
+                    cellC.value = currentStep.result;
+                    cellC.classList.remove('highlight-target');
+                    cellC.classList.add('highlight-completed');
+                }
+
+                setTimeout(() => {
+                    currentStepIndex++;
+                    setupPracticeStep(currentStepIndex);
+                }, 1600);
+
+            } else {
+                // WRONG ANSWER
+                currentMistakeCount++;
+                const encouragement = wrongEncouragements[Math.floor(Math.random() * wrongEncouragements.length)];
+                setFeedback('💪', encouragement, 'rose');
+                shakeFeedbackCard();
+
+                // CUSTOM REQUIREMENT: When student makes a mistake on the first attempt,
+                // show ONLY the individual term-by-term multiplications of corresponding elements without adding them together.
+                if (currentMistakeCount === 1) {
+                    let onlyMultiplicationsText = currentStep.steps.map(s => `${s.valA} × ${s.valB} = ${s.product}`).join(' | ');
+                    document.getElementById('quizHintText').innerText = onlyMultiplicationsText;
+                }
+
+                inputEl.select();
+            }
+        }
+
+        function setFeedback(icon, text, theme) {
+            const card = document.getElementById('feedbackCard');
+            const iconEl = document.getElementById('feedbackIcon');
+            const textEl = document.getElementById('feedbackText');
+
+            iconEl.innerText = icon;
+            textEl.innerText = text;
+
+            card.className = "min-h-[110px] p-4 rounded-2xl border text-center flex flex-col items-center justify-center transition-all duration-300 ";
+
+            if (theme === 'emerald') {
+                card.className += "bg-emerald-50 border-emerald-300 text-emerald-800 shadow-md shadow-emerald-100";
+            } else if (theme === 'rose') {
+                card.className += "bg-rose-50 border-rose-300 text-rose-800 shadow-md shadow-rose-100";
+            } else if (theme === 'amber') {
+                card.className += "bg-amber-50 border-amber-300 text-amber-800";
+            } else {
+                card.className += "bg-slate-50 border-slate-200 text-slate-700";
+            }
+        }
+
+        function shakeFeedbackCard() {
+            const card = document.getElementById('feedbackCard');
+            card.classList.remove('animate-shake');
+            void card.offsetWidth;
+            card.classList.add('animate-shake');
+        }
+
+        function showQuizCompletion() {
+            clearHighlights();
+            triggerConfetti();
+            setFeedback('🏆', 'வாழ்த்துக்கள்! அனைத்து உறுப்புகளையும் வெற்றிகரமாக கணக்கிட்டு விட்டாய்! நீ ஒரு கணித மேதை! 🎉', 'emerald');
+            
+            document.getElementById('quizQuestionBox').innerHTML = `
+                <div class="text-center py-4 space-y-2">
+                    <div class="text-5xl animate-bounce">🥇</div>
+                    <h3 class="text-lg font-black text-amber-600">பயிற்சி நிறைவடைந்தது!</h3>
+                    <p class="text-xs text-slate-600">அனைத்து அணிகளின் பெருக்கலும் சரியாக செய்யப்பட்டது.</p>
+                </div>
+            `;
+            document.getElementById('inputArea').innerHTML = `
+                <button onclick="generateMatrices()" class="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-black rounded-xl shadow-md transition">
+                    🔄 மீண்டும் புதிய கணக்குகளுடன் விளையாடு!
+                </button>
+            `;
+        }
+
+        function triggerConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 50,
+                    spread: 60,
+                    origin: { y: 0.7 }
+                });
+            }
+        }
+
+        // ==========================================
+        // FULL SIMULATION MODE LOGIC
+        // ==========================================
+        function resetSimulationState() {
+            pauseSimulation();
+            currentStepIndex = 0;
+            clearHighlights();
+            resetResultCells();
+            updateProgressUI();
+
+            document.getElementById('explanationBox').innerHTML = `
+                <div class="text-slate-500 text-center italic py-12">
+                    "இயக்கு (Simulate)" பொத்தானை அழுத்தவும்.
+                </div>
+            `;
+        }
+
+        function resetResultCells() {
+            const rowsA = matrixA.length;
+            const colsB = matrixB[0].length;
+            for (let i = 0; i < rowsA; i++) {
+                for (let j = 0; j < colsB; j++) {
+                    const cell = document.getElementById(`cell_C_${i}_${j}`);
+                    if (cell) cell.value = 0;
+                }
+            }
+        }
+
+        function resetSimulation() {
+            resetSimulationState();
+        }
+
+        function clearHighlights() {
+            document.querySelectorAll('.matrix-cell').forEach(el => {
+                el.classList.remove('highlight-row', 'highlight-col', 'highlight-target', 'highlight-completed');
+            });
+        }
+
+        function startSimulation() {
+            if (simulationSteps.length === 0) return;
+            if (currentStepIndex >= simulationSteps.length) {
+                currentStepIndex = 0;
+            }
+
+            document.getElementById('btnStart').disabled = true;
+            document.getElementById('btnPause').disabled = false;
+
+            const speed = parseInt(document.getElementById('speedSelect').value);
+
+            executeSimStep(currentStepIndex);
+
+            simulationTimer = setInterval(() => {
+                currentStepIndex++;
+                if (currentStepIndex >= simulationSteps.length) {
+                    pauseSimulation();
+                    currentStepIndex = simulationSteps.length - 1;
+                    return;
+                }
+                executeSimStep(currentStepIndex);
+            }, speed);
+        }
+
+        function pauseSimulation() {
+            clearInterval(simulationTimer);
+            document.getElementById('btnStart').disabled = false;
+            document.getElementById('btnPause').disabled = true;
+        }
+
+        function stepForward() {
+            pauseSimulation();
+            if (currentStepIndex < simulationSteps.length) {
+                executeSimStep(currentStepIndex);
+                currentStepIndex++;
+            }
+        }
+
+        function stepBackward() {
+            pauseSimulation();
+            if (currentStepIndex > 0) {
+                currentStepIndex--;
+                executeSimStep(currentStepIndex);
+            }
+        }
+
+        function executeSimStep(index) {
+            clearHighlights();
+            const stepData = simulationSteps[index];
+            const r = stepData.row;
+            const c = stepData.col;
+
+            for (let k = 0; k < matrixA[0].length; k++) {
+                const cellA = document.getElementById(`cell_A_${r}_${k}`);
+                if (cellA) cellA.classList.add('highlight-row');
+            }
+            for (let k = 0; k < matrixB.length; k++) {
+                const cellB = document.getElementById(`cell_B_${k}_${c}`);
+                if (cellB) cellB.classList.add('highlight-col');
+            }
+
+            const cellC = document.getElementById(`cell_C_${r}_${c}`);
+            if (cellC) {
+                cellC.value = stepData.result;
+                cellC.classList.add('highlight-target');
+            }
+
+            let breakdownHtml = stepData.steps.map(s => `(${s.valA} × ${s.valB})`).join(' + ');
+            let mathValuesHtml = stepData.steps.map(s => `${s.product}`).join(' + ');
+
+            let explanationHTML = `
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between text-xs text-purple-700 font-bold border-b border-slate-200 pb-1">
+                        <span>படி ${index + 1} / ${simulationSteps.length}</span>
+                        <span>C[${r + 1}][${c + 1}] உறுப்பு</span>
+                    </div>
+                    <p class="text-slate-700 text-xs leading-relaxed">
+                        அணி A இன் <strong>நிரை ${r + 1}</strong> மற்றும் அணி B இன் <strong>நிரல் ${c + 1}</strong> பெருக்கப்படுகிறது:
+                    </p>
+                    <div class="bg-white p-3 rounded-xl border border-slate-200 text-xs space-y-1 font-mono shadow-xs">
+                        <div class="text-slate-800">C[${r + 1}][${c + 1}] = ${breakdownHtml}</div>
+                        <div class="text-slate-500">= ${mathValuesHtml}</div>
+                        <div class="text-emerald-600 font-bold text-sm pt-1 border-t border-slate-100">
+                            = ${stepData.result}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('explanationBox').innerHTML = explanationHTML;
+            updateProgressUI();
+        }
+
+        function updateProgressUI() {
+            const total = simulationSteps.length;
+            const current = Math.min(currentStepIndex + 1, total);
+            const percentage = total > 0 ? (current / total) * 100 : 0;
+
+            document.getElementById('progressText').innerText = `${current} / ${total}`;
+            document.getElementById('progressBar').style.width = `${percentage}%`;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>முக்கோணவியல் விகிதங்கள் - செங்கோண முக்கோண மாதிரி (Trigonometric Ratios Simulation)</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts for Tamil Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Mukta+Malar:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Mukta Malar', 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        /* Custom styles for range slider track and thumb */
+        input[type=range] {
+            accent-color: #4f46e5;
+        }
+        .math-font {
+            font-family: 'Inter', sans-serif;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+    </style>
+    <!-- Canvas Confetti Library for Celebration Effects -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between">
+
+    <!-- Header Section -->
+    <header class="bg-indigo-700 text-white shadow-lg py-4 px-6 border-b border-indigo-800">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-indigo-600 rounded-lg shadow-inner">
+                    <i class="fa-solid fa-shapes text-2xl text-amber-300"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-bold leading-tight">முக்கோணவியல் விகிதங்கள்</h1>
+                    <p class="text-xs text-indigo-200">GHS, OTTIMEDU | உருவாக்கம்: A. CHRISTURAJ B.T. ASST. IN MATHS</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 text-sm bg-indigo-800/60 px-3 py-1.5 rounded-full border border-indigo-500/30">
+                <i class="fa-solid fa-graduation-cap text-amber-400"></i>
+                <span class="font-medium text-indigo-100">நிலையான கோணங்கள் & 6 விகிதங்கள்</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl w-full mx-auto p-4 sm:p-6 flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Left Column: Controls & Dynamic Calculations -->
+        <div class="lg:col-span-5 flex flex-col gap-6">
+
+            <!-- Controls Card -->
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col gap-5">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                    <h2 class="text-lg font-bold text-indigo-900 flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-indigo-600"></i> நிலையான கோணங்கள் (Standard Angles)
+                    </h2>
+                    <button id="resetBtn" class="text-xs font-semibold text-slate-500 hover:text-indigo-600 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1">
+                        <i class="fa-solid fa-rotate-left"></i> 45° இயல்பு
+                    </button>
+                </div>
+
+                <!-- Standard Angle Quick Selection Buttons -->
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-slate-700 flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                        கோணம் தேர்வு செய்க (Select θ):
+                    </label>
+                    <div class="grid grid-cols-5 gap-2" id="angleBtnContainer">
+                        <button data-angle="0" class="angle-btn py-2 text-sm font-extrabold rounded-xl border border-slate-200 bg-slate-50 hover:bg-indigo-50 text-slate-700 transition-all">0°</button>
+                        <button data-angle="30" class="angle-btn py-2 text-sm font-extrabold rounded-xl border border-slate-200 bg-slate-50 hover:bg-indigo-50 text-slate-700 transition-all">30°</button>
+                        <button data-angle="45" class="angle-btn py-2 text-sm font-extrabold rounded-xl border border-indigo-600 bg-indigo-600 text-white shadow-sm transition-all">45°</button>
+                        <button data-angle="60" class="angle-btn py-2 text-sm font-extrabold rounded-xl border border-slate-200 bg-slate-50 hover:bg-indigo-50 text-slate-700 transition-all">60°</button>
+                        <button data-angle="90" class="angle-btn py-2 text-sm font-extrabold rounded-xl border border-slate-200 bg-slate-50 hover:bg-indigo-50 text-slate-700 transition-all">90°</button>
+                    </div>
+                </div>
+
+                <!-- Seperate Individual Value Boxes for Angle & 3 Side Values -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                    <!-- Interactive Angle Dropdown Box -->
+                    <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-300 text-center flex flex-col justify-between shadow-xs">
+                        <div>
+                            <p class="text-xs text-emerald-800 font-bold">கோணம் (θ)</p>
+                            <p class="text-[11px] text-emerald-600 font-medium">(Standard Angle)</p>
+                        </div>
+                        <div class="mt-2">
+                            <select id="angleSelectBox" class="w-full text-center text-lg font-extrabold text-emerald-700 bg-white border border-emerald-300 rounded-lg py-1 cursor-pointer math-font focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                <option value="0">0°</option>
+                                <option value="30">30°</option>
+                                <option value="45" selected>45°</option>
+                                <option value="60">60°</option>
+                                <option value="90">90°</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Angle Location / Vertex Selector -->
+                    <div class="p-3 bg-amber-50 rounded-xl border border-amber-300 text-center flex flex-col justify-between shadow-xs">
+                        <div>
+                            <p class="text-xs text-amber-900 font-bold">கோண இடம்</p>
+                            <p class="text-[11px] text-amber-600 font-medium">(Angle Vertex)</p>
+                        </div>
+                        <div class="mt-2">
+                            <select id="angleVertexSelector" class="w-full text-center text-xs font-bold text-amber-900 bg-white border border-amber-300 rounded-lg py-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500">
+                                <option value="A" selected>முனை A (Vertex A)</option>
+                                <option value="C">முனை C (Vertex C)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Side Selection & Value Entry Box -->
+                    <div class="p-3 bg-indigo-50 rounded-xl border border-indigo-300 text-center flex flex-col justify-between shadow-xs col-span-2 sm:col-span-1">
+                        <div>
+                            <p class="text-xs text-indigo-900 font-bold">பக்கம் தேர்வு (Select Side)</p>
+                            <p class="text-[11px] text-indigo-600 font-medium">(1 அல்லது 2 பக்க அளவுகள்)</p>
+                        </div>
+                        <div class="mt-2 flex flex-col gap-1.5">
+                            <select id="activeSideSelector" class="w-full text-center text-xs font-bold text-indigo-800 bg-white border border-indigo-300 rounded-lg py-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="adj" selected>அடுத்துள்ள பக்கம் (Adj Only)</option>
+                                <option value="opp">எதிர்பக்கம் (Opp Only)</option>
+                                <option value="hyp">கர்ணம் (Hyp Only)</option>
+                                <option value="two">இரண்டு பக்கங்கள் (Two Sides)</option>
+                            </select>
+                            <div id="singleSideInputWrapper" class="flex flex-col gap-1">
+                                <input id="sideValueInput" type="number" step="0.5" min="1" max="25" value="8" class="w-full text-center text-sm font-extrabold text-indigo-900 bg-white border border-indigo-300 rounded-lg py-1 math-font focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="அளவு தட்டச்சு செய்க">
+                            </div>
+                            <div id="dualSideInputWrapper" class="hidden flex flex-col gap-1.5">
+                                <div class="flex gap-1 items-center">
+                                    <select id="side1Type" class="w-1/2 text-[10px] font-bold text-indigo-900 bg-white border border-indigo-300 rounded-md py-1">
+                                        <option value="adj">அடுத்துள்ளது</option>
+                                        <option value="opp" selected>எதிர்பக்கம்</option>
+                                        <option value="hyp">கர்ணம்</option>
+                                    </select>
+                                    <input id="side1Input" type="number" step="0.5" min="1" max="25" value="8" class="w-1/2 text-center text-xs font-bold text-indigo-900 bg-white border border-indigo-300 rounded-lg py-1 math-font focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="மதிப்பு 1">
+                                </div>
+                                <div class="flex gap-1 items-center">
+                                    <select id="side2Type" class="w-1/2 text-[10px] font-bold text-indigo-900 bg-white border border-indigo-300 rounded-md py-1">
+                                        <option value="adj" selected>அடுத்துள்ளது</option>
+                                        <option value="opp">எதிர்பக்கம்</option>
+                                        <option value="hyp">கர்ணம்</option>
+                                    </select>
+                                    <input id="side2Input" type="number" step="0.5" min="1" max="25" value="6" class="w-1/2 text-center text-xs font-bold text-indigo-900 bg-white border border-indigo-300 rounded-lg py-1 math-font focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="மதிப்பு 2">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Display Boxes for Evaluated Sides -->
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-300 text-center flex flex-col justify-between shadow-xs col-span-2 sm:col-span-1">
+                        <div class="grid grid-cols-1 gap-1">
+                            <!-- Adjacent Box -->
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg px-1.5 py-0.5 flex justify-between items-center">
+                                <p class="text-[10px] font-bold text-blue-800">அடுத்துள்ள</p>
+                                <p id="adjDisplay" class="text-xs font-extrabold text-blue-700 math-font">8.00</p>
+                            </div>
+                            <!-- Opposite Box -->
+                            <div class="bg-rose-50 border border-rose-200 rounded-lg px-1.5 py-0.5 flex justify-between items-center">
+                                <p class="text-[10px] font-bold text-rose-800">எதிர்பக்கம்</p>
+                                <p id="oppDisplay" class="text-xs font-extrabold text-rose-700 math-font">8.00</p>
+                            </div>
+                            <!-- Hypotenuse Box -->
+                            <div class="bg-amber-50 border border-amber-200 rounded-lg px-1.5 py-0.5 flex justify-between items-center">
+                                <p class="text-[10px] font-bold text-amber-800">கர்ணம்</p>
+                                <p id="hypDisplay" class="text-xs font-extrabold text-amber-700 math-font">11.31</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ratios Calculation Card (with All 6 Standard Values) -->
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col gap-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-2">
+                    <h2 class="text-lg font-bold text-indigo-900 flex items-center gap-2">
+                        <i class="fa-solid fa-calculator text-indigo-600"></i> 6 முக்கோணவியல் விகிதங்கள் (Interactive Ratios)
+                    </h2>
+                    <span class="text-xs font-bold bg-amber-100 text-amber-900 px-2.5 py-1 rounded-full border border-amber-300">
+                        <i class="fa-solid fa-pen-to-square"></i> விகித சமன்பாடுகளைத் தட்டச்சு செய்க
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <!-- Sine Card -->
+                    <div id="card-sin" class="p-3 rounded-xl border border-rose-100 bg-rose-50/40 transition-all">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-black text-rose-700 text-sm">sin(<span class="sinAngleLabel math-font">45</span>°)</span>
+                            <span id="sinExact" class="text-xs font-extrabold bg-rose-100 text-rose-800 px-2 py-0.5 rounded-md math-font">1/√2</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs text-slate-600">
+                            <span>எதிர்பக்கம் / கர்ணம்</span>
+                            <span id="sinDecimal" class="font-bold text-slate-800 math-font">≈ 0.7071</span>
+                        </div>
+                        <div class="mt-2 pt-2 border-t border-rose-100 flex flex-col gap-1">
+                            <div class="flex items-center justify-between text-[11px] text-slate-700 font-bold">
+                                <span>விகித சமன்பாடு:</span>
+                                <span id="sinStatus" class="text-[10px] font-bold text-slate-500">உள்ளிடுக</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <input type="number" step="0.01" id="sinNumInput" class="w-1/2 text-center text-xs font-bold py-1 bg-white border border-rose-200 rounded-lg math-font focus:ring-2 focus:ring-rose-400 focus:outline-none">
+                                <span class="text-slate-400 font-bold">/</span>
+                                <input type="number" step="0.01" id="sinDenInput" class="w-1/2 text-center text-xs font-bold py-1 bg-white border border-rose-200 rounded-lg math-font focus:ring-2 focus:ring-rose-400 focus:outline-none">
+                                <button onclick="checkRatioInput('sin')" class="px-2 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold transition-all"><i class="fa-solid fa-check"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cosecant Card (Reciprocal of Sin) -->
+                    <div id="card-cosec" class="p-3 rounded-xl border border-rose-200 bg-rose-100/30 transition-all">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-black text-rose-900 text-sm">cosec(<span class="sinAngleLabel math-font">45</span>°)</span>
+                            <span id="cosecExact" class="text-xs font-extrabold bg-rose-200 text-rose-900 px-2 py-0.5 rounded-md math-font">√2</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs text-slate-600">
+                            <span>கர்ணம் / எதிர்பக்கம் (1/sin)</span>
+                            <span id="cosecDecimal" class="font-bold text-slate-800 math-font">≈ 1.4142</span>
+                        </div>
+                        <div class="mt-2 pt-2 border-t border-rose-200 flex flex-col gap-1">
+                            <div class="flex items-center justify-between text-[11px] text-slate-700 font-bold">
+                                <span>விகித சமன்பாடு:</span>
+                                <span id="cosecStatus" class="text-[10px] font-bold text-slate-500">உள்ளிடுக</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <input type="number" step="0.01" id="cosecNumInput" class="w-1/2 text-center text-xs font-bold py-1 bg-white border border-rose-200 rounded-lg math-font focus:ring-2 focus:ring-rose-400 focus:outline-none">
+                                <span class="text-slate-400 font-bold">/</span>
+                                <input type="number" step="0.01" id="cosecDenInput" class="w-1/2 text-center text-xs font-bold py-1 bg-white border border-rose-200 rounded-lg math-font focus:ring-2 focus:ring-rose-400 focus:outline-none">
+                                <button onclick="checkRatioInput('cosec')" class="px-2 py-1 bg-rose-700 hover:bg-rose-800 text-white rounded-lg text-xs font-bold transition-all"><i class="fa-solid fa-check"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cosine Card -->
+                    <div id="card-cos" class="p-3 rounded-xl border border-blue-100 bg-blue-50/40 transition-all">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-black text-blue-700 text-sm">cos(<span class="cosAngleLabel math-font">45</span>°)</span>
+                            <span id="cosExact" class="text-xs font-extrabold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-md math-font">1/√2</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs text-slate-600">
+                            <span>அடுத்துள்ள பக்கம் / கர்ணம்</span>
+                            <span id="cosDecimal" class="font-bold text-slate-800 math-font">≈ 0.7071</span>
+                        </div>
+                        <div class="mt-2 pt-2 border-t border-blue-100 flex flex-col gap-1">
+                            <div class="flex items-center justify-between text-[11px] text-slate-700 font-bold">
+                                <span>விகித சமன்பாடு:</span>
+                                <span id="cosStatus" class="text-[10px] font-bold text-slate-500">உள்ளிடுக</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <input type="number" step="0.01" id="cosNumInput" class="w-1/2 text-center text-xs font-bold py-1 bg-white border border-blue-200 rounded-lg math-font focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                                <span class="text-slate-400 font-bold">/</span>
+                                <input type="number" step="0.01" id="cosDenInput" class="w-1/2 text-center text-xs font-bold py-1 bg-white border border-blue-200 rounded-lg math-font focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                                <button onclick="checkRatioInput('cos')" class="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition-all"><i class="fa-solid fa-check"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Secant Card (Reciprocal of Cos) -->
+                    <div id="card-sec" class="p-3 rounded-xl border border-blue-200 bg-blue-100/30 transition-all">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-black text-blue-900 text-sm">sec(<span class="cosAngleLabel math-font">45</span>°)</span>
+                            <span id="secExact" class="text-xs font-extrabold bg-blue-200 text-blue-900 px-2 py-0.5 rounded-md math-font">√2</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs text-slate-600">
+                            <span>கர்ணம் / அடுத்துள்ள (1/cos)</span>
+                            <span id="secDecimal" class="font-bold text-slate-800 math-font">≈ 1.4142</span>
+                        </div>
+                        <div class="mt-2 pt-2 border-t border-blue-200 flex flex-col gap-1">
+                            <div class="flex items-center justify-between text-[11px] text-slate-700 font-bold">
+                                <span>விகித சமன்பாடு:</span>
+                                <span id="secStatus" class="text-[10px] font-bold text-slate-500">உள்ளிடுக</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <input type="number" step="0.01" id="secNumInput" class="w-1/2 text-center text-xs font-bold py-1 bg-white border border-blue-200 rounded-lg math-font focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                                <span class="text-slate-400 font-bold">/</span>
+                                <input type="number" step="0.01" id="secDenInput" class="w-1/2 text-center text-xs font-bold py-1 bg-white border border-blue-200 rounded-lg math-font focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                                <button onclick="checkRatioInput('sec')" class="px-2 py-1 bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-xs font-bold transition-all"><i class="fa-solid fa-check"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tangent Card -->
+                    <div id="card-tan" class="p-3 rounded-xl border border-indigo-100 bg-indigo-50/40 transition-all">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-black text-indigo-700 text-sm">tan(<span class="tanAngleLabel math-font">45</span>°)</span>
+                            <span id="tanExact" class="text-xs font-extrabold bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-md math-font">1</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs text-slate-600">
+                            <span>எதிர்பக்கம் / அடுத்துள்ள</span>
+                            <span id="tanDecimal" class="font-bold text-slate-800 math-font">≈ 1.0000</span>
+                        </div>
+                        <div class="mt-2 pt-2 border-t border-indigo-100 flex flex-col gap-1">
+                            <div class="flex items-center justify-between text-[11px] text-slate-700 font-bold">
+                                <span>விகித சமன்பாடு:</span>
+                                <span id="tanStatus" class="text-[10px] font-bold text-slate-500">உள்ளிடுக</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <input type="number" step="0.01" id="tanNumInput" class="w-1/2 text-center text-xs font-bold py-1 bg-white border border-indigo-200 rounded-lg math-font focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                                <span class="text-slate-400 font-bold">/</span>
+                                <input type="number" step="0.01" id="tanDenInput" class="w-1/2 text-center text-xs font-bold py-1 bg-white border border-indigo-200 rounded-lg math-font focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                                <button onclick="checkRatioInput('tan')" class="px-2 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold transition-all"><i class="fa-solid fa-check"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cotangent Card (Reciprocal of Tan) -->
+                    <div id="card-cot" class="p-3 rounded-xl border border-indigo-200 bg-indigo-100/30 transition-all">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-black text-indigo-900 text-sm">cot(<span class="tanAngleLabel math-font">45</span>°)</span>
+                            <span id="cotExact" class="text-xs font-extrabold bg-indigo-200 text-indigo-900 px-2 py-0.5 rounded-md math-font">1</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs text-slate-600">
+                            <span>அடுத்துள்ள / எதிர்பக்கம் (1/tan)</span>
+                            <span id="cotDecimal" class="font-bold text-slate-800 math-font">≈ 1.0000</span>
+                        </div>
+                        <div class="mt-2 pt-2 border-t border-indigo-200 flex flex-col gap-1">
+                            <div class="flex items-center justify-between text-[11px] text-slate-700 font-bold">
+                                <span>விகித சமன்பாடு:</span>
+                                <span id="cotStatus" class="text-[10px] font-bold text-slate-500">உள்ளிடுக</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <input type="number" step="0.01" id="cotNumInput" class="w-1/2 text-center text-xs font-bold py-1 bg-white border border-indigo-200 rounded-lg math-font focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                                <span class="text-slate-400 font-bold">/</span>
+                                <input type="number" step="0.01" id="cotDenInput" class="w-1/2 text-center text-xs font-bold py-1 bg-white border border-indigo-200 rounded-lg math-font focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                                <button onclick="checkRatioInput('cot')" class="px-2 py-1 bg-indigo-700 hover:bg-indigo-800 text-white rounded-lg text-xs font-bold transition-all"><i class="fa-solid fa-check"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Canvas Visualization & Educational Quiz Practice -->
+        <div class="lg:col-span-7 flex flex-col gap-6">
+
+            <!-- Interactive Canvas Card -->
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col gap-3 relative">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-lg font-bold text-indigo-900 flex items-center gap-2">
+                        <i class="fa-solid fa-hand-pointer text-indigo-600"></i> முக்கோண வரைபடம் & நேரடி இழுத்தல் (Interactive Canvas)
+                    </h2>
+                    <span class="text-xs bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full font-bold">
+                        நிலையான கோணம்: <span id="canvasAngleTag">45°</span>
+                    </span>
+                </div>
+
+                <!-- Canvas Container -->
+                <div class="w-full h-[360px] sm:h-[420px] bg-slate-90 rounded-xl relative overflow-hidden border border-slate-200 shadow-inner flex items-center justify-center bg-emerald-950/5">
+                    <canvas id="triangleCanvas" class="w-full h-full block cursor-grab active:cursor-grabbing"></canvas>
+
+                    <!-- Overlay Legend -->
+                    <div class="absolute top-3 right-3 bg-white/95 backdrop-blur-md p-2.5 rounded-lg border border-slate-200 shadow-xs text-xs space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-1 bg-rose-500 rounded-sm"></span>
+                            <span class="font-semibold text-slate-700">எதிர்பக்கம் (Opposite - Y)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-1 bg-blue-500 rounded-sm"></span>
+                            <span class="font-semibold text-slate-700">அடுத்துள்ள பக்கம் (Adjacent - X)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-1 bg-amber-500 rounded-sm"></span>
+                            <span class="font-semibold text-slate-700">கர்ணம் (Hypotenuse)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-xs text-center text-indigo-700 font-semibold italic bg-indigo-50/70 py-1.5 px-3 rounded-lg border border-indigo-100">
+                    <i class="fa-solid fa-circle-info"></i> வரைபடத்தாளில் C முனையை நகர்த்தி கோணத்தை மாற்றி ஆயத்தொலைவுகளை (X, Y Coordinates) அறியலாம்.
+                </p>
+            </div>
+
+            <!-- Student Interactive Practice & Quiz Card -->
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col gap-4 relative overflow-hidden">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                    <h2 class="text-lg font-bold text-indigo-900 flex items-center gap-2">
+                        <i class="fa-solid fa-brain text-amber-500"></i> சுய பயிற்சி & விடை சோதனை (Practice Quiz)
+                    </h2>
+                    <!-- Score Tracker -->
+                    <div class="flex items-center gap-3">
+                        <div class="text-xs bg-amber-50 border border-amber-200 text-amber-800 px-3 py-1 rounded-full font-bold flex items-center gap-1">
+                            <i class="fa-solid fa-star text-amber-500"></i> மதிப்பெண்: <span id="scoreDisplay" class="math-font text-sm">0</span>
+                        </div>
+                        <div class="text-xs bg-emerald-50 border border-emerald-200 text-emerald-800 px-3 py-1 rounded-full font-bold flex items-center gap-1">
+                            <i class="fa-solid fa-fire text-emerald-500"></i> தொடர் வெற்றி: <span id="streakDisplay" class="math-font text-sm">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz Container -->
+                <div class="space-y-4">
+                    <div class="bg-indigo-50/80 border border-indigo-200 p-4 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                            <span class="text-xs font-bold text-indigo-600 uppercase tracking-wide">கேள்வி (Question):</span>
+                            <p id="quizQuestionText" class="text-lg font-black text-indigo-950 mt-0.5">sin 30° - இன் மதிப்பு என்ன?</p>
+                        </div>
+                        <button id="nextQuestionBtn" class="text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-2 rounded-lg transition-colors shrink-0 flex items-center gap-1 self-start sm:self-auto">
+                            <i class="fa-solid fa-arrows-rotate"></i> அடுத்த கேள்வி
+                        </button>
+                    </div>
+
+                    <!-- Answer Choices Grid -->
+                    <div>
+                        <label class="text-xs font-bold text-slate-600 mb-2 block">சரியான விடையைத் தேர்ந்தெடுக்கவும்:</label>
+                        <div id="quizOptionsContainer" class="grid grid-cols-4 sm:grid-cols-8 gap-2">
+                            <!-- Options injected dynamically via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Action Button & Feedback Banner -->
+                    <div class="flex flex-col gap-2 pt-2">
+                        <button id="checkAnswerBtn" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm sm:text-base">
+                            <i class="fa-solid fa-circle-check"></i> விடையைச் சரிபார்க்கவும் (Check Answer)
+                        </button>
+                        
+                        <!-- Feedback Banner -->
+                        <div id="feedbackBanner" class="hidden p-3.5 rounded-xl border text-sm font-bold flex items-start gap-2.5 animate-pop">
+                            <i id="feedbackIcon" class="text-lg mt-0.5"></i>
+                            <div>
+                                <p id="feedbackText"></p>
+                                <p id="feedbackHint" class="text-xs font-normal mt-0.5"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Explanatory Standard Angle Table -->
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col gap-4">
+                <h3 class="text-md font-bold text-indigo-900 flex items-center gap-2">
+                    <i class="fa-solid fa-table text-indigo-600"></i> நிலையான 6 கோணங்களின் அட்டவணை (All 6 Standard Ratios)
+                </h3>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-center text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-indigo-50 text-indigo-900 font-bold border-b border-indigo-200">
+                                <th class="p-2 text-left">விகிதம் (Ratio) \ கோணம் (θ)</th>
+                                <th class="p-2 border-l border-indigo-100">0°</th>
+                                <th class="p-2 border-l border-indigo-100">30°</th>
+                                <th class="p-2 border-l border-indigo-100 bg-indigo-100/60">45°</th>
+                                <th class="p-2 border-l border-indigo-100">60°</th>
+                                <th class="p-2 border-l border-indigo-100">90°</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-slate-700 font-semibold math-font">
+                            <tr>
+                                <td class="p-2 text-left font-bold text-rose-600">sin θ</td>
+                                <td>0</td>
+                                <td>1/2</td>
+                                <td class="bg-indigo-50/30 font-bold text-indigo-700">1/√2</td>
+                                <td>√3/2</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 text-left font-bold text-rose-800">cosec θ</td>
+                                <td class="text-rose-500 font-bold">வரையறுக்கப்படவில்லை</td>
+                                <td>2</td>
+                                <td class="bg-indigo-50/30 font-bold text-indigo-700">√2</td>
+                                <td>2/√3</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 text-left font-bold text-blue-600">cos θ</td>
+                                <td>1</td>
+                                <td>√3/2</td>
+                                <td class="bg-indigo-50/30 font-bold text-indigo-700">1/√2</td>
+                                <td>1/2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 text-left font-bold text-blue-800">sec θ</td>
+                                <td>1</td>
+                                <td>2/√3</td>
+                                <td class="bg-indigo-50/30 font-bold text-indigo-700">√2</td>
+                                <td>2</td>
+                                <td class="text-rose-500 font-bold">வரையறுக்கப்படவில்லை</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 text-left font-bold text-indigo-600">tan θ</td>
+                                <td>0</td>
+                                <td>1/√3</td>
+                                <td class="bg-indigo-50/30 font-bold text-indigo-700">1</td>
+                                <td>√3</td>
+                                <td class="text-rose-500 font-bold">வரையறுக்கப்படவில்லை</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 text-left font-bold text-indigo-900">cot θ</td>
+                                <td class="text-rose-500 font-bold">வரையறுக்கப்படவில்லை</td>
+                                <td>√3</td>
+                                <td class="bg-indigo-50/30 font-bold text-indigo-700">1</td>
+                                <td>1/√3</td>
+                                <td>0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Info Box -->
+                <div class="p-3 bg-indigo-50/60 rounded-xl border border-indigo-200 flex items-start gap-3">
+                    <i class="fa-solid fa-circle-info text-indigo-600 text-lg mt-0.5"></i>
+                    <div class="text-xs text-indigo-900 space-y-1">
+                        <span class="font-bold block">தலைகீழ் விகிதங்களின் தொடர்புகள் (Reciprocal Ratios):</span>
+                        <p>cosec θ = 1/sin θ, sec θ = 1/cos θ, cot θ = 1/tan θ. பூச்சியத்தால் வகுக்கும் போது மதிப்பு 'வரையறுக்கப்படவில்லை' (∞) என பெறப்படும்.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-4 px-6 border-t border-slate-800 text-center space-y-1">
+        <p class="font-bold text-indigo-300 text-sm">GHS, OTTIMEDU</p>
+        <p>வடிவமைப்பு & உருவாக்கம்: <span class="text-slate-200 font-semibold">A. CHRISTURAJ B.T. ASST. IN MATHS</span></p>
+        <p class="text-slate-500 text-[11px]">தமிழ் வழி மாணவர்களுக்கான முக்கோணவியல் விகிதங்கள் மாதிரி | Trigonometric Ratios Simulation App</p>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // DOM Element References
+        const canvas = document.getElementById('triangleCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const resetBtn = document.getElementById('resetBtn');
+        const angleBtnContainer = document.getElementById('angleBtnContainer');
+
+        const angleSelectBox = document.getElementById('angleSelectBox');
+        const angleVertexSelector = document.getElementById('angleVertexSelector');
+        const activeSideSelector = document.getElementById('activeSideSelector');
+        const sideValueInput = document.getElementById('sideValueInput');
+        const side1Type = document.getElementById('side1Type');
+        const side2Type = document.getElementById('side2Type');
+        const side1Input = document.getElementById('side1Input');
+        const side2Input = document.getElementById('side2Input');
+        const singleSideInputWrapper = document.getElementById('singleSideInputWrapper');
+        const dualSideInputWrapper = document.getElementById('dualSideInputWrapper');
+        const canvasAngleTag = document.getElementById('canvasAngleTag');
+
+        const adjDisplay = document.getElementById('adjDisplay');
+        const oppDisplay = document.getElementById('oppDisplay');
+        const hypDisplay = document.getElementById('hypDisplay');
+
+        const sinExact = document.getElementById('sinExact');
+        const cosecExact = document.getElementById('cosecExact');
+        const cosExact = document.getElementById('cosExact');
+        const secExact = document.getElementById('secExact');
+        const tanExact = document.getElementById('tanExact');
+        const cotExact = document.getElementById('cotExact');
+
+        const sinDecimal = document.getElementById('sinDecimal');
+        const cosecDecimal = document.getElementById('cosecDecimal');
+        const cosDecimal = document.getElementById('cosDecimal');
+        const secDecimal = document.getElementById('secDecimal');
+        const tanDecimal = document.getElementById('tanDecimal');
+        const cotDecimal = document.getElementById('cotDecimal');
+
+        // Quiz DOM Elements
+        const quizQuestionText = document.getElementById('quizQuestionText');
+        
+        // State variables for Triangle Simulation
+        let angleDeg = 45;
+        let angleVertex = 'A'; // 'A' or 'C'
+        let chosenSideType = 'adj'; // 'adj', 'opp', or 'hyp'
+        let chosenSideValue = 8;
+        let gridScale = 25;
+        let originPoint = { x: 55, y: 350 };
+        let isDragging = false;
+        let activeDragTarget = null;
+        let vertexA = { x: 0, y: 0 };
+        let vertexB = { x: 0, y: 0 };
+        let vertexC = { x: 0, y: 0 };
+
+        // Quiz State Variables
+        let userScore = 0;
+        let userStreak = 0;
+        let currentQuestion = null;
+        let selectedQuizOption = null;
+
+        // Standard Angles Array
+        const STANDARD_ANGLES = [0, 30, 45, 60, 90];
+        const OPTION_VALUES = ['0', '1/2', '1/√2', '√3/2', '1', '1/√3', '√3', '2/√3', '2', 'வரையறுக்கப்படவில்லை'];
+
+        // Standard Trigonometric Ratios Lookup Table for Exact Values
+        const STANDARD_RATIOS = {
+            0: {
+                sinExact: '0', sinDec: '0.0000',
+                cosecExact: 'வரையறுக்கப்படவில்லை', cosecDec: '∞',
+                cosExact: '1', cosDec: '1.0000',
+                secExact: '1', secDec: '1.0000',
+                tanExact: '0', tanDec: '0.0000',
+                cotExact: 'வரையறுக்கப்படவில்லை', cotDec: '∞'
+            },
+            30: {
+                sinExact: '1/2', sinDec: '0.5000',
+                cosecExact: '2', cosecDec: '2.0000',
+                cosExact: '√3/2', cosDec: '0.8660',
+                secExact: '2/√3', secDec: '1.1547',
+                tanExact: '1/√3', tanDec: '0.5774',
+                cotExact: '√3', cotDec: '1.7321'
+            },
+            45: {
+                sinExact: '1/√2', sinDec: '0.7071',
+                cosecExact: '√2', cosecDec: '1.4142',
+                cosExact: '1/√2', cosDec: '0.7071',
+                secExact: '√2', secDec: '1.4142',
+                tanExact: '1', tanDec: '1.0000',
+                cotExact: '1', cotDec: '1.0000'
+            },
+            60: {
+                sinExact: '√3/2', sinDec: '0.8660',
+                cosecExact: '2/√3', cosecDec: '1.1547',
+                cosExact: '1/2', cosDec: '0.5000',
+                secExact: '2', secDec: '2.0000',
+                tanExact: '√3', tanDec: '1.7321',
+                cotExact: '1/√3', cotDec: '0.5774'
+            },
+            90: {
+                sinExact: '1', sinDec: '1.0000',
+                cosecExact: '1', cosecDec: '1.0000',
+                cosExact: '0', cosDec: '0.0000',
+                secExact: 'வரையறுக்கப்படவில்லை', secDec: '∞',
+                tanExact: 'வரையறுக்கப்படவில்லை', tanDec: '∞',
+                cotExact: '0', cotDec: '0.0000'
+            }
+        };
+
+        // Resize Canvas to fit container
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            drawTriangle();
+        }
+
+        // Draw Graph Sheet Grid Lines
+        function drawGrid(w, h, ox, oy, step) {
+            ctx.fillStyle = '#fafafa';
+            ctx.fillRect(0, 0, w, h);
+
+            // Minor grid lines
+            ctx.strokeStyle = '#f1f5f9';
+            ctx.lineWidth = 1;
+            for (let x = ox; x < w; x += step / 2) {
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+            }
+            for (let y = oy; y > 0; y -= step / 2) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+            }
+
+            // Major grid lines & Axis numbers
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 1.5;
+            let unitCounter = 0;
+            for (let x = ox; x < w; x += step) {
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+                if (unitCounter > 0) {
+                    ctx.font = '10px "Inter", sans-serif';
+                    ctx.fillStyle = '#94a3b8';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(unitCounter, x, oy + 14);
+                }
+                unitCounter += 2;
+            }
+
+            unitCounter = 2;
+            for (let y = oy - step; y > 0; y -= step) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+                ctx.font = '10px "Inter", sans-serif';
+                ctx.fillStyle = '#94a3b8';
+                ctx.textAlign = 'right';
+                ctx.fillText(unitCounter, ox - 8, y + 4);
+                unitCounter += 2;
+            }
+
+            // Bold X & Y Axes
+            ctx.strokeStyle = '#64748b';
+            ctx.lineWidth = 2;
+            // X Axis
+            ctx.beginPath(); ctx.moveTo(0, oy); ctx.lineTo(w, oy); ctx.stroke();
+            // Y Axis
+            ctx.beginPath(); ctx.moveTo(ox, 0); ctx.lineTo(ox, h); ctx.stroke();
+        }
+
+        // Calculated side cache for real-time validation
+        let activeOppVal = 8;
+        let activeAdjVal = 8;
+        let activeHypVal = 11.31;
+
+        // Interactive Ratio Check Function
+        function checkRatioInput(ratioType) {
+            const numInput = document.getElementById(`${ratioType}NumInput`);
+            const denInput = document.getElementById(`${ratioType}DenInput`);
+            const statusEl = document.getElementById(`${ratioType}Status`);
+            const cardEl = document.getElementById(`card-${ratioType}`);
+
+            const numVal = parseFloat(numInput.value);
+            const denVal = parseFloat(denInput.value);
+
+            if (isNaN(numVal) || isNaN(denVal) || denVal === 0) {
+                statusEl.textContent = '❌ தவறான அளவு';
+                statusEl.className = 'text-[10px] font-bold text-rose-600';
+                return;
+            }
+
+            let targetNum = 0;
+            let targetDen = 0;
+
+            if (ratioType === 'sin') { targetNum = activeOppVal; targetDen = activeHypVal; }
+            if (ratioType === 'cosec') { targetNum = activeHypVal; targetDen = activeOppVal; }
+            if (ratioType === 'cos') { targetNum = activeAdjVal; targetDen = activeHypVal; }
+            if (ratioType === 'sec') { targetNum = activeHypVal; targetDen = activeAdjVal; }
+            if (ratioType === 'tan') { targetNum = activeOppVal; targetDen = activeAdjVal; }
+            if (ratioType === 'cot') { targetNum = activeAdjVal; targetDen = activeOppVal; }
+
+            // Allow 0.1 tolerance for floating point calculations
+            const isNumCorrect = Math.abs(numVal - targetNum) < 0.15;
+            const isDenCorrect = Math.abs(denVal - targetDen) < 0.15;
+
+            if (isNumCorrect && isDenCorrect) {
+                statusEl.textContent = '✅ அற்புதம்! சரி!';
+                statusEl.className = 'text-[10px] font-extrabold text-emerald-600 animate-bounce';
+                cardEl.className = cardEl.className.replace(/bg-[a-z]+-[0-9\/]+/, 'bg-emerald-100/60 border-emerald-400 shadow-md');
+
+                // Trigger celebration confetti & sound effect
+                if (typeof confetti === 'function') {
+                    confetti({
+                        particleCount: 45,
+                        spread: 50,
+                        origin: { y: 0.8 }
+                    });
+                }
+            } else {
+                statusEl.textContent = '⚠️ மீண்டும் முயல்க';
+                statusEl.className = 'text-[10px] font-bold text-amber-600';
+            }
+        }
+
+        // Calculation & Drawing Function
+        function drawTriangle() {
+            const rect = canvas.getBoundingClientRect();
+            const width = rect.width;
+            const height = rect.height;
+
+            ctx.clearRect(0, 0, width, height);
+
+            // Calculate sides based on student's chosen side & value and current angle
+            const angleRad = (angleDeg * Math.PI) / 180;
+            const sinVal = Math.sin(angleRad);
+            const cosVal = Math.cos(angleRad);
+            const tanVal = Math.tan(angleRad);
+
+            let horizontalSide = 0; // Base along X-axis
+            let verticalSide = 0;   // Height along Y-axis
+            let hypLength = 0;
+
+            let oppLength = 0;
+            let adjLengthVal = 0;
+
+            if (chosenSideType === 'two') {
+                const val1 = parseFloat(side1Input.value) || 8;
+                const val2 = parseFloat(side2Input.value) || 8;
+                const t1 = side1Type.value;
+                const t2 = side2Type.value;
+
+                let adjVal = 8, oppVal = 8, hypVal = 11.31;
+                if (t1 === 'adj') adjVal = val1;
+                if (t1 === 'opp') oppVal = val1;
+                if (t1 === 'hyp') hypVal = val1;
+
+                if (t2 === 'adj') adjVal = val2;
+                if (t2 === 'opp') oppVal = val2;
+                if (t2 === 'hyp') hypVal = val2;
+
+                horizontalSide = (angleVertex === 'A') ? adjVal : oppVal;
+                verticalSide = (angleVertex === 'A') ? oppVal : adjVal;
+                hypLength = hypVal;
+                adjLengthVal = adjVal;
+                oppLength = oppVal;
+            } else if (angleVertex === 'A') {
+                if (chosenSideType === 'adj') {
+                    horizontalSide = chosenSideValue;
+                    verticalSide = (angleDeg === 0) ? 0 : ((angleDeg === 90) ? chosenSideValue * 2.2 : horizontalSide * tanVal);
+                    hypLength = (angleDeg === 0) ? horizontalSide : ((angleDeg === 90) ? verticalSide : horizontalSide / cosVal);
+                } else if (chosenSideType === 'opp') {
+                    verticalSide = chosenSideValue;
+                    horizontalSide = (angleDeg === 0) ? chosenSideValue : ((angleDeg === 90) ? 0 : verticalSide / tanVal);
+                    hypLength = (angleDeg === 0) ? horizontalSide : ((angleDeg === 90) ? verticalSide : verticalSide / sinVal);
+                } else { // 'hyp'
+                    hypLength = chosenSideValue;
+                    horizontalSide = hypLength * cosVal;
+                    verticalSide = hypLength * sinVal;
+                }
+                adjLengthVal = (angleDeg === 90) ? 0 : horizontalSide;
+                oppLength = (angleDeg === 0) ? 0 : verticalSide;
+            } else {
+                if (chosenSideType === 'adj') {
+                    verticalSide = chosenSideValue;
+                    horizontalSide = (angleDeg === 0) ? 0 : ((angleDeg === 90) ? chosenSideValue * 2.2 : verticalSide * tanVal);
+                    hypLength = (angleDeg === 0) ? verticalSide : ((angleDeg === 90) ? horizontalSide : verticalSide / cosVal);
+                } else if (chosenSideType === 'opp') {
+                    horizontalSide = chosenSideValue;
+                    verticalSide = (angleDeg === 0) ? chosenSideValue : ((angleDeg === 90) ? 0 : horizontalSide / tanVal);
+                    hypLength = (angleDeg === 0) ? verticalSide : ((angleDeg === 90) ? horizontalSide : horizontalSide / sinVal);
+                } else { // 'hyp'
+                    hypLength = chosenSideValue;
+                    verticalSide = hypLength * cosVal;
+                    horizontalSide = hypLength * sinVal;
+                }
+                adjLengthVal = (angleDeg === 90) ? 0 : verticalSide;
+                oppLength = (angleDeg === 0) ? 0 : horizontalSide;
+            }
+
+            // Dynamic Text UI Updates
+            angleSelectBox.value = angleDeg.toString();
+            angleVertexSelector.value = angleVertex;
+            activeSideSelector.value = chosenSideType;
+            canvasAngleTag.textContent = `${angleDeg}° (முனை ${angleVertex})`;
+
+            adjDisplay.textContent = adjLengthVal.toFixed(2);
+            oppDisplay.textContent = oppLength.toFixed(2);
+            hypDisplay.textContent = hypLength.toFixed(2);
+
+            // Update active cached side lengths for fraction validation
+            activeAdjVal = parseFloat(adjLengthVal.toFixed(2));
+            activeOppVal = parseFloat(oppLength.toFixed(2));
+            activeHypVal = parseFloat(hypLength.toFixed(2));
+
+            // Update Class Labels
+            document.querySelectorAll('.sinAngleLabel').forEach(el => el.textContent = angleDeg);
+            document.querySelectorAll('.cosAngleLabel').forEach(el => el.textContent = angleDeg);
+            document.querySelectorAll('.tanAngleLabel').forEach(el => el.textContent = angleDeg);
+
+            // Lookup Exact Standard Ratios for All 6 Functions
+            const ratioInfo = STANDARD_RATIOS[angleDeg];
+            sinExact.textContent = ratioInfo.sinExact;
+            sinDecimal.textContent = `≈ ${ratioInfo.sinDec}`;
+
+            cosecExact.textContent = ratioInfo.cosecExact;
+            cosecDecimal.textContent = (angleDeg === 0) ? ratioInfo.cosecDec : `≈ ${ratioInfo.cosecDec}`;
+
+            cosExact.textContent = ratioInfo.cosExact;
+            cosDecimal.textContent = `≈ ${ratioInfo.cosDec}`;
+
+            secExact.textContent = ratioInfo.secExact;
+            secDecimal.textContent = (angleDeg === 90) ? ratioInfo.secDec : `≈ ${ratioInfo.secDec}`;
+
+            tanExact.textContent = ratioInfo.tanExact;
+            tanDecimal.textContent = (angleDeg === 90) ? ratioInfo.tanDec : `≈ ${ratioInfo.tanDec}`;
+
+            cotExact.textContent = ratioInfo.cotExact;
+            cotDecimal.textContent = (angleDeg === 0) ? ratioInfo.cotDec : `≈ ${ratioInfo.cotDec}`;
+
+            // Canvas Layout & Scaling Setup for Graph Sheet
+            originPoint.x = 55;
+            originPoint.y = height - 45;
+            const originX = originPoint.x;
+            const originY = originPoint.y;
+
+            const availableWidth = width - originX - 60;
+            const availableHeight = originY - 50;
+
+            const maxCoordX = 14;
+            gridScale = Math.min(availableWidth / maxCoordX, availableHeight / maxCoordX);
+
+            // Draw Graph Sheet Grid
+            drawGrid(width, height, originX, originY, gridScale * 2);
+
+            // Vertices of the Triangle anchored to origin A(0,0) on graph sheet
+            vertexA = { x: originX, y: originY }; // Origin (A)
+            vertexB = { x: vertexA.x + (horizontalSide * gridScale), y: vertexA.y }; // Right angle (B)
+            vertexC = { x: vertexB.x, y: vertexB.y - (verticalSide * gridScale) }; // Top (C)
+
+            const A = vertexA;
+            const B = vertexB;
+            const C = vertexC;
+
+            // Draw Right Angle Box at B (If angle > 0)
+            if (angleDeg > 0) {
+                const squareSize = 14;
+                ctx.beginPath();
+                ctx.rect(B.x - squareSize, B.y - squareSize, squareSize, squareSize);
+                ctx.fillStyle = 'rgba(99, 102, 241, 0.15)';
+                ctx.fill();
+                ctx.strokeStyle = '#6366f1';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.arc(B.x - squareSize / 2, B.y - squareSize / 2, 2, 0, Math.PI * 2);
+                ctx.fillStyle = '#4f46e5';
+                ctx.fill();
+            }
+
+            // Draw Angle Arc for θ based on selected Vertex (A or C)
+            if (angleVertex === 'A') {
+                if (angleDeg > 0 && angleDeg < 90) {
+                    const arcRadius = Math.min(40, (horizontalSide * gridScale) * 0.35);
+                    ctx.beginPath();
+                    ctx.arc(A.x, A.y, arcRadius, 0, -angleRad, true);
+                    ctx.strokeStyle = '#10b981';
+                    ctx.lineWidth = 2.5;
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.moveTo(A.x, A.y);
+                    ctx.arc(A.x, A.y, arcRadius, 0, -angleRad, true);
+                    ctx.closePath();
+                    ctx.fillStyle = 'rgba(16, 185, 129, 0.18)';
+                    ctx.fill();
+
+                    const thetaLabelAngle = -angleRad / 2;
+                    const thetaLabelDist = arcRadius + 18;
+                    const thetaX = A.x + Math.cos(thetaLabelAngle) * thetaLabelDist;
+                    const thetaY = A.y + Math.sin(thetaLabelAngle) * thetaLabelDist;
+                    
+                    ctx.font = 'bold 15px "Mukta Malar", sans-serif';
+                    ctx.fillStyle = '#047857';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(`θ = ${angleDeg}°`, thetaX, thetaY);
+                }
+            } else {
+                // Angle θ at Vertex C
+                if (angleDeg > 0 && angleDeg < 90) {
+                    const arcRadius = Math.min(40, (verticalSide * gridScale) * 0.35);
+                    const startAng = Math.PI / 2;
+                    const endAng = Math.PI / 2 + angleRad;
+                    ctx.beginPath();
+                    ctx.arc(C.x, C.y, arcRadius, startAng, endAng, false);
+                    ctx.strokeStyle = '#10b981';
+                    ctx.lineWidth = 2.5;
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.moveTo(C.x, C.y);
+                    ctx.arc(C.x, C.y, arcRadius, startAng, endAng, false);
+                    ctx.closePath();
+                    ctx.fillStyle = 'rgba(16, 185, 129, 0.18)';
+                    ctx.fill();
+
+                    const thetaLabelAngle = (startAng + endAng) / 2;
+                    const thetaLabelDist = arcRadius + 18;
+                    const thetaX = C.x + Math.cos(thetaLabelAngle) * thetaLabelDist;
+                    const thetaY = C.y + Math.sin(thetaLabelAngle) * thetaLabelDist;
+
+                    ctx.font = 'bold 15px "Mukta Malar", sans-serif';
+                    ctx.fillStyle = '#047857';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(`θ = ${angleDeg}°`, thetaX, thetaY);
+                }
+            }
+
+            // --- DRAW SIDES WITH COLOR ACCENTS BASED ON ADJACENT / OPPOSITE ROLE ---
+            const horizColor = (angleVertex === 'A') ? '#2563eb' : '#f43f5e'; // Blue if Adj, Rose if Opp
+            const vertColor  = (angleVertex === 'A') ? '#f43f5e' : '#2563eb'; // Rose if Opp, Blue if Adj
+
+            // Horizontal Base (AB)
+            ctx.beginPath();
+            ctx.moveTo(A.x, A.y);
+            ctx.lineTo(B.x, B.y);
+            ctx.strokeStyle = horizColor;
+            ctx.lineWidth = 4;
+            ctx.stroke();
+
+            // Vertical Side (BC)
+            ctx.beginPath();
+            ctx.moveTo(B.x, B.y);
+            ctx.lineTo(C.x, C.y);
+            ctx.strokeStyle = vertColor;
+            ctx.lineWidth = 4;
+            ctx.stroke();
+
+            // Hypotenuse (AC)
+            ctx.beginPath();
+            ctx.moveTo(A.x, A.y);
+            ctx.lineTo(C.x, C.y);
+            ctx.strokeStyle = '#d97706';
+            ctx.lineWidth = 4;
+            if (angleDeg === 90 || angleDeg === 0) {
+                ctx.setLineDash([6, 4]);
+            } else {
+                ctx.setLineDash([]);
+            }
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // --- DRAW VERTICES (Nodes) & NAME CALLOUTS (A, B, C) ---
+            drawNode(A.x, A.y, '#10b981', 8, true);
+            drawNode(B.x, B.y, '#6366f1', 8, true);
+            drawNode(C.x, C.y, '#f43f5e', 10, true);
+
+            // Draw Bold Vertex Names A, B, C
+            ctx.font = 'extrabold 16px "Inter", sans-serif';
+            
+            // Vertex A Label
+            ctx.fillStyle = '#047857';
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'top';
+            ctx.fillText('A', A.x - 10, A.y + 6);
+
+            // Vertex B Label
+            ctx.fillStyle = '#4338ca';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
+            ctx.fillText(`B (${horizontalSide.toFixed(1)}, 0)`, B.x + 10, B.y + 6);
+
+            // Vertex C Label & Coordinates
+            ctx.fillStyle = '#be123c';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'bottom';
+            ctx.fillText(`C (${horizontalSide.toFixed(1)}, ${verticalSide.toFixed(1)})`, C.x + 10, C.y - 6);
+
+            // --- DRAW SIDE LABELS (in Tamil) ---
+            const horizLabel = (angleVertex === 'A') ? `அடுத்துள்ள (X): ${horizontalSide.toFixed(2)}` : `எதிர்பக்கம் (X): ${horizontalSide.toFixed(2)}`;
+            const vertLabel  = (angleVertex === 'A') ? `எதிர்பக்கம் (Y): ${verticalSide.toFixed(2)}` : `அடுத்துள்ள (Y): ${verticalSide.toFixed(2)}`;
+
+            // Horizontal Side Label
+            ctx.font = 'bold 12px "Mukta Malar", sans-serif';
+            ctx.fillStyle = horizColor;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+            ctx.fillText(horizLabel, (A.x + B.x) / 2, B.y + 14);
+
+            // Vertical Side Label
+            ctx.font = 'bold 12px "Mukta Malar", sans-serif';
+            ctx.fillStyle = vertColor;
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(vertLabel, B.x + 12, (B.y + C.y) / 2);
+
+            // Hypotenuse Label
+            if (angleDeg > 0 && angleDeg < 90) {
+                const midHyp = { x: (A.x + C.x) / 2, y: (A.y + C.y) / 2 };
+                const dx = C.x - A.x;
+                const dy = C.y - A.y;
+                const len = Math.sqrt(dx * dx + dy * dy);
+                const normalX = -dy / len;
+                const normalY = dx / len;
+                const labelOffset = 22;
+
+                ctx.font = 'bold 13px "Mukta Malar", sans-serif';
+                ctx.fillStyle = '#b45309';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(
+                    `கர்ணம்: ${hypLength.toFixed(2)}`, 
+                    midHyp.x + normalX * labelOffset, 
+                    midHyp.y + normalY * labelOffset
+                );
+            }
+        }
+
+        // Helper: Draw Node Dot
+        function drawNode(x, y, color, radius = 6, isHandle = false) {
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            if (isHandle) {
+                ctx.beginPath();
+                ctx.arc(x, y, radius + 4, 0, Math.PI * 2);
+                ctx.strokeStyle = 'rgba(244, 63, 94, 0.4)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+        }
+
+        // --- DIRECT GRAPH VERTICE DRAGGING LOGIC ---
+        function getCanvasMousePos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                x: clientX - rect.left,
+                y: clientY - rect.top
+            };
+        }
+
+        function calculateAngleFromPos(pos) {
+            const dx = pos.x - vertexA.x;
+            const dy = vertexA.y - pos.y;
+            let rawDeg = (Math.atan2(dy, dx) * 180) / Math.PI;
+
+            if (angleVertex === 'C') {
+                rawDeg = 90 - rawDeg;
+            }
+
+            if (rawDeg < 0) rawDeg = 0;
+            if (rawDeg > 90) rawDeg = 90;
+
+            let closestAngle = STANDARD_ANGLES[0];
+            let minDiff = Math.abs(rawDeg - STANDARD_ANGLES[0]);
+            
+            for (let i = 1; i < STANDARD_ANGLES.length; i++) {
+                const diff = Math.abs(rawDeg - STANDARD_ANGLES[i]);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    closestAngle = STANDARD_ANGLES[i];
+                }
+            }
+            return closestAngle;
+        }
+
+        function handleDragStart(e) {
+            const pos = getCanvasMousePos(e);
+            
+            const distC = Math.hypot(pos.x - vertexC.x, pos.y - vertexC.y);
+            const distB = Math.hypot(pos.x - vertexB.x, pos.y - vertexB.y);
+
+            if (distC < 30) {
+                isDragging = true;
+                activeDragTarget = 'C';
+            } else if (distB < 30) {
+                isDragging = true;
+                activeDragTarget = 'B';
+            }
+        }
+
+        function handleDragMove(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+            const pos = getCanvasMousePos(e);
+
+            if (activeDragTarget === 'C') {
+                // Dragging Vertex C changes the standard angle & side lengths
+                const newAngle = calculateAngleFromPos(pos);
+                if (newAngle !== angleDeg) {
+                    angleDeg = newAngle;
+                    updateAngleButtonsUI();
+                }
+
+                // Dynamically update side lengths based on graph units
+                const graphX = Math.max(1, (pos.x - originPoint.x) / gridScale);
+                const graphY = Math.max(1, (originPoint.y - pos.y) / gridScale);
+
+                if (chosenSideType === 'adj') {
+                    const newSideVal = (angleVertex === 'A') ? graphX : graphY;
+                    syncSideValueInput(newSideVal);
+                } else if (chosenSideType === 'opp') {
+                    const newSideVal = (angleVertex === 'A') ? graphY : graphX;
+                    syncSideValueInput(newSideVal);
+                } else { // 'hyp'
+                    const hypVal = Math.hypot(graphX, graphY);
+                    syncSideValueInput(hypVal);
+                }
+            } else if (activeDragTarget === 'B') {
+                // Dragging Vertex B along the base changes the side length directly
+                const graphX = Math.max(1, Math.min(20, (pos.x - originPoint.x) / gridScale));
+                syncSideValueInput(graphX);
+            }
+
+            drawTriangle();
+        }
+
+        function handleDragEnd() {
+            isDragging = false;
+            activeDragTarget = null;
+        }
+
+        // Attach Canvas Event Listeners
+        canvas.addEventListener('mousedown', handleDragStart);
+        canvas.addEventListener('mousemove', handleDragMove);
+        window.addEventListener('mouseup', handleDragEnd);
+
+        canvas.addEventListener('touchstart', handleDragStart, { passive: false });
+        canvas.addEventListener('touchmove', handleDragMove, { passive: false });
+        window.addEventListener('touchend', handleDragEnd);
+
+        // Helper: Update Active Button UI State
+        function updateAngleButtonsUI() {
+            const buttons = angleBtnContainer.querySelectorAll('.angle-btn');
+            buttons.forEach(btn => {
+                const angle = parseInt(btn.dataset.angle);
+                if (angle === angleDeg) {
+                    btn.className = 'angle-btn py-2 text-sm font-extrabold rounded-xl border border-indigo-600 bg-indigo-600 text-white shadow-sm transition-all';
+                } else {
+                    btn.className = 'angle-btn py-2 text-sm font-extrabold rounded-xl border border-slate-200 bg-slate-50 hover:bg-indigo-50 text-slate-700 transition-all';
+                }
+            });
+        }
+
+        // Select Angle Handler
+        function setAngle(angle) {
+            angleDeg = parseInt(angle);
+            updateAngleButtonsUI();
+            drawTriangle();
+        }
+
+        // Synchronize input box value without resetting cursor if typing
+        function syncSideValueInput(val) {
+            chosenSideValue = val;
+            if (document.activeElement !== sideValueInput) {
+                sideValueInput.value = val.toFixed(1);
+            }
+        }
+
+        // --- STUDENT QUIZ & PRACTICE SYSTEM ---
+        function renderQuizOptions() {
+            quizOptionsContainer.innerHTML = '';
+            OPTION_VALUES.forEach(val => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'quiz-opt-btn py-2 text-xs sm:text-sm font-bold rounded-xl border border-slate-200 bg-slate-50 hover:bg-indigo-50 text-slate-700 transition-all math-font';
+                btn.textContent = val;
+                btn.dataset.val = val;
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.quiz-opt-btn').forEach(b => {
+                        b.className = 'quiz-opt-btn py-2 text-xs sm:text-sm font-bold rounded-xl border border-slate-200 bg-slate-50 hover:bg-indigo-50 text-slate-700 transition-all math-font';
+                    });
+                    btn.className = 'quiz-opt-btn py-2 text-xs sm:text-sm font-bold rounded-xl border-2 border-indigo-600 bg-indigo-50 text-indigo-900 shadow-xs transition-all math-font';
+                    selectedQuizOption = val;
+                });
+                quizOptionsContainer.appendChild(btn);
+            });
+        }
+
+        function generateQuestion() {
+            selectedQuizOption = null;
+            feedbackBanner.className = 'hidden p-3.5 rounded-xl border text-sm font-bold flex items-start gap-2.5';
+            
+            const ratios = ['sin', 'cos', 'tan', 'cosec', 'sec', 'cot'];
+            const randomRatio = ratios[Math.floor(Math.random() * ratios.length)];
+            const randomAngle = STANDARD_ANGLES[Math.floor(Math.random() * STANDARD_ANGLES.length)];
+
+            const expected = STANDARD_RATIOS[randomAngle][`${randomRatio}Exact`];
+
+            let formulaText = '';
+            if (randomRatio === 'sin') formulaText = 'எதிர்பக்கம் / கர்ணம்';
+            if (randomRatio === 'cosec') formulaText = 'கர்ணம் / எதிர்பக்கம்';
+            if (randomRatio === 'cos') formulaText = 'அடுத்துள்ள பக்கம் / கர்ணம்';
+            if (randomRatio === 'sec') formulaText = 'கர்ணம் / அடுத்துள்ள பக்கம்';
+            if (randomRatio === 'tan') formulaText = 'எதிர்பக்கம் / அடுத்துள்ள பக்கம்';
+            if (randomRatio === 'cot') formulaText = 'அடுத்துள்ள பக்கம் / எதிர்பக்கம்';
+
+            currentQuestion = {
+                ratio: randomRatio,
+                angle: randomAngle,
+                expected: expected,
+                formulaText: formulaText
+            };
+
+            quizQuestionText.innerHTML = `${randomRatio} ${randomAngle}° - இன் மதிப்பு என்ன? <span class="text-xs text-indigo-600 font-semibold font-sans block sm:inline">(${formulaText})</span>`;
+            renderQuizOptions();
+        }
+
+        function checkAnswer() {
+            if (!selectedQuizOption) {
+                feedbackBanner.className = 'p-3.5 rounded-xl border border-amber-300 bg-amber-50 text-amber-900 text-sm font-bold flex items-start gap-2.5 animate-pop';
+                feedbackIcon.className = 'fa-solid fa-triangle-exclamation text-amber-600 text-lg mt-0.5';
+                feedbackText.textContent = 'தயவுசெய்து ஒரு விடையைத் தேர்ந்தெடுக்கவும்!';
+                feedbackHint.textContent = '';
+                return;
+            }
+
+            if (selectedQuizOption === currentQuestion.expected) {
+                userScore += 10;
+                userStreak += 1;
+                scoreDisplay.textContent = userScore;
+                streakDisplay.textContent = userStreak;
+
+                feedbackBanner.className = 'p-3.5 rounded-xl border border-emerald-300 bg-emerald-50 text-emerald-950 text-sm font-bold flex items-start gap-2.5 animate-pop';
+                feedbackIcon.className = 'fa-solid fa-circle-check text-emerald-600 text-lg mt-0.5';
+
+                const praiseList = [
+                    'அற்புதம்! உங்கள் விடை முற்றிலும் சரி! 🌟',
+                    'மிகச் சிறப்பு! சிறந்த முயற்சி! 🎉',
+                    'வாழ்த்துக்கள்! சரியான விடை! 👏',
+                    'அருமை! முக்கோணவியலில் நீங்கள் கலக்குகிறீர்கள்! 🚀'
+                ];
+                feedbackText.textContent = praiseList[Math.floor(Math.random() * praiseList.length)];
+                feedbackHint.textContent = `${currentQuestion.ratio} ${currentQuestion.angle}° = ${currentQuestion.expected}`;
+
+                if (typeof confetti === 'function') {
+                    confetti({
+                        particleCount: 75,
+                        spread: 60,
+                        origin: { y: 0.7 }
+                    });
+                }
+            } else {
+                userStreak = 0;
+                streakDisplay.textContent = userStreak;
+
+                feedbackBanner.className = 'p-3.5 rounded-xl border border-rose-300 bg-rose-50 text-rose-950 text-sm font-bold flex items-start gap-2.5 animate-pop';
+                feedbackIcon.className = 'fa-solid fa-circle-xmark text-rose-600 text-lg mt-0.5';
+                feedbackText.textContent = 'தவறு, மீண்டும் முயற்சிக்கவும்!';
+                feedbackHint.textContent = `குறிப்பு: ${currentQuestion.angle}° கோணத்திற்கு ${currentQuestion.ratio}-இன் சூத்திரம்: ${currentQuestion.formulaText}. அட்டவணையை சரிபார்க்கவும்!`;
+            }
+        }
+
+        // Quiz Event Listeners
+        checkAnswerBtn.addEventListener('click', checkAnswer);
+        nextQuestionBtn.addEventListener('click', generateQuestion);
+
+        // Quick Button Selector Listener
+        angleBtnContainer.addEventListener('click', (e) => {
+            const btn = e.target.closest('.angle-btn');
+            if (btn) {
+                setAngle(parseInt(btn.dataset.angle));
+            }
+        });
+
+        // Event Listener for Angle Dropdown Box
+        angleSelectBox.addEventListener('change', (e) => {
+            setAngle(parseInt(e.target.value));
+        });
+
+        // Event Listener for Angle Location / Vertex Selector (A vs C)
+        angleVertexSelector.addEventListener('change', (e) => {
+            angleVertex = e.target.value;
+            drawTriangle();
+        });
+
+        // Event Listeners for Side Choice & Custom Input Box
+        activeSideSelector.addEventListener('change', (e) => {
+            chosenSideType = e.target.value;
+            if (chosenSideType === 'two') {
+                singleSideInputWrapper.classList.add('hidden');
+                dualSideInputWrapper.classList.remove('hidden');
+            } else {
+                singleSideInputWrapper.classList.remove('hidden');
+                dualSideInputWrapper.classList.add('hidden');
+            }
+            drawTriangle();
+        });
+
+        // Dynamic updates on side value input changes in real-time
+        sideValueInput.addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value);
+            if (!isNaN(val) && val > 0) {
+                chosenSideValue = val;
+                drawTriangle();
+            }
+        });
+
+        side1Type.addEventListener('change', () => { drawTriangle(); });
+        side2Type.addEventListener('change', () => { drawTriangle(); });
+        side1Input.addEventListener('input', () => { drawTriangle(); });
+        side2Input.addEventListener('input', () => { drawTriangle(); });
+
+        sideValueInput.addEventListener('change', (e) => {
+            const val = parseFloat(e.target.value);
+            if (isNaN(val) || val <= 0) {
+                sideValueInput.value = 8;
+                chosenSideValue = 8;
+            } else {
+                chosenSideValue = val;
+            }
+            drawTriangle();
+        });
+
+        // Reset Button
+        resetBtn.addEventListener('click', () => {
+            angleDeg = 45;
+            angleVertex = 'A';
+            chosenSideType = 'adj';
+            chosenSideValue = 8;
+            sideValueInput.value = 8;
+            updateAngleButtonsUI();
+            drawTriangle();
+        });
+
+        // Initial setup
+        window.addEventListener('resize', resizeCanvas);
+        window.addEventListener('load', () => {
+            resizeCanvas();
+            generateQuestion();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>அடுக்குக்குறி விதிகள் (Laws of Exponents) - GHS, OTTIMEDU</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Noto+Sans+Tamil:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans Tamil', sans-serif;
+            background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 50%, #fdf2f8 100%);
+        }
+        .math-font {
+            font-family: 'Fredoka', 'Noto Sans Tamil', sans-serif;
+        }
+        /* Hide default number input spinners for cleaner custom +/- controls */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        .tab-active {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.25);
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between selection:bg-indigo-200">
+
+    <!-- Header Section -->
+    <header class="bg-gradient-to-r from-indigo-700 via-purple-700 to-pink-600 text-white shadow-lg">
+        <div class="max-w-6xl mx-auto px-4 py-4 sm:py-5 flex flex-col md:flex-row items-center justify-between gap-3">
+            <div class="flex items-center gap-3.5 text-center md:text-left">
+                <div class="bg-white/20 backdrop-blur-sm p-3 rounded-2xl shadow-inner border border-white/30 flex-shrink-0">
+                    <span class="math-font text-2xl sm:text-3xl font-bold tracking-tight">a<sup class="text-amber-300">m+n</sup></span>
+                </div>
+                <div>
+                    <div class="inline-block bg-amber-400 text-slate-950 font-black text-xs sm:text-sm px-3 py-0.5 rounded-full tracking-widest uppercase shadow-sm mb-1">
+                        GHS, OTTIMEDU
+                    </div>
+                    <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-wide leading-tight">
+                        அடுக்குக்குறி விதிகள் (Laws of Exponents)
+                    </h1>
+                    <p class="text-amber-200 text-xs sm:text-sm font-bold tracking-wide mt-0.5">
+                        Created by: A.CHRISTURAJ B.T.AAST.(MATHEMATICS)
+                    </p>
+                </div>
+            </div>
+            <div class="flex flex-col items-center md:items-end gap-1.5">
+                <div class="flex items-center gap-2 bg-white/15 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold border border-white/20">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>8-ம் வகுப்பு கணிதம் • நிகழ்நேர காட்சிப்படுத்தல்</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-6xl w-full mx-auto px-3 sm:px-4 py-5 flex-grow space-y-5">
+
+        <!-- 5 Laws Selector Tabs -->
+        <nav aria-label="அடுக்குக்குறி விதிகள் தேர்வு" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
+            <button id="tab-product" type="button" onclick="selectLaw('product')" class="law-tab p-3 rounded-2xl border-2 text-left transition-all duration-200 flex flex-col justify-between bg-indigo-600 text-white border-indigo-600 tab-active">
+                <span class="text-xs font-bold opacity-85">விதி 1 • பெருக்கல்</span>
+                <span class="math-font text-base sm:text-lg font-bold mt-0.5">a<sup>m</sup> × a<sup>n</sup> = a<sup>m+n</sup></span>
+            </button>
+
+            <button id="tab-quotient" type="button" onclick="selectLaw('quotient')" class="law-tab p-3 rounded-2xl border-2 text-left transition-all duration-200 flex flex-col justify-between bg-white text-slate-700 border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/50">
+                <span class="text-xs font-bold opacity-75">விதி 2 • வகுத்தல்</span>
+                <span class="math-font text-base sm:text-lg font-bold mt-0.5">a<sup>m</sup> ÷ a<sup>n</sup> = a<sup>m−n</sup></span>
+            </button>
+
+            <button id="tab-power" type="button" onclick="selectLaw('power')" class="law-tab p-3 rounded-2xl border-2 text-left transition-all duration-200 flex flex-col justify-between bg-white text-slate-700 border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/50">
+                <span class="text-xs font-bold opacity-75">விதி 3 • அடுக்கின் அடுக்கு</span>
+                <span class="math-font text-base sm:text-lg font-bold mt-0.5">(a<sup>m</sup>)<sup>n</sup> = a<sup>m×n</sup></span>
+            </button>
+
+            <button id="tab-zero" type="button" onclick="selectLaw('zero')" class="law-tab p-3 rounded-2xl border-2 text-left transition-all duration-200 flex flex-col justify-between bg-white text-slate-700 border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/50">
+                <span class="text-xs font-bold opacity-75">விதி 4 • பூஜ்ஜிய அடுக்கு</span>
+                <span class="math-font text-base sm:text-lg font-bold mt-0.5">a<sup>0</sup> = 1</span>
+            </button>
+
+            <button id="tab-negative" type="button" onclick="selectLaw('negative')" class="law-tab col-span-2 sm:col-span-1 p-3 rounded-2xl border-2 text-left transition-all duration-200 flex flex-col justify-between bg-white text-slate-700 border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/50">
+                <span class="text-xs font-bold opacity-75">விதி 5 • எதிர்மறை அடுக்கு</span>
+                <span class="math-font text-base sm:text-lg font-bold mt-0.5">a<sup>−m</sup> = 1 / a<sup>m</sup></span>
+            </button>
+        </nav>
+
+        <!-- Active Law Explanation Banner -->
+        <section class="bg-white rounded-3xl p-4 sm:p-5 shadow-md border border-indigo-100 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div class="space-y-1">
+                <span id="lawBadge" class="inline-block bg-indigo-100 text-indigo-700 text-xs font-extrabold px-3 py-1 rounded-full">
+                    விதி 1 • பெருக்கல் விதி
+                </span>
+                <h2 id="lawTitle" class="text-lg sm:text-xl font-extrabold text-slate-900">
+                    அடுக்குகளின் பெருக்கல் விதி (Product Rule)
+                </h2>
+                <p id="lawDesc" class="text-sm text-slate-600 leading-relaxed">
+                    அடிமானம் (a) ஒன்றாக இருக்கும்போது, இரண்டு அடுக்கு எண்களைப் பெருக்கினால் அவற்றின் அடுக்குகளைக் கூட்ட வேண்டும்.
+                </p>
+            </div>
+            <div class="bg-gradient-to-br from-indigo-50 to-purple-50 border-2 border-indigo-200 rounded-2xl px-5 py-3 text-center self-stretch md:self-center flex flex-col justify-center min-w-[200px]">
+                <span class="text-xs font-bold text-indigo-500 uppercase tracking-wider">பொதுச் சூத்திரம்</span>
+                <div id="lawFormulaDisplay" class="math-font text-2xl sm:text-3xl font-extrabold text-indigo-800 mt-0.5">
+                    a<sup>m</sup> × a<sup>n</sup> = a<sup>m+n</sup>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Number Input Controls Card (Moved Above Practice Challenge) -->
+        <section class="bg-white rounded-3xl p-4 sm:p-5 shadow-md border border-slate-200/80 space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="font-extrabold text-slate-800 text-base sm:text-lg flex items-center gap-2">
+                    <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                    மதிப்புகளை மாற்றுக
+                </h3>
+                <button type="button" onclick="resetValues()" class="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-xs sm:text-sm px-3.5 py-1.5 rounded-xl transition active:scale-95">
+                    ↺ மீட்டமை (Reset)
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                <!-- Input 1: Base (a) -->
+                <div class="bg-indigo-50/80 p-3.5 rounded-2xl border border-indigo-200/80 flex items-center justify-between gap-2">
+                    <div>
+                        <label for="inputA" class="font-bold text-sm sm:text-base text-indigo-950 block">
+                            அடிமானம் (<span class="math-font text-indigo-600 font-extrabold">a</span>)
+                        </label>
+                        <span class="text-xs text-indigo-600/80 font-medium">−100 முதல் 100 வரை</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <button type="button" onclick="stepInput('a', -1)" aria-label="அடிமானம் குறைக்க" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white hover:bg-indigo-100 text-indigo-700 border border-indigo-200 font-extrabold text-xl shadow-sm active:scale-95 transition flex items-center justify-center">−</button>
+                        <input type="number" id="inputA" min="-100" max="100" value="2" onchange="handleDirectInput('a')" onkeyup="handleDirectInput('a')" class="math-font w-16 sm:w-20 h-9 sm:h-10 text-center text-lg sm:text-xl font-extrabold text-indigo-900 bg-white border-2 border-indigo-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-inner">
+                        <button type="button" onclick="stepInput('a', 1)" aria-label="அடிமானம் அதிகரிக்க" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white hover:bg-indigo-100 text-indigo-700 border border-indigo-200 font-extrabold text-xl shadow-sm active:scale-95 transition flex items-center justify-center">+</button>
+                    </div>
+                </div>
+
+                <!-- Input 2: Exponent 1 (m) -->
+                <div id="controlGroupM" class="bg-emerald-50/80 p-3.5 rounded-2xl border border-emerald-200/80 flex items-center justify-between gap-2 transition-all">
+                    <div>
+                        <label for="inputM" id="labelM" class="font-bold text-sm sm:text-base text-emerald-950 block">
+                            முதல் அடுக்கு (<span class="math-font text-emerald-600 font-extrabold">m</span>)
+                        </label>
+                        <span id="hintM" class="text-xs text-emerald-700/80 font-medium">−100 முதல் 100 வரை</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <button type="button" onclick="stepInput('m', -1)" aria-label="முதல் அடுக்கு குறைக்க" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-extrabold text-xl shadow-sm active:scale-95 transition flex items-center justify-center">−</button>
+                        <input type="number" id="inputM" min="-100" max="100" value="3" onchange="handleDirectInput('m')" onkeyup="handleDirectInput('m')" class="math-font w-16 sm:w-20 h-9 sm:h-10 text-center text-lg sm:text-xl font-extrabold text-emerald-900 bg-white border-2 border-emerald-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-inner">
+                        <button type="button" onclick="stepInput('m', 1)" aria-label="முதல் அடுக்கு அதிகரிக்க" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-extrabold text-xl shadow-sm active:scale-95 transition flex items-center justify-center">+</button>
+                    </div>
+                </div>
+
+                <!-- Input 3: Exponent 2 (n) -->
+                <div id="controlGroupN" class="bg-amber-50/80 p-3.5 rounded-2xl border border-amber-200/80 flex items-center justify-between gap-2 transition-all">
+                    <div>
+                        <label for="inputN" id="labelN" class="font-bold text-sm sm:text-base text-amber-950 block">
+                            இரண்டாவது அடுக்கு (<span class="math-font text-amber-600 font-extrabold">n</span>)
+                        </label>
+                        <span class="text-xs text-amber-700/80 font-medium">−100 முதல் 100 வரை</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <button type="button" onclick="stepInput('n', -1)" aria-label="இரண்டாவது அடுக்கு குறைக்க" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white hover:bg-amber-100 text-amber-700 border border-amber-200 font-extrabold text-xl shadow-sm active:scale-95 transition flex items-center justify-center">−</button>
+                        <input type="number" id="inputN" min="-100" max="100" value="2" onchange="handleDirectInput('n')" onkeyup="handleDirectInput('n')" class="math-font w-16 sm:w-20 h-9 sm:h-10 text-center text-lg sm:text-xl font-extrabold text-amber-900 bg-white border-2 border-amber-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-inner">
+                        <button type="button" onclick="stepInput('n', 1)" aria-label="இரண்டாவது அடுக்கு அதிகரிக்க" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white hover:bg-amber-100 text-amber-700 border border-amber-200 font-extrabold text-xl shadow-sm active:scale-95 transition flex items-center justify-center">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Validation / Warning Banner -->
+            <div id="inputAlertBanner" class="hidden bg-rose-50 border border-rose-300 text-rose-800 text-xs font-bold px-3.5 py-2.5 rounded-xl">
+                <span id="inputAlertText"></span>
+            </div>
+        </section>
+
+        <!-- Student Practice Challenge Card -->
+        <section class="bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 text-white rounded-3xl p-4 sm:p-6 shadow-xl border border-purple-500/30 space-y-4">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-white/15 pb-3">
+                <div>
+                    <span class="bg-amber-400 text-slate-950 font-black text-xs px-2.5 py-0.5 rounded-full uppercase tracking-wider">மாணவர் பயிற்சிப் பகுதி</span>
+                    <h3 class="text-lg sm:text-xl font-extrabold text-white mt-1">கணக்கைத் தீர்த்துப் பழகுங்கள் (Practice Challenge)</h3>
+                </div>
+                <button type="button" onclick="generatePracticeProblem()" class="bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs sm:text-sm px-4 py-2 rounded-xl transition shadow-md active:scale-95 flex items-center gap-1.5">
+                    ✨ புதிய கணக்கு (New Question)
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+                <!-- Question Display -->
+                <div class="lg:col-span-5 bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 text-center space-y-2">
+                    <span class="text-xs text-purple-200 font-bold block">தற்போதைய கேள்வி:</span>
+                    <div id="practiceQuestionText" class="math-font text-2xl sm:text-3xl font-extrabold text-amber-300">
+                        2³ × 2² = ?
+                    </div>
+                    <p id="practiceHintText" class="text-xs text-slate-200">மேலே உள்ள மதிப்புகளின்படி தீர்க்கவும்.</p>
+                </div>
+
+                <!-- Inputs & Separate Check Buttons without placeholder text inside boxes -->
+                <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <!-- Answer Type 1: Power Form -->
+                    <div class="bg-white/10 p-3.5 rounded-2xl border border-white/15 space-y-2">
+                        <label for="practicePowerInput" class="text-xs font-bold text-indigo-200 block">
+                            1. அடுக்கு வடிவம்:
+                        </label>
+                        <div class="flex items-center gap-2">
+                            <input type="text" id="practicePowerInput" class="math-font w-full bg-slate-900 border border-indigo-400 rounded-xl px-3 py-2 text-white font-bold text-center focus:outline-none focus:ring-2 focus:ring-amber-400">
+                            <button type="button" onclick="checkPracticePowerAnswer()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs px-3 py-2.5 rounded-xl transition shadow active:scale-95 whitespace-nowrap">சரிபார்</button>
+                        </div>
+                        <div id="practicePowerFeedback" class="text-xs font-bold min-h-[18px]"></div>
+                    </div>
+
+                    <!-- Answer Type 2: Numeric Value Form -->
+                    <div class="bg-white/10 p-3.5 rounded-2xl border border-white/15 space-y-2">
+                        <label for="practiceValueInput" class="text-xs font-bold text-amber-200 block">
+                            2. முழு எண் மதிப்பு:
+                        </label>
+                        <div class="flex items-center gap-2">
+                            <input type="text" id="practiceValueInput" class="math-font w-full bg-slate-900 border border-amber-400 rounded-xl px-3 py-2 text-white font-bold text-center focus:outline-none focus:ring-2 focus:ring-amber-400">
+                            <button type="button" onclick="checkPracticeValueAnswer()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs px-3 py-2.5 rounded-xl transition shadow active:scale-95 whitespace-nowrap">சரிபார்</button>
+                        </div>
+                        <div id="practiceValueFeedback" class="text-xs font-bold min-h-[18px]"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Interactive Workspace: Visual Animation Canvas + Step-by-Step Live Readout -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+
+            <!-- Left Column: Visual Animation Canvas (7 cols on lg) -->
+            <div class="lg:col-span-7 bg-white rounded-3xl p-4 sm:p-5 shadow-md border border-slate-200/80 flex flex-col">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-extrabold text-slate-800 text-base sm:text-lg flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-indigo-500"></span>
+                        காட்சி வரைபடம் (Visual Animation)
+                    </h3>
+                    <button type="button" onclick="triggerReplayAnimation()" class="text-xs sm:text-sm font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3.5 py-1.5 rounded-xl border border-indigo-200 transition active:scale-95">
+                        ▶ மீண்டும் இயக்கு
+                    </button>
+                </div>
+
+                <!-- Responsive Canvas Wrapper -->
+                <div id="canvasContainer" class="relative w-full h-[320px] sm:h-[360px] bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200 overflow-hidden">
+                    <canvas id="expCanvas" class="w-full h-full block"></canvas>
+                </div>
+
+                <!-- Color Legend -->
+                <div id="canvasLegend" class="mt-3 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-center gap-4 text-xs sm:text-sm font-semibold text-slate-600">
+                    <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-full bg-emerald-500 inline-block"></span> முதல் தொகுப்பு (m முறை)</span>
+                    <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-full bg-amber-500 inline-block"></span> இரண்டாம் தொகுப்பு (n முறை)</span>
+                </div>
+            </div>
+
+            <!-- Right Column: Step-by-Step Live Data Readout (5 cols on lg) -->
+            <div class="lg:col-span-5">
+                <!-- Live Step-by-Step Readout Card -->
+                <div class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl p-4 sm:p-5 shadow-lg space-y-3.5">
+                    <div class="flex items-center justify-between border-b border-white/15 pb-2.5">
+                        <h3 class="font-extrabold text-sm sm:text-base text-amber-300">
+                            படிப்படியான நேரடித் தீர்வு (Live Calculation)
+                        </h3>
+                        <span class="text-xs bg-white/10 px-2.5 py-1 rounded-lg text-indigo-200 font-semibold">நிகழ்நேர விடை</span>
+                    </div>
+
+                    <!-- Dynamic Equation Breakdown -->
+                    <div id="stepByStepReadout" class="space-y-2.5 text-sm sm:text-base"></div>
+
+                    <!-- Final Numeric Answer Banner -->
+                    <div id="finalResultBanner" class="bg-white/10 border border-white/20 rounded-2xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                        <span class="text-indigo-200 font-bold text-sm sm:text-base">படி 4 • இறுதி விடை:</span>
+                        <span id="finalNumericValue" class="math-font text-xl sm:text-2xl font-extrabold text-emerald-400 break-all">2⁵ = 32</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Attribution -->
+    <footer class="max-w-6xl mx-auto px-4 pb-6 text-center text-xs sm:text-sm text-slate-600 font-semibold">
+        <div class="bg-white/70 backdrop-blur-sm border border-slate-200/80 rounded-2xl py-3 px-4 shadow-sm">
+            <span class="font-extrabold text-indigo-800 uppercase tracking-wider">GHS, OTTIMEDU</span> • Created by: <span class="font-extrabold text-slate-800">A.CHRISTURAJ B.T.AAST.(MATHEMATICS)</span>
+        </div>
+    </footer>
+
+    <script>
+        // ==========================================
+        // STATE & CONFIGURATION
+        // ==========================================
+        const state = {
+            law: 'product', // 'product', 'quotient', 'power', 'zero', 'negative'
+            a: 2,
+            m: 3,
+            n: 2,
+            animProgress: 0, // 0 to 1 for smooth transition animation
+            lastTimestamp: 0,
+            practice: {
+                base: 2,
+                m: 3,
+                n: 2,
+                lawType: 'product',
+                targetPowerExp: 5,
+                targetValue: 32
+            }
+        };
+
+        const lawsData = {
+            product: {
+                badge: 'விதி 1 • பெருக்கல் விதி',
+                title: 'அடுக்குகளின் பெருக்கல் விதி (Product Rule)',
+                desc: 'அடிமானம் (a) ஒன்றாக இருக்கும்போது, இரண்டு அடுக்கு எண்களைப் பெருக்கினால் அவற்றின் அடுக்குகளைக் கூட்ட வேண்டும்.',
+                formulaHTML: 'a<sup>m</sup> × a<sup>n</sup> = a<sup>m+n</sup>',
+                formulaPlain: 'aᵐ × aⁿ = aᵐ⁺ⁿ',
+                showM: true,
+                showN: true,
+                defaultM: 3,
+                defaultN: 2,
+                legend: `
+                    <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-full bg-emerald-500 inline-block"></span> முதல் தொகுப்பு (m முறை)</span>
+                    <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-full bg-amber-500 inline-block"></span> இரண்டாம் தொகுப்பு (n முறை)</span>
+                    <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-full bg-indigo-600 inline-block"></span> மொத்தப் பெருக்கல் (m + n)</span>
+                `
+            },
+            quotient: {
+                badge: 'விதி 2 • வகுத்தல் விதி',
+                title: 'அடுக்குகளின் வகுத்தல் விதி (Quotient Rule)',
+                desc: 'அடிமானம் (a) ஒன்றாக இருக்கும்போது, வகுத்தலில் தொகுதியின் அடுக்கிலிருந்து பகுதியின் அடுக்கைக் கழிக்க வேண்டும்.',
+                formulaHTML: 'a<sup>m</sup> ÷ a<sup>n</sup> = a<sup>m−n</sup>',
+                formulaPlain: 'aᵐ ÷ aⁿ = aᵐ⁻ⁿ',
+                showM: true,
+                showN: true,
+                defaultM: 4,
+                defaultN: 2,
+                legend: `
+                    <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-full bg-emerald-500 inline-block"></span> தொகுதி (மேலே: m)</span>
+                    <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-full bg-amber-500 inline-block"></span> பகுதி (கீழே: n)</span>
+                    <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-full bg-rose-400 inline-block border border-rose-600"></span> அடிபடும் எண்கள் (Cancel)</span>
+                `
+            },
+            power: {
+                badge: 'விதி 3 • அடுக்கின் அடுக்கு',
+                title: 'அடுக்கின் அடுக்கு விதி (Power of a Power)',
+                desc: 'ஒரு அடுக்கு எண்ணிற்கு மீண்டும் ஒரு அடுக்கு இருந்தால், அந்த இரண்டு அடுக்குகளையும் பெருக்க வேண்டும்.',
+                formulaHTML: '(a<sup>m</sup>)<sup>n</sup> = a<sup>m×n</sup>',
+                formulaPlain: '(aᵐ)ⁿ = aᵐˣⁿ',
+                showM: true,
+                showN: true,
+                defaultM: 2,
+                defaultN: 3,
+                legend: `
+                    <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-md border-2 border-purple-500 bg-purple-100 inline-block"></span> ஒவ்வொரு குழுவிலும் m காரணிகள்</span>
+                    <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-full bg-indigo-600 inline-block"></span> மொத்தக் குழுக்கள் = n (மொத்தம் m×n)</span>
+                `
+            },
+            zero: {
+                badge: 'விதி 4 • பூஜ்ஜிய அடுக்கு',
+                title: 'பூஜ்ஜிய அடுக்கு விதி (Zero Exponent Rule)',
+                desc: 'பூஜ்ஜியமற்ற எந்தவொரு எண்ணின் அடுக்கு 0 எனில், அதன் மதிப்பு எப்போதும் 1 ஆகும்.',
+                formulaHTML: 'a<sup>0</sup> = 1',
+                formulaPlain: 'a⁰ = 1 (a ≠ 0)',
+                showM: false,
+                showN: false,
+                defaultM: 3,
+                defaultN: 3,
+                legend: `
+                    <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-full bg-indigo-500 inline-block"></span> சமமான எண்கள் வகுபடும்போது விடை 1 கிடைக்கும்!</span>
+                `
+            },
+            negative: {
+                badge: 'விதி 5 • எதிர்மறை அடுக்கு',
+                title: 'எதிர்மறை அடுக்கு விதி (Negative Exponent Rule)',
+                desc: 'ஒரு எண்ணின் அடுக்கு குறையெண்ணாக இருந்தால், அது அந்த எண்ணின் தலைகீழிக்குச் சமமாகும்.',
+                formulaHTML: 'a<sup>−m</sup> = <span class="inline-flex flex-col items-center align-middle text-xl leading-none mx-1"><span class="border-b-2 border-indigo-700 px-1">1</span><span>a<sup>m</sup></span></span>',
+                formulaPlain: 'a⁻ᵐ = 1 / aᵐ',
+                showM: true,
+                showN: false,
+                defaultM: -3,
+                defaultN: 2,
+                legend: `
+                    <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-full bg-rose-500 inline-block"></span> எதிர்மறை அடுக்கு (a<sup>−m</sup>)</span>
+                    <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-full bg-indigo-600 inline-block"></span> தலைகீழியாக மாறுகிறது (1 / a<sup>m</sup>)</span>
+                `
+            }
+        };
+
+        // ==========================================
+        // INITIALIZATION & RESPONSIVE CANVAS SETUP
+        // ==========================================
+        let canvas = null;
+        let ctx = null;
+        let canvasContainer = null;
+
+        function ensureCanvasElements() {
+            if (!canvas) canvas = document.getElementById('expCanvas');
+            if (!canvasContainer) canvasContainer = document.getElementById('canvasContainer');
+            if (canvas && !ctx) ctx = canvas.getContext('2d');
+            return Boolean(canvas && ctx && canvasContainer);
+        }
+
+        function resizeCanvas() {
+            if (!ensureCanvasElements()) return;
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvasContainer.getBoundingClientRect();
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            drawVisualization();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+
+        function init() {
+            ensureCanvasElements();
+            selectLaw('product');
+            resizeCanvas();
+            requestAnimationFrame(animationLoop);
+        }
+
+        function triggerReplayAnimation() {
+            state.animProgress = 0;
+        }
+
+        function selectLaw(lawKey) {
+            state.law = lawKey;
+            const info = lawsData[lawKey];
+
+            // Update Tabs styling safely
+            document.querySelectorAll('.law-tab').forEach(btn => {
+                btn.classList.remove('bg-indigo-600', 'text-white', 'border-indigo-600', 'tab-active');
+                btn.classList.add('bg-white', 'text-slate-700', 'border-slate-200', 'hover:border-indigo-300', 'hover:bg-indigo-50/50');
+            });
+            const activeTab = document.getElementById(`tab-${lawKey}`);
+            if (activeTab) {
+                activeTab.classList.remove('bg-white', 'text-slate-700', 'border-slate-200', 'hover:border-indigo-300', 'hover:bg-indigo-50/50');
+                activeTab.classList.add('bg-indigo-600', 'text-white', 'border-indigo-600', 'tab-active');
+            }
+
+            // Update Header Info
+            const lawBadge = document.getElementById('lawBadge');
+            const lawTitle = document.getElementById('lawTitle');
+            const lawDesc = document.getElementById('lawDesc');
+            const lawFormulaDisplay = document.getElementById('lawFormulaDisplay');
+            const canvasLegend = document.getElementById('canvasLegend');
+
+            if (lawBadge) lawBadge.textContent = info.badge;
+            if (lawTitle) lawTitle.textContent = info.title;
+            if (lawDesc) lawDesc.textContent = info.desc;
+            if (lawFormulaDisplay) lawFormulaDisplay.innerHTML = info.formulaHTML;
+            if (canvasLegend) canvasLegend.innerHTML = info.legend;
+
+            // Configure Input Boxes Visibility & Defaults
+            const groupM = document.getElementById('controlGroupM');
+            const groupN = document.getElementById('controlGroupN');
+            const inputM = document.getElementById('inputM');
+            const inputN = document.getElementById('inputN');
+
+            if (groupM && inputM) {
+                if (info.showM) {
+                    groupM.classList.remove('hidden');
+                    state.m = info.defaultM;
+                    inputM.value = state.m;
+                    
+                    const labelM = document.getElementById('labelM');
+                    const hintM = document.getElementById('hintM');
+                    if (lawKey === 'negative') {
+                        if (labelM) labelM.innerHTML = `அடுக்கு (<span class="math-font text-emerald-600 font-extrabold">m</span>)`;
+                        if (hintM) hintM.textContent = `வரம்பு: −100 முதல் 100 வரை`;
+                    } else {
+                        if (labelM) labelM.innerHTML = `முதல் அடுக்கு (<span class="math-font text-emerald-600 font-extrabold">m</span>)`;
+                        if (hintM) hintM.textContent = `வரம்பு: −100 முதல் 100 வரை`;
+                    }
+                } else {
+                    groupM.classList.add('hidden');
+                }
+            }
+
+            if (groupN && inputN) {
+                if (info.showN) {
+                    groupN.classList.remove('hidden');
+                    state.n = info.defaultN;
+                    inputN.value = state.n;
+                } else {
+                    groupN.classList.add('hidden');
+                }
+            }
+
+            checkEdgeCases();
+            state.animProgress = 0;
+            updateLiveReadout();
+            generatePracticeProblem();
+        }
+
+        function generatePracticeProblem() {
+            const { law, a, m, n } = state;
+            state.practice.lawType = law;
+            state.practice.base = a;
+            state.practice.m = m;
+            state.practice.n = n;
+
+            let targetExp = 0;
+            let val = 1n;
+
+            if (law === 'product') {
+                targetExp = m + n;
+                val = bigPow(a, targetExp);
+                state.practice.targetPowerExp = targetExp;
+                state.practice.targetValue = val;
+                document.getElementById('practiceQuestionText').innerHTML = `${formatPowerPlain(a, m)} × ${formatPowerPlain(a, n)} = ?`;
+                document.getElementById('practiceHintText').textContent = 'குறிப்பு: அடிமானம் ஒன்றாக இருந்தால் அடுக்குகளைக் கூட்டவும்.';
+            } else if (law === 'quotient') {
+                targetExp = m - n;
+                val = bigPow(a, targetExp);
+                state.practice.targetPowerExp = targetExp;
+                state.practice.targetValue = val;
+                document.getElementById('practiceQuestionText').innerHTML = `${formatPowerPlain(a, m)} ÷ ${formatPowerPlain(a, n)} = ?`;
+                document.getElementById('practiceHintText').textContent = 'குறிப்பு: வகுத்தலில் தொகுதியின் அடுக்கிலிருந்து பகுதியின் அடுக்கைக் கழிக்கவும்.';
+            } else if (law === 'power') {
+                targetExp = m * n;
+                val = bigPow(a, targetExp);
+                state.practice.targetPowerExp = targetExp;
+                state.practice.targetValue = val;
+                document.getElementById('practiceQuestionText').innerHTML = `(${formatPowerPlain(a, m)})^${n} = ?`;
+                document.getElementById('practiceHintText').textContent = 'குறிப்பு: அடுக்கின் அடுக்குகளைப் பெருக்கவும்.';
+            } else if (law === 'zero') {
+                state.practice.targetPowerExp = 0;
+                state.practice.targetValue = 1n;
+                document.getElementById('practiceQuestionText').innerHTML = `${formatBasePlain(a)}⁰ = ?`;
+                document.getElementById('practiceHintText').textContent = 'குறிப்பு: பூஜ்ஜியமற்ற எந்தவொரு எண்ணின் அடுக்கு 0 இன் மதிப்பு எப்போதும் 1 ஆகும்.';
+            } else if (law === 'negative') {
+                state.practice.targetPowerExp = m;
+                document.getElementById('practiceQuestionText').innerHTML = `${formatPowerPlain(a, m)} = ?`;
+                document.getElementById('practiceHintText').textContent = 'குறிப்பு: எதிர்மறை அடுக்கைத் தலைகீழியாக மாற்றுக.';
+            }
+
+            const pInput = document.getElementById('practicePowerInput');
+            const vInput = document.getElementById('practiceValueInput');
+            const pFeed = document.getElementById('practicePowerFeedback');
+            const vFeed = document.getElementById('practiceValueFeedback');
+            if (pInput) pInput.value = '';
+            if (vInput) vInput.value = '';
+            if (pFeed) pFeed.innerHTML = '';
+            if (vFeed) vFeed.innerHTML = '';
+        }
+
+        function checkPracticePowerAnswer() {
+            const inputVal = document.getElementById('practicePowerInput').value.trim().toLowerCase().replace(/\s+/g, '');
+            const feed = document.getElementById('practicePowerFeedback');
+            const { base, targetPowerExp, lawType } = state.practice;
+
+            let expected = `${base}^${targetPowerExp}`;
+            if (lawType === 'zero') expected = `${base}^0`;
+            if (lawType === 'negative') expected = `${base}^${targetPowerExp}`;
+
+            if (inputVal === expected || (targetPowerExp === 0 && (inputVal === `${base}^0` || inputVal === `${base}⁰`))) {
+                feed.innerHTML = `<span class="text-emerald-300">🎉 மிகச் சரி! (Correct)</span>`;
+            } else {
+                feed.innerHTML = `<span class="text-rose-300">❌ தவறு. சரியான வடிவம்: ${expected}</span>`;
+            }
+        }
+
+        function checkPracticeValueAnswer() {
+            const userStr = document.getElementById('practiceValueInput').value.trim();
+            const feed = document.getElementById('practiceValueFeedback');
+            const { base, m, lawType } = state.practice;
+
+            if (lawType === 'negative') {
+                const exactStr = formatExactPowerResult(base, m);
+                if (userStr === exactStr || userStr === '1/' + bigPow(base, Math.abs(m))) {
+                    feed.innerHTML = `<span class="text-emerald-300">🎉 மிகச் சரி! விடை: ${exactStr}</span>`;
+                } else {
+                    feed.innerHTML = `<span class="text-rose-300">❌ தவறு. சரியான விடை: ${exactStr}</span>`;
+                }
+                return;
+            }
+
+            const expectedVal = formatExactPowerResult(base, state.practice.targetPowerExp);
+            const userNum = parseFloat(userStr);
+            const expectedNum = parseFloat(expectedVal.replace(/,/g, ''));
+
+            if (!isNaN(userNum) && userNum === expectedNum) {
+                feed.innerHTML = `<span class="text-emerald-300">🎉 மிகச் சரி! விடை: ${expectedVal}</span>`;
+            } else {
+                feed.innerHTML = `<span class="text-rose-300">❌ தவறு. சரியான விடை: ${expectedVal}</span>`;
+            }
+        }
+
+        function showInputWarning(msg) {
+            const banner = document.getElementById('inputAlertBanner');
+            const textEl = document.getElementById('inputAlertText');
+            if (textEl) textEl.textContent = msg;
+            if (banner) banner.classList.remove('hidden');
+        }
+
+        function hideInputWarning() {
+            const banner = document.getElementById('inputAlertBanner');
+            if (banner) banner.classList.add('hidden');
+        }
+
+        function checkEdgeCases() {
+            const { law, a, m, n } = state;
+            if (a === 0) {
+                if (law === 'zero') {
+                    showInputWarning('0-ன் பூஜ்ஜிய அடுக்கு (0⁰) வரையறுக்கப்படாதது (Undefined).');
+                    return true;
+                }
+                if (law === 'negative' && m <= 0) {
+                    showInputWarning('0-ன் எதிர்மறை அடுக்கு / 0⁰ வரையறுக்கப்படவில்லை.');
+                    return true;
+                }
+                if (law === 'quotient' && (n > 0 || (m - n) <= 0)) {
+                    showInputWarning('0-ஆல் வகுத்தல் மற்றும் 0-ன் எதிர்மறை அடுக்கு வரையறுக்கப்படவில்லை.');
+                    return true;
+                }
+                if (law === 'product' && (m <= 0 || n <= 0 || (m + n) <= 0)) {
+                    showInputWarning('0-ன் எதிர்மறை அடுக்கு வரையறுக்கப்படவில்லை.');
+                    return true;
+                }
+                if (law === 'power' && (m <= 0 || n <= 0 || (m * n) <= 0)) {
+                    showInputWarning('0-ன் எதிர்மறை அடுக்கு வரையறுக்கப்படவில்லை.');
+                    return true;
+                }
+            }
+            hideInputWarning();
+            return false;
+        }
+
+        function stepInput(param, delta) {
+            const inputEl = document.getElementById(`input${param.toUpperCase()}`);
+            if (!inputEl) return;
+            let currentVal = parseInt(inputEl.value, 10);
+            if (isNaN(currentVal)) currentVal = (param === 'a') ? 2 : 1;
+
+            let nextVal = Math.max(-100, Math.min(100, currentVal + delta));
+            inputEl.value = nextVal;
+            applyValidatedParam(param, nextVal);
+        }
+
+        function handleDirectInput(param) {
+            const inputEl = document.getElementById(`input${param.toUpperCase()}`);
+            if (!inputEl) return;
+            const rawStr = inputEl.value.trim();
+
+            if (rawStr === '' || rawStr === '-') return;
+
+            let parsed = parseInt(rawStr, 10);
+            if (isNaN(parsed)) return;
+
+            if (parsed < -100 || parsed > 100) {
+                parsed = Math.max(-100, Math.min(100, parsed));
+                inputEl.value = parsed;
+                showInputWarning('மதிப்புகள் −100 முதல் 100 வரை மட்டுமே இருக்க வேண்டும்.');
+            } else {
+                hideInputWarning();
+            }
+
+            applyValidatedParam(param, parsed);
+        }
+
+        function applyValidatedParam(param, val) {
+            state[param] = val;
+            checkEdgeCases();
+            state.animProgress = 0;
+            updateLiveReadout();
+            generatePracticeProblem();
+        }
+
+        function resetValues() {
+            state.a = 2;
+            const inputA = document.getElementById('inputA');
+            if (inputA) inputA.value = 2;
+            hideInputWarning();
+            selectLaw(state.law);
+        }
+
+        function formatNumberTamil(num) {
+            if (typeof num === 'bigint') {
+                const isNeg = num < 0n;
+                const absStr = (isNeg ? -num : num).toString();
+                if (absStr.length <= 18) {
+                    const formatted = Number(absStr).toLocaleString('en-IN');
+                    return isNeg ? '−' + formatted : formatted;
+                }
+                const firstDigit = absStr[0];
+                const nextDigits = absStr.slice(1, 5);
+                const exponent10 = absStr.length - 1;
+                return `${isNeg ? '−' : ''}${firstDigit}.${nextDigits} × 10^${exponent10} (${absStr.length} இலக்கங்கள்)`;
+            }
+            if (!isFinite(num)) return 'வரையறுக்கப்படாதது';
+            if (num < 0) return '−' + Math.abs(num).toLocaleString('en-IN');
+            return num.toLocaleString('en-IN');
+        }
+
+        function bigPow(base, exp) {
+            let result = 1n;
+            let b = BigInt(base);
+            for (let i = 0; i < exp; i++) {
+                result *= b;
+            }
+            return result;
+        }
+
+        function formatBaseHTML(a) {
+            return a < 0 ? `(−${Math.abs(a)})` : `${a}`;
+        }
+
+        function formatBasePlain(a) {
+            return a < 0 ? `(−${Math.abs(a)})` : `${a}`;
+        }
+
+        function formatSignedExp(exp) {
+            return exp < 0 ? `−${Math.abs(exp)}` : `${exp}`;
+        }
+
+        function formatPowerHTML(a, exp) {
+            return `${formatBaseHTML(a)}<sup>${formatSignedExp(exp)}</sup>`;
+        }
+
+        function formatPowerPlain(a, exp) {
+            return `${formatBasePlain(a)}^${formatSignedExp(exp)}`;
+        }
+
+        function repeatStr(base, count) {
+            const bStr = formatBasePlain(base);
+            if (count === 0) return '1';
+            const absC = Math.abs(count);
+            let product = '';
+            if (absC <= 8) {
+                product = Array(absC).fill(bStr).join(' × ');
+            } else {
+                product = `${bStr} × ${bStr} × ${bStr} × ... × ${bStr} (${absC} முறை)`;
+            }
+            return count < 0 ? `1 / (${product})` : product;
+        }
+
+        function formatExactPowerResult(a, exp) {
+            if (a === 0) {
+                if (exp > 0) return '0';
+                return 'வரையறுக்கப்படாதது (Undefined)';
+            }
+            if (exp === 0) return '1';
+            const absExp = Math.abs(exp);
+
+            if (exp > 0) {
+                const val = bigPow(a, absExp);
+                return formatNumberTamil(val);
+            } else {
+                const denom = bigPow(a, absExp);
+                if (denom < 0n) {
+                    return `−1 / ${formatNumberTamil(-denom)}`;
+                }
+                return `1 / ${formatNumberTamil(denom)}`;
+            }
+        }
+
+        function updateLiveReadout() {
+            const { law, a, m, n } = state;
+            const info = lawsData[law];
+            const readoutEl = document.getElementById('stepByStepReadout');
+            const finalValEl = document.getElementById('finalNumericValue');
+            if (!readoutEl || !finalValEl) return;
+
+            let html = '';
+            let finalAnswer = '';
+
+            if (law === 'product') {
+                const sumExp = m + n;
+                const exactVal = formatExactPowerResult(a, sumExp);
+                const nDisplay = n < 0 ? `(${formatSignedExp(n)})` : `${n}`;
+
+                html = `
+                    <div class="bg-white/5 p-2.5 rounded-xl border border-white/10">
+                        <div class="text-xs text-indigo-300 mb-1">படி 1: விதி மற்றும் கொடுக்கப்பட்ட கணக்கு</div>
+                        <div class="text-xs text-amber-300 font-semibold mb-0.5">சூத்திரம்: ${info.formulaPlain}</div>
+                        <div class="math-font text-lg sm:text-xl font-bold text-white">
+                            <span class="text-emerald-400">${formatPowerHTML(a, m)}</span> × <span class="text-amber-400">${formatPowerHTML(a, n)}</span>
+                        </div>
+                    </div>
+                    <div class="bg-white/5 p-2.5 rounded-xl border border-white/10">
+                        <div class="text-xs text-indigo-300 mb-1">படி 2: அடுக்குகளைக் கூட்டுக (m + n)</div>
+                        <div class="math-font text-base sm:text-lg font-bold text-indigo-300">
+                            = ${formatBaseHTML(a)}<sup>${formatSignedExp(m)} + ${nDisplay}</sup> = <span class="text-white text-xl">${formatPowerHTML(a, sumExp)}</span>
+                        </div>
+                    </div>
+                    <div class="bg-white/5 p-2.5 rounded-xl border border-white/10">
+                        <div class="text-xs text-indigo-300 mb-1">படி 3: விரிவாக்கம் / பின்ன வடிவம்</div>
+                        <div class="math-font text-sm text-slate-200 break-words">
+                            = ${repeatStr(a, sumExp)}
+                        </div>
+                    </div>
+                `;
+                finalAnswer = `${formatPowerHTML(a, sumExp)} = ${exactVal}`;
+            } 
+            else if (law === 'quotient') {
+                const diffExp = m - n;
+                const exactVal = formatExactPowerResult(a, diffExp);
+                const nDisplay = n < 0 ? `(${formatSignedExp(n)})` : `${n}`;
+
+                html = `
+                    <div class="bg-white/5 p-2.5 rounded-xl border border-white/10">
+                        <div class="text-xs text-indigo-300 mb-1">படி 1: விதி மற்றும் வகுத்தல் கணக்கு</div>
+                        <div class="text-xs text-amber-300 font-semibold mb-0.5">சூத்திரம்: ${info.formulaPlain}</div>
+                        <div class="math-font text-lg sm:text-xl font-bold text-white">
+                            <span class="text-emerald-400">${formatPowerHTML(a, m)}</span> ÷ <span class="text-amber-400">${formatPowerHTML(a, n)}</span>
+                        </div>
+                    </div>
+                    <div class="bg-white/5 p-2.5 rounded-xl border border-white/10">
+                        <div class="text-xs text-indigo-300 mb-1">படி 2: அடுக்குகளைக் கழிக்க (m − n)</div>
+                        <div class="math-font text-base sm:text-lg font-bold text-indigo-300">
+                            = ${formatBaseHTML(a)}<sup>${formatSignedExp(m)} − ${nDisplay}</sup> = <span class="text-white text-xl">${formatPowerHTML(a, diffExp)}</span>
+                        </div>
+                    </div>
+                    <div class="bg-white/5 p-2.5 rounded-xl border border-white/10">
+                        <div class="text-xs text-indigo-300 mb-1">படி 3: விரிவாக்கம் / பின்ன வடிவம்</div>
+                        <div class="math-font text-sm text-slate-200 break-words">
+                            = ${repeatStr(a, diffExp)}
+                        </div>
+                    </div>
+                `;
+                finalAnswer = `${formatPowerHTML(a, diffExp)} = ${exactVal}`;
+            }
+            else if (law === 'power') {
+                const prodExp = m * n;
+                const exactVal = formatExactPowerResult(a, prodExp);
+                const mDisplay = m < 0 ? `(${formatSignedExp(m)})` : `${m}`;
+                const nDisplay = n < 0 ? `(${formatSignedExp(n)})` : `${n}`;
+
+                html = `
+                    <div class="bg-white/5 p-2.5 rounded-xl border border-white/10">
+                        <div class="text-xs text-indigo-300 mb-1">படி 1: விதி மற்றும் கொடுக்கப்பட்ட கணக்கு</div>
+                        <div class="text-xs text-amber-300 font-semibold mb-0.5">சூத்திரம்: ${info.formulaPlain}</div>
+                        <div class="math-font text-lg sm:text-xl font-bold text-white">
+                            (<span class="text-emerald-400">${formatPowerHTML(a, m)}</span>)<sup class="text-amber-400">${formatSignedExp(n)}</sup>
+                        </div>
+                    </div>
+                    <div class="bg-white/5 p-2.5 rounded-xl border border-white/10">
+                        <div class="text-xs text-indigo-300 mb-1">படி 2: அடுக்குகளைப் பெருக்குக (m × n)</div>
+                        <div class="math-font text-base sm:text-lg font-bold text-indigo-300">
+                            = ${formatBaseHTML(a)}<sup>${mDisplay} × ${nDisplay}</sup> = <span class="text-white text-xl">${formatPowerHTML(a, prodExp)}</span>
+                        </div>
+                    </div>
+                    <div class="bg-white/5 p-2.5 rounded-xl border border-white/10">
+                        <div class="text-xs text-indigo-300 mb-1">படி 3: விரிவாக்கம் / பின்ன வடிவம்</div>
+                        <div class="math-font text-sm text-slate-200 break-words">
+                            = ${repeatStr(a, prodExp)}
+                        </div>
+                    </div>
+                `;
+                finalAnswer = `${formatPowerHTML(a, prodExp)} = ${exactVal}`;
+            }
+            else if (law === 'zero') {
+                const aBase = formatBaseHTML(a);
+                if (a === 0) {
+                    html = `
+                        <div class="bg-rose-500/20 p-3 rounded-xl border border-rose-400/40">
+                            <div class="text-xs text-rose-200 mb-1">படி 1: விதி</div>
+                            <div class="math-font text-base font-bold text-white">0<sup>0</sup> என்பது வரையறுக்கப்படாதது (Undefined).</div>
+                        </div>
+                    `;
+                    finalAnswer = `வரையறுக்கப்படாதது`;
+                } else {
+                    const cubeVal = formatNumberTamil(bigPow(a, 3));
+                    html = `
+                        <div class="bg-white/5 p-2.5 rounded-xl border border-white/10">
+                            <div class="text-xs text-indigo-300 mb-1">படி 1: பூஜ்ஜிய அடுக்கு விதி (${info.formulaPlain})</div>
+                            <div class="math-font text-base sm:text-lg font-bold text-white">
+                                ${aBase}<sup>0</sup> = ${aBase}<sup>3 − 3</sup> = <span class="text-indigo-300">${aBase}<sup>3</sup> ÷ ${aBase}<sup>3</sup></span>
+                            </div>
+                        </div>
+                        <div class="bg-white/5 p-2.5 rounded-xl border border-white/10">
+                            <div class="text-xs text-indigo-300 mb-1">படி 2: அடுக்குகளின் கழித்தல் விளக்கம்</div>
+                            <div class="math-font text-sm sm:text-base text-slate-200">
+                                = (${aBase} × ${aBase} × ${aBase}) ÷ (${aBase} × ${aBase} × ${aBase})
+                            </div>
+                        </div>
+                        <div class="bg-white/5 p-2.5 rounded-xl border border-white/10">
+                            <div class="text-xs text-indigo-300 mb-1">படி 3: ஒரே எண்ணை அதே எண்ணால் வகுத்தல்</div>
+                            <div class="math-font text-sm sm:text-base text-emerald-300">
+                                = (${cubeVal}) ÷ (${cubeVal}) = 1
+                            </div>
+                        </div>
+                    `;
+                    finalAnswer = `${aBase}<sup>0</sup> = 1`;
+                }
+            }
+            else if (law === 'negative') {
+                const exactVal = formatExactPowerResult(a, m);
+                const flippedExp = -m;
+
+                html = `
+                    <div class="bg-white/5 p-2.5 rounded-xl border border-white/10">
+                        <div class="text-xs text-indigo-300 mb-1">படி 1: விதி மற்றும் கொடுக்கப்பட்ட அடுக்கு எண்</div>
+                        <div class="text-xs text-amber-300 font-semibold mb-0.5">சூத்திரம்: ${info.formulaPlain}</div>
+                        <div class="math-font text-lg sm:text-xl font-bold text-rose-400">
+                            ${formatPowerHTML(a, m)}
+                        </div>
+                    </div>
+                    <div class="bg-white/5 p-2.5 rounded-xl border border-white/10">
+                        <div class="text-xs text-indigo-300 mb-1">படி 2: தலைகீழி வடிவம் (1 / a<sup>−m</sup>)</div>
+                        <div class="math-font text-base sm:text-lg text-slate-200 flex items-center gap-2 flex-wrap">
+                            <span>=</span>
+                            <span class="inline-flex flex-col items-center align-middle">
+                                <span class="border-b border-white/40 px-2 text-white">1</span>
+                                <span class="px-2 text-indigo-300">${formatPowerHTML(a, flippedExp)}</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="bg-white/5 p-2.5 rounded-xl border border-white/10">
+                        <div class="text-xs text-indigo-300 mb-1">படி 3: விரிவாக்கம்</div>
+                        <div class="math-font text-sm text-emerald-300 break-words">
+                            = ${a === 0 && m <= 0 ? 'வரையறுக்கப்படாதது' : repeatStr(a, m)}
+                        </div>
+                    </div>
+                `;
+                finalAnswer = `${formatPowerHTML(a, m)} = ${exactVal}`;
+            }
+
+            readoutEl.innerHTML = html;
+            finalValEl.innerHTML = finalAnswer;
+        }
+
+        // ==========================================
+        // HTML5 CANVAS VISUALIZATION ENGINE
+        // ==========================================
+        function animationLoop(timestamp) {
+            if (!state.lastTimestamp) state.lastTimestamp = timestamp;
+            const dt = (timestamp - state.lastTimestamp) / 1000;
+            state.lastTimestamp = timestamp;
+
+            if (state.animProgress < 1) {
+                state.animProgress = Math.min(1, state.animProgress + dt * 1.6);
+            }
+
+            drawVisualization();
+            requestAnimationFrame(animationLoop);
+        }
+
+        function easeOutBack(x) {
+            const c1 = 1.70158;
+            const c3 = c1 + 1;
+            return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
+        }
+
+        function drawCircleNode(x, y, radius, bgColor, borderColor, text, subText = '', alpha = 1, strikethrough = false) {
+            ctx.save();
+            ctx.globalAlpha = alpha;
+
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.12)';
+            ctx.shadowBlur = 8;
+            ctx.shadowOffsetY = 4;
+
+            // Ensure radius is never negative or zero to prevent IndexSizeError
+            const safeRadius = Math.max(2, radius);
+
+            ctx.beginPath();
+            ctx.arc(x, y, safeRadius, 0, Math.PI * 2);
+            ctx.fillStyle = bgColor;
+            ctx.fill();
+
+            ctx.shadowColor = 'transparent';
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = borderColor;
+            ctx.stroke();
+
+            const lenScale = text.length >= 5 ? 0.62 : (text.length >= 3 ? 0.75 : 0.9);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = `bold ${Math.max(10, Math.round(safeRadius * lenScale))}px "Fredoka", sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(text, x, y + 1);
+
+            if (subText) {
+                ctx.fillStyle = '#334155';
+                ctx.font = `600 11px "Noto Sans Tamil", sans-serif`;
+                ctx.fillText(subText, x, y + safeRadius + 13);
+            }
+
+            if (strikethrough) {
+                ctx.beginPath();
+                ctx.moveTo(x - safeRadius * 0.85, y + safeRadius * 0.85);
+                ctx.lineTo(x + safeRadius * 0.85, y - safeRadius * 0.85);
+                ctx.strokeStyle = '#ef4444';
+                ctx.lineWidth = 4;
+                ctx.lineCap = 'round';
+                ctx.stroke();
+            }
+
+            ctx.restore();
+        }
+
+        function drawRoundedBox(x, y, w, h, r, fill, stroke, dashed = false) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.roundRect(x, y, w, h, r);
+            if (fill) {
+                ctx.fillStyle = fill;
+                ctx.fill();
+            }
+            if (stroke) {
+                if (dashed) ctx.setLineDash([6, 4]);
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = stroke;
+                ctx.stroke();
+            }
+            ctx.restore();
+        }
+
+        function drawVisualization() {
+            if (!ensureCanvasElements()) return;
+            const width = canvasContainer.clientWidth;
+            const height = canvasContainer.clientHeight;
+            ctx.clearRect(0, 0, width, height);
+
+            ctx.save();
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 1;
+            const gridSize = 28;
+            for (let gx = 0; gx < width; gx += gridSize) {
+                ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, height); ctx.stroke();
+            }
+            for (let gy = 0; gy < height; gy += gridSize) {
+                ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(width, gy); ctx.stroke();
+            }
+            ctx.restore();
+
+            const { law, a, m, n, animProgress } = state;
+            const p = easeOutBack(Math.min(1, animProgress));
+
+            if (law === 'product') drawProductLaw(width, height, a, m, n, animProgress, p);
+            else if (law === 'quotient') drawQuotientLaw(width, height, a, m, n, animProgress, p);
+            else if (law === 'power') drawPowerLaw(width, height, a, m, n, animProgress, p);
+            else if (law === 'zero') drawZeroLaw(width, height, a, animProgress, p);
+            else if (law === 'negative') drawNegativeLaw(width, height, a, m, animProgress, p);
+        }
+
+        function drawProductLaw(w, h, a, m, n, rawP, scaleP) {
+            const baseLabel = formatBasePlain(a);
+            const sumExp = m + n;
+
+            if (m <= 0 || n <= 0 || m > 6 || n > 6) {
+                drawSummarizedProduct(w, h, a, m, n, sumExp, scaleP);
+                return;
+            }
+
+            const total = m + n;
+            const maxRadius = w < 450 ? 18 : 23;
+            const spacing = Math.min(maxRadius * 2.5, (w - 60) / Math.max(total, 1));
+            const r = Math.min(maxRadius, spacing * 0.42);
+
+            const topY = h * 0.28;
+            const groupGap = w < 450 ? 28 : 44;
+            const totalTopWidth = (m * spacing) + groupGap + (n * spacing);
+            let startX = (w - totalTopWidth) / 2 + spacing / 2;
+
+            const boxMW = m * spacing + 12;
+            drawRoundedBox(startX - spacing / 2 - 6, topY - r - 24, boxMW, r * 2 + 36, 14, 'rgba(16, 185, 129, 0.08)', '#10b981', true);
+            ctx.fillStyle = '#047857';
+            ctx.font = 'bold 13px "Noto Sans Tamil", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(`${formatPowerPlain(a, m)} (${m} முறை)`, startX - spacing / 2 - 6 + boxMW / 2, topY - r - 8);
+
+            for (let i = 0; i < m; i++) {
+                const cx = startX + i * spacing;
+                drawCircleNode(cx, topY, r * Math.min(1, scaleP), '#10b981', '#059669', baseLabel);
+                if (i < m - 1) {
+                    ctx.fillStyle = '#059669';
+                    ctx.font = 'bold 14px "Fredoka", sans-serif';
+                    ctx.fillText('×', cx + spacing / 2, topY);
+                }
+            }
+
+            const midSymbolX = startX + (m - 1) * spacing + spacing / 2 + groupGap / 2;
+            ctx.fillStyle = '#4f46e5';
+            ctx.font = 'bold 22px "Fredoka", sans-serif';
+            ctx.fillText('×', midSymbolX, topY);
+
+            const startNX = startX + m * spacing + groupGap;
+            const boxNW = n * spacing + 12;
+            drawRoundedBox(startNX - spacing / 2 - 6, topY - r - 24, boxNW, r * 2 + 36, 14, 'rgba(245, 158, 11, 0.08)', '#f59e0b', true);
+            ctx.fillStyle = '#b45309';
+            ctx.font = 'bold 13px "Noto Sans Tamil", sans-serif';
+            ctx.fillText(`${formatPowerPlain(a, n)} (${n} முறை)`, startNX - spacing / 2 - 6 + boxNW / 2, topY - r - 8);
+
+            for (let j = 0; j < n; j++) {
+                const cx = startNX + j * spacing;
+                drawCircleNode(cx, topY, r * Math.min(1, scaleP), '#f59e0b', '#d97706', baseLabel);
+                if (j < n - 1) {
+                    ctx.fillStyle = '#d97706';
+                    ctx.font = 'bold 14px "Fredoka", sans-serif';
+                    ctx.fillText('×', cx + spacing / 2, topY);
+                }
+            }
+
+            const arrowY = h * 0.50;
+            ctx.fillStyle = '#4f46e5';
+            ctx.font = 'bold 14px "Noto Sans Tamil", sans-serif';
+            ctx.fillText(`⬇ அனைத்தையும் ஒன்றாகச் சேர்க்க (${m} + ${n} = ${total} முறை) ⬇`, w / 2, arrowY);
+
+            const botY = h * 0.74;
+            const mergedSpacing = Math.min(maxRadius * 2.4, (w - 48) / total);
+            const mergedR = Math.min(maxRadius, mergedSpacing * 0.42);
+            const mergedStartX = (w - (total - 1) * mergedSpacing) / 2;
+
+            drawRoundedBox(mergedStartX - mergedR - 12, botY - mergedR - 24, (total - 1) * mergedSpacing + mergedR * 2 + 24, mergedR * 2 + 38, 16, 'rgba(79, 70, 229, 0.08)', '#4f46e5', false);
+            ctx.fillStyle = '#3730a3';
+            ctx.font = 'bold 14px "Noto Sans Tamil", sans-serif';
+            ctx.fillText(`மொத்த விடை: ${formatPowerPlain(a, total)}`, w / 2, botY - mergedR - 8);
+
+            for (let k = 0; k < total; k++) {
+                const cx = mergedStartX + k * mergedSpacing;
+                const isFirstGroup = k < m;
+                const fill = isFirstGroup ? '#10b981' : '#f59e0b';
+                const stroke = '#4f46e5';
+                drawCircleNode(cx, botY, mergedR * Math.min(1, rawP * 1.2), fill, stroke, baseLabel, `${k + 1}`);
+                if (k < total - 1) {
+                    ctx.fillStyle = '#4f46e5';
+                    ctx.font = 'bold 13px "Fredoka", sans-serif';
+                    ctx.fillText('×', cx + mergedSpacing / 2, botY);
+                }
+            }
+        }
+
+        function drawSummarizedProduct(w, h, a, m, n, sumExp, scaleP) {
+            const boxW = Math.min(w - 36, 480);
+            const startX = (w - boxW) / 2;
+
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#3730a3';
+            ctx.font = 'bold 14px "Noto Sans Tamil", sans-serif';
+            ctx.fillText('பெருக்கல் விதி: aᵐ × aⁿ = aᵐ⁺ⁿ', w / 2, 28);
+
+            const cardW = (boxW - 32) / 2;
+            drawRoundedBox(startX, 46, cardW, 84, 14, 'rgba(16, 185, 129, 0.1)', '#10b981', false);
+            ctx.fillStyle = '#047857';
+            ctx.font = 'bold 20px "Fredoka", sans-serif';
+            ctx.fillText(formatPowerPlain(a, m), startX + cardW / 2, 78);
+            ctx.font = '600 11px "Noto Sans Tamil", sans-serif';
+            ctx.fillText(m > 0 ? `${formatBasePlain(a)} × ... (${m} முறை)` : `அடுக்கு m = ${formatSignedExp(m)}`, startX + cardW / 2, 110);
+
+            ctx.fillStyle = '#4f46e5';
+            ctx.font = 'bold 22px "Fredoka", sans-serif';
+            ctx.fillText('×', w / 2, 88);
+
+            drawRoundedBox(startX + cardW + 32, 46, cardW, 84, 14, 'rgba(245, 158, 11, 0.1)', '#f59e0b', false);
+            ctx.fillStyle = '#b45309';
+            ctx.font = 'bold 20px "Fredoka", sans-serif';
+            ctx.fillText(formatPowerPlain(a, n), startX + cardW + 32 + cardW / 2, 78);
+            ctx.font = '600 11px "Noto Sans Tamil", sans-serif';
+            ctx.fillText(n > 0 ? `${formatBasePlain(a)} × ... (${n} முறை)` : `அடுக்கு n = ${formatSignedExp(n)}`, startX + cardW + 32 + cardW / 2, 110);
+
+            ctx.fillStyle = '#4338ca';
+            ctx.font = 'bold 14px "Noto Sans Tamil", sans-serif';
+            ctx.fillText(`⬇ அடுக்குகளைக் கூட்டுக: (${formatSignedExp(m)}) + (${formatSignedExp(n)}) = ${formatSignedExp(sumExp)} ⬇`, w / 2, 160);
+
+            drawRoundedBox(startX, 180, boxW, 118, 18, 'rgba(79, 70, 229, 0.08)', '#4f46e5', false);
+            ctx.fillStyle = '#312e81';
+            ctx.font = 'bold 24px "Fredoka", sans-serif';
+            ctx.fillText(formatPowerPlain(a, sumExp), w / 2, 220);
+
+            ctx.fillStyle = '#3730a3';
+            ctx.font = '600 13px "Noto Sans Tamil", sans-serif';
+            const expSummary = sumExp > 0 ? `${formatBasePlain(a)} × ${formatBasePlain(a)} × ... × ${formatBasePlain(a)} (${sumExp} முறை)` : repeatStr(a, sumExp);
+            ctx.fillText(expSummary.length > 46 ? expSummary.slice(0, 44) + '...' : expSummary, w / 2, 252);
+
+            ctx.fillStyle = '#047857';
+            ctx.font = 'bold 12px "Noto Sans Tamil", sans-serif';
+            const resText = formatExactPowerResult(a, sumExp);
+            ctx.fillText(`விடை: ${resText.length > 44 ? resText.slice(0, 42) + '...' : resText}`, w / 2, 280);
+        }
+
+        function drawQuotientLaw(w, h, a, m, n, rawP, scaleP) {
+            const baseLabel = formatBasePlain(a);
+            const diff = m - n;
+
+            if (m <= 0 || n <= 0 || m > 7 || n > 7) {
+                const boxW = Math.min(w - 36, 480);
+                const startX = (w - boxW) / 2;
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#3730a3';
+                ctx.font = 'bold 14px "Noto Sans Tamil", sans-serif';
+                ctx.fillText('வகுத்தல் விதி: aᵐ ÷ aⁿ = aᵐ⁻ⁿ', w / 2, 28);
+
+                drawRoundedBox(startX, 46, boxW, 92, 16, 'rgba(16, 185, 129, 0.08)', '#10b981', false);
+                ctx.fillStyle = '#065f46';
+                ctx.font = 'bold 21px "Fredoka", sans-serif';
+                ctx.fillText(`${formatPowerPlain(a, m)}  ÷  ${formatPowerPlain(a, n)}`, w / 2, 82);
+                ctx.font = '600 12px "Noto Sans Tamil", sans-serif';
+                ctx.fillText(`தொகுதி அடுக்கு m = ${formatSignedExp(m)},  பகுதி அடுக்கு n = ${formatSignedExp(n)}`, w / 2, 116);
+
+                ctx.fillStyle = '#4338ca';
+                ctx.font = 'bold 14px "Noto Sans Tamil", sans-serif';
+                ctx.fillText(`⬇ அடுக்குகளைக் கழிக்க: (${formatSignedExp(m)}) − (${formatSignedExp(n)}) = ${formatSignedExp(diff)} ⬇`, w / 2, 166);
+
+                drawRoundedBox(startX, 184, boxW, 114, 18, 'rgba(79, 70, 229, 0.08)', '#4f46e5', false);
+                ctx.fillStyle = '#312e81';
+                ctx.font = 'bold 24px "Fredoka", sans-serif';
+                ctx.fillText(formatPowerPlain(a, diff), w / 2, 224);
+
+                ctx.fillStyle = '#475569';
+                ctx.font = '600 12px "Noto Sans Tamil", sans-serif';
+                const expSummary = diff > 0 ? `${baseLabel} × ... × ${baseLabel} (${diff} முறை)` : repeatStr(a, diff);
+                ctx.fillText(expSummary.length > 46 ? expSummary.slice(0, 44) + '...' : expSummary, w / 2, 254);
+
+                ctx.fillStyle = '#047857';
+                ctx.font = 'bold 12px "Noto Sans Tamil", sans-serif';
+                const resText = formatExactPowerResult(a, diff);
+                ctx.fillText(`விடை: ${resText.length > 44 ? resText.slice(0, 42) + '...' : resText}`, w / 2, 282);
+                return;
+            }
+
+            const maxCols = Math.max(m, n);
+            const maxRadius = w < 450 ? 19 : 24;
+            const spacing = Math.min(maxRadius * 2.7, (w - 80) / maxCols);
+            const r = Math.min(maxRadius, spacing * 0.42);
+            const cancelCount = Math.min(m, n);
+
+            const numY = h * 0.25;
+            const barY = h * 0.44;
+            const denY = h * 0.63;
+
+            const startX = (w - (maxCols - 1) * spacing) / 2;
+
+            ctx.fillStyle = '#047857';
+            ctx.font = 'bold 13px "Noto Sans Tamil", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(`தொகுதி (Numerator): ${formatPowerPlain(a, m)} (${m} முறை)`, w / 2, numY - r - 12);
+
+            for (let i = 0; i < m; i++) {
+                const cx = startX + i * spacing;
+                const isCanceled = i < cancelCount && rawP > 0.35;
+                drawCircleNode(cx, numY, r * Math.min(1, scaleP), '#10b981', '#059669', baseLabel, '', isCanceled ? 0.55 : 1, isCanceled);
+                if (i < m - 1) {
+                    ctx.fillStyle = '#059669';
+                    ctx.font = 'bold 14px "Fredoka", sans-serif';
+                    ctx.fillText('×', cx + spacing / 2, numY);
+                }
+            }
+
+            const barW = maxCols * spacing + 24;
+            ctx.beginPath();
+            ctx.moveTo((w - barW) / 2, barY);
+            ctx.lineTo((w + barW) / 2, barY);
+            ctx.strokeStyle = '#334155';
+            ctx.lineWidth = 4;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+
+            for (let j = 0; j < n; j++) {
+                const cx = startX + j * spacing;
+                const isCanceled = j < cancelCount && rawP > 0.35;
+                drawCircleNode(cx, denY, r * Math.min(1, scaleP), '#f59e0b', '#d97706', baseLabel, '', isCanceled ? 0.55 : 1, isCanceled);
+                if (j < n - 1) {
+                    ctx.fillStyle = '#d97706';
+                    ctx.font = 'bold 14px "Fredoka", sans-serif';
+                    ctx.fillText('×', cx + spacing / 2, denY);
+                }
+            }
+
+            ctx.fillStyle = '#b45309';
+            ctx.font = 'bold 13px "Noto Sans Tamil", sans-serif';
+            ctx.fillText(`பகுதி (Denominator): ${formatPowerPlain(a, n)} (${n} முறை)`, w / 2, denY + r + 20);
+
+            let summaryText = '';
+            if (diff > 0) summaryText = `மீதமுள்ளவை தொகுதியில் ${diff} முறை ➔ ${formatPowerPlain(a, diff)} = ${formatExactPowerResult(a, diff)}`;
+            else if (diff === 0) summaryText = `அனைத்தும் அடிபட்டுவிட்டன (${m} − ${n} = 0) ➔ ${formatPowerPlain(a, 0)} = ${a === 0 ? 'வரையறுக்கப்படாதது' : '1'}`;
+            else summaryText = `மீதமுள்ளவை பகுதியில் ${Math.abs(diff)} முறை ➔ ${formatPowerPlain(a, diff)} = ${formatExactPowerResult(a, diff)}`;
+
+            drawRoundedBox(24, h - 54, w - 48, 40, 12, '#eef2ff', '#6366f1', false);
+            ctx.fillStyle = '#312e81';
+            ctx.font = 'bold 13px "Noto Sans Tamil", sans-serif';
+            ctx.fillText(summaryText, w / 2, h - 30);
+        }
+
+        function drawPowerLaw(w, h, a, m, n, rawP, scaleP) {
+            const baseLabel = formatBasePlain(a);
+            const total = m * n;
+
+            if (m <= 0 || n <= 0 || m > 4 || n > 4) {
+                const boxW = Math.min(w - 36, 480);
+                const startX = (w - boxW) / 2;
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#4338ca';
+                ctx.font = 'bold 14px "Noto Sans Tamil", sans-serif';
+                ctx.fillText('அடுக்கின் அடுக்கு விதி: (aᵐ)ⁿ = aᵐˣⁿ', w / 2, 28);
+
+                drawRoundedBox(startX, 48, boxW, 88, 16, 'rgba(139, 92, 246, 0.08)', '#8b5cf6', false);
+                ctx.fillStyle = '#5b21b6';
+                ctx.font = 'bold 23px "Fredoka", sans-serif';
+                ctx.fillText(`(${formatPowerPlain(a, m)})^${formatSignedExp(n)}`, w / 2, 84);
+                ctx.font = '600 12px "Noto Sans Tamil", sans-serif';
+                ctx.fillText(`${formatPowerPlain(a, m)} என்ற தொகுப்பு ${formatSignedExp(n)} முறை`, w / 2, 116);
+
+                ctx.fillStyle = '#4338ca';
+                ctx.font = 'bold 14px "Noto Sans Tamil", sans-serif';
+                ctx.fillText(`⬇ அடுக்குகளைப் பெருக்குக: (${formatSignedExp(m)}) × (${formatSignedExp(n)}) = ${formatSignedExp(total)} ⬇`, w / 2, 166);
+
+                drawRoundedBox(startX, 184, boxW, 114, 18, '#ecfdf5', '#10b981', false);
+                ctx.fillStyle = '#065f46';
+                ctx.font = 'bold 24px "Fredoka", sans-serif';
+                ctx.fillText(formatPowerPlain(a, total), w / 2, 224);
+
+                ctx.fillStyle = '#334155';
+                ctx.font = '600 12px "Noto Sans Tamil", sans-serif';
+                const expSummary = total > 0 ? `${baseLabel} × ... × ${baseLabel} (${total} முறை)` : repeatStr(a, total);
+                ctx.fillText(expSummary.length > 46 ? expSummary.slice(0, 44) + '...' : expSummary, w / 2, 254);
+
+                ctx.fillStyle = '#047857';
+                ctx.font = 'bold 12px "Noto Sans Tamil", sans-serif';
+                const resText = formatExactPowerResult(a, total);
+                ctx.fillText(`விடை: ${resText.length > 44 ? resText.slice(0, 42) + '...' : resText}`, w / 2, 282);
+                return;
+            }
+
+            const cols = n <= 2 ? n : (w < 500 ? 2 : Math.min(n, 3));
+            const rows = Math.ceil(n / cols);
+
+            const areaTop = 42;
+            const areaHeight = h - 102;
+            const cellW = (w - 48) / cols;
+            const cellH = areaHeight / rows;
+
+            ctx.fillStyle = '#4338ca';
+            ctx.font = 'bold 14px "Noto Sans Tamil", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(`(${formatPowerPlain(a, m)}) என்ற தொகுப்பு ${n} முறை பெருக்கப்படுகிறது`, w / 2, 24);
+
+            for (let g = 0; g < n; g++) {
+                const colIdx = g % cols;
+                const rowIdx = Math.floor(g / cols);
+                const boxX = 24 + colIdx * cellW + 6;
+                const boxY = areaTop + rowIdx * cellH + 6;
+                const boxW = cellW - 12;
+                const boxH = cellH - 12;
+
+                drawRoundedBox(boxX, boxY, boxW, boxH, 16, 'rgba(139, 92, 246, 0.08)', '#8b5cf6', false);
+
+                ctx.fillStyle = '#6d28d9';
+                ctx.font = 'bold 12px "Noto Sans Tamil", sans-serif';
+                ctx.fillText(`குழு ${g + 1} (${formatPowerPlain(a, m)})`, boxX + boxW / 2, boxY + 18);
+
+                const innerSpacing = Math.min(44, (boxW - 24) / m);
+                const r = Math.min(18, innerSpacing * 0.4, (boxH - 36) * 0.38);
+                const startInnerX = boxX + (boxW - (m - 1) * innerSpacing) / 2;
+                const centerY = boxY + boxH / 2 + 8;
+
+                for (let i = 0; i < m; i++) {
+                    const bx = startInnerX + i * innerSpacing;
+                    drawCircleNode(bx, centerY, r * Math.min(1, scaleP), '#8b5cf6', '#6d28d9', baseLabel);
+                    if (i < m - 1) {
+                        ctx.fillStyle = '#6d28d9';
+                        ctx.font = 'bold 13px "Fredoka", sans-serif';
+                        ctx.fillText('×', bx + innerSpacing / 2, centerY);
+                    }
+                }
+            }
+
+            drawRoundedBox(24, h - 52, w - 48, 38, 12, '#ecfdf5', '#10b981', false);
+            ctx.fillStyle = '#065f46';
+            ctx.font = 'bold 13px "Noto Sans Tamil", sans-serif';
+            ctx.fillText(`மொத்த காரணிகள்: ${n} குழுக்கள் × ${m} காரணிகள் = ${total} ➔ ${formatPowerPlain(a, total)} = ${formatExactPowerResult(a, total)}`, w / 2, h - 29);
+        }
+
+        function drawZeroLaw(w, h, a, rawP, scaleP) {
+            const baseLabel = formatBasePlain(a);
+            if (a === 0) {
+                drawRoundedBox(w / 2 - 150, h / 2 - 45, 300, 90, 18, '#fef2f2', '#ef4444', false);
+                ctx.fillStyle = '#b91c1c';
+                ctx.font = 'bold 16px "Noto Sans Tamil", sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('0⁰ என்பது வரையறுக்கப்படாதது', w / 2, h / 2 - 8);
+                ctx.font = '600 13px "Noto Sans Tamil", sans-serif';
+                ctx.fillText('(பூஜ்ஜியத்தால் வகுக்க முடியாது)', w / 2, h / 2 + 18);
+                return;
+            }
+
+            const count = 3;
+            const r = w < 450 ? 20 : 25;
+            const spacing = r * 2.8;
+            const startX = (w - (count - 1) * spacing) / 2;
+
+            const topY = h * 0.25;
+            const barY = h * 0.42;
+            const botY = h * 0.59;
+
+            ctx.fillStyle = '#4338ca';
+            ctx.font = 'bold 14px "Noto Sans Tamil", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(`எடுத்துக்காட்டு: ${baseLabel}^3 ÷ ${baseLabel}^3 = ${baseLabel}^(3−3) = ${baseLabel}^0`, w / 2, 24);
+
+            for (let i = 0; i < count; i++) {
+                const cx = startX + i * spacing;
+                const cancel = rawP > 0.3;
+                drawCircleNode(cx, topY, r * Math.min(1, scaleP), '#6366f1', '#4338ca', baseLabel, '', cancel ? 0.5 : 1, cancel);
+                drawCircleNode(cx, botY, r * Math.min(1, scaleP), '#ec4899', '#be185d', baseLabel, '', cancel ? 0.5 : 1, cancel);
+                if (i < count - 1) {
+                    ctx.fillStyle = '#64748b';
+                    ctx.font = 'bold 15px "Fredoka", sans-serif';
+                    ctx.fillText('×', cx + spacing / 2, topY);
+                    ctx.fillText('×', cx + spacing / 2, botY);
+                }
+            }
+
+            const barW = count * spacing + 30;
+            ctx.beginPath();
+            ctx.moveTo((w - barW) / 2, barY);
+            ctx.lineTo((w + barW) / 2, barY);
+            ctx.strokeStyle = '#334155';
+            ctx.lineWidth = 4;
+            ctx.stroke();
+
+            drawRoundedBox(w / 2 - 135, h - 78, 270, 58, 18, '#fef3c7', '#f59e0b', false);
+            ctx.fillStyle = '#92400e';
+            ctx.font = 'bold 13px "Noto Sans Tamil", sans-serif';
+            ctx.fillText('எல்லா எண்களும் அடிபட்டதால்', w / 2, h - 55);
+            ctx.fillStyle = '#b45309';
+            ctx.font = 'bold 20px "Fredoka", sans-serif';
+            ctx.fillText(`${baseLabel}^0 = 1`, w / 2, h - 32);
+        }
+
+        function drawNegativeLaw(w, h, a, m, rawP, scaleP) {
+            const baseLabel = formatBasePlain(a);
+            const leftCenterX = w * 0.25;
+            const midY = h * 0.46;
+            const flippedExp = -m;
+            const absM = Math.abs(m);
+
+            drawRoundedBox(20, midY - 65, w * 0.36, 130, 18, 'rgba(244, 63, 94, 0.08)', '#f43f5e', true);
+            ctx.fillStyle = '#be123c';
+            ctx.font = 'bold 13px "Noto Sans Tamil", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(m < 0 ? 'எதிர்மறை அடுக்கு' : 'கொடுக்கப்பட்ட அடுக்கு', leftCenterX, midY - 40);
+
+            ctx.fillStyle = '#e11d48';
+            ctx.font = 'bold 28px "Fredoka", sans-serif';
+            ctx.fillText(formatPowerPlain(a, m), leftCenterX, midY + 12);
+
+            ctx.fillStyle = '#4f46e5';
+            ctx.font = 'bold 24px "Fredoka", sans-serif';
+            ctx.fillText('➔', w * 0.46, midY - 5);
+            ctx.font = 'bold 11px "Noto Sans Tamil", sans-serif';
+            ctx.fillText('தலைகீழி', w * 0.46, midY + 18);
+
+            const rightBoxW = w * 0.44;
+            const rightBoxX = w * 0.52;
+            drawRoundedBox(rightBoxX, midY - 85, rightBoxW, 170, 18, 'rgba(79, 70, 229, 0.06)', '#4f46e5', false);
+
+            drawCircleNode(rightBoxX + rightBoxW / 2, midY - 45, 20 * Math.min(1, scaleP), '#10b981', '#059669', '1');
+
+            const displayCount = Math.min(5, Math.max(1, absM));
+            const fracBarW = Math.min(rightBoxW - 30, displayCount * 46 + 24);
+            ctx.beginPath();
+            ctx.moveTo(rightBoxX + (rightBoxW - fracBarW) / 2, midY - 12);
+            ctx.lineTo(rightBoxX + (rightBoxW + fracBarW) / 2, midY - 12);
+            ctx.strokeStyle = '#312e81';
+            ctx.lineWidth = 3.5;
+            ctx.stroke();
+
+            if (m === 0) {
+                drawCircleNode(rightBoxX + rightBoxW / 2, midY + 26, 20 * Math.min(1, scaleP), '#4f46e5', '#3730a3', a === 0 ? '?' : '1');
+                ctx.fillStyle = '#3730a3';
+                ctx.font = 'bold 12px "Noto Sans Tamil", sans-serif';
+                ctx.fillText(a === 0 ? '0⁰ வரையறுக்கப்படாதது' : `${baseLabel}^0 = 1`, rightBoxX + rightBoxW / 2, midY + 66);
+            } else if (m < 0 && absM <= 5) {
+                const spacing = Math.min(44, (rightBoxW - 24) / absM);
+                const r = Math.min(18, spacing * 0.42);
+                const startDenX = rightBoxX + (rightBoxW - (absM - 1) * spacing) / 2;
+                const denY = midY + 26;
+
+                for (let i = 0; i < absM; i++) {
+                    const cx = startDenX + i * spacing;
+                    drawCircleNode(cx, denY, r * Math.min(1, scaleP), '#4f46e5', '#3730a3', baseLabel);
+                    if (i < absM - 1) {
+                        ctx.fillStyle = '#4f46e5';
+                        ctx.font = 'bold 12px "Fredoka", sans-serif';
+                        ctx.fillText('×', cx + spacing / 2, denY);
+                    }
+                }
+                ctx.fillStyle = '#3730a3';
+                ctx.font = 'bold 12px "Noto Sans Tamil", sans-serif';
+                ctx.fillText(`பகுதியில் ${formatPowerPlain(a, flippedExp)} (${absM} முறை)`, rightBoxX + rightBoxW / 2, midY + 66);
+            } else {
+                ctx.fillStyle = '#4f46e5';
+                ctx.font = 'bold 21px "Fredoka", sans-serif';
+                ctx.fillText(formatPowerPlain(a, flippedExp), rightBoxX + rightBoxW / 2, midY + 26);
+                ctx.fillStyle = '#3730a3';
+                ctx.font = 'bold 11px "Noto Sans Tamil", sans-serif';
+                const subNote = m < 0 ? `${baseLabel} × ... × ${baseLabel} (${absM} முறை)` : `1 / (${formatPowerPlain(a, flippedExp)})`;
+                ctx.fillText(subNote, rightBoxX + rightBoxW / 2, midY + 66);
+            }
+
+            ctx.fillStyle = '#475569';
+            ctx.font = '600 13px "Noto Sans Tamil", sans-serif';
+            const resText = formatExactPowerResult(a, m);
+            const bottomLabel = `இறுதி விடை: ${formatPowerPlain(a, m)} = ${resText}`;
+            ctx.fillText(bottomLabel.length > 52 ? bottomLabel.slice(0, 50) + '...' : bottomLabel, w / 2, h - 22);
+        }
+
+        // Start App on Load
+        window.onload = init;
+    </script>
+</body>
+</html>
