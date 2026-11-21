@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Let's Learn Area of Shapes! - பரப்பளவு கற்றல்</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Alpine.js for Reactivity -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Noto+Sans+Tamil:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Fredoka', 'Noto Sans Tamil', sans-serif;
+            overflow-x: hidden;
+        }
+        /* Graph paper styling */
+        .graph-paper-bg {
+            background-color: #f8fafc;
+            background-image: 
+                linear-gradient(to right, rgba(59, 130, 246, 0.18) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(59, 130, 246, 0.18) 1px, transparent 1px),
+                linear-gradient(to right, rgba(59, 130, 246, 0.08) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(59, 130, 246, 0.08) 1px, transparent 1px);
+            background-size: 50px 50px, 50px 50px, 10px 10px, 10px 10px;
+        }
+        .pulse-glow {
+            animation: softPulse 2.5s infinite ease-in-out;
+        }
+        @keyframes softPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-sky-50 via-indigo-50 to-amber-50 min-h-screen text-slate-800" x-data="mathLessonApp()" x-init="initApp()">
+
+    <!-- 1. TOP HEADER & BRANDING -->
+    <div class="bg-slate-900 text-white py-3 px-4 shadow-md border-b-2 border-amber-400">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+            <!-- School & Creator Details -->
+            <div class="flex flex-wrap items-center justify-center md:justify-start gap-3 text-xs sm:text-sm font-semibold">
+                <span class="bg-amber-400 text-slate-950 px-3 py-1 rounded-full font-bold tracking-wider uppercase shadow">
+                    🏫 GHS, OTTIMEDU
+                </span>
+                <span class="text-sky-200 flex items-center gap-1.5">
+                    <span>👨‍🏫</span>
+                    <span x-text="t('creatorLabel')"></span>:
+                    <strong class="text-white tracking-wide">CHRISTURAJ.A, B.T.ASST. IN MATHS</strong>
+                </span>
+            </div>
+
+            <!-- Language Toggle Buttons (English / தமிழ் / Bilingual) -->
+            <div class="flex items-center gap-1.5 bg-slate-800 p-1 rounded-2xl border border-slate-700 shadow-inner">
+                <button @click="setLang('en')" 
+                    :class="lang === 'en' ? 'bg-amber-400 text-slate-950 shadow font-bold' : 'text-slate-300 hover:text-white'"
+                    class="px-3 py-1.5 rounded-xl text-xs sm:text-sm transition cursor-pointer">
+                    English
+                </button>
+                <button @click="setLang('ta')" 
+                    :class="lang === 'ta' ? 'bg-amber-400 text-slate-950 shadow font-bold' : 'text-slate-300 hover:text-white'"
+                    class="px-3 py-1.5 rounded-xl text-xs sm:text-sm transition cursor-pointer">
+                    தமிழ்
+                </button>
+                <button @click="setLang('both')" 
+                    :class="lang === 'both' ? 'bg-emerald-400 text-slate-950 shadow font-bold' : 'text-slate-300 hover:text-white'"
+                    class="px-3 py-1.5 rounded-xl text-xs sm:text-sm transition cursor-pointer">
+                    English + தமிழ்
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Lesson Title Banner -->
+    <header class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white shadow-xl py-5 px-4 mb-6">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="text-center md:text-left">
+                <span class="bg-white/20 backdrop-blur-sm text-amber-200 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-1.5 inline-block">
+                    <span x-text="t('subtitleBadge')"></span>
+                </span>
+                <h1 class="text-2xl sm:text-4xl font-bold tracking-wide flex items-center justify-center md:justify-start gap-2.5">
+                    <span>📐</span>
+                    <span x-text="t('mainTitle')"></span>
+                </h1>
+                <p class="text-indigo-100 mt-1 text-sm sm:text-base font-medium" x-text="t('welcomeBanner')"></p>
+            </div>
+
+            <!-- Cheerful Background Music & Sound Controls -->
+            <div class="flex items-center gap-2.5">
+                <button @click="toggleMusic()" 
+                    :class="musicPlaying ? 'bg-emerald-400 text-slate-950' : 'bg-white/20 text-white hover:bg-white/30'"
+                    class="font-bold px-4 py-2.5 rounded-2xl shadow-lg transition flex items-center gap-2 text-sm cursor-pointer">
+                    <span x-text="musicPlaying ? '🔊' : '🎵'"></span>
+                    <span x-text="musicPlaying ? t('musicOn') : t('musicOff')"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Wrapper -->
+    <main class="max-w-7xl mx-auto px-4 pb-16">
+
+        <!-- Shape Selector Bar (One Shape at a Time + Revision Game) -->
+        <nav class="bg-white/95 backdrop-blur-md p-3 rounded-3xl shadow-lg mb-7 flex flex-wrap gap-2 justify-center border border-indigo-100">
+            <template x-for="(shape, index) in shapes" :key="shape.id">
+                <button @click="selectShape(index)" 
+                    :class="currentShape === index ? 'bg-indigo-600 text-white shadow-md scale-105 ring-2 ring-amber-400' : 'bg-slate-100 hover:bg-indigo-50 text-slate-700'"
+                    class="px-3.5 py-2.5 rounded-2xl font-semibold text-sm transition duration-200 flex items-center gap-2 cursor-pointer">
+                    <span class="text-lg" x-text="shape.icon"></span>
+                    <span x-text="getShapeName(shape)"></span>
+                </button>
+            </template>
+            
+            <!-- Grand Revision Game Button -->
+            <button @click="selectGame()" 
+                :class="currentShape === 8 ? 'bg-pink-600 text-white shadow-md scale-105 ring-2 ring-amber-400' : 'bg-pink-100 hover:bg-pink-200 text-pink-800'"
+                class="px-4 py-2.5 rounded-2xl font-bold text-sm transition duration-200 flex items-center gap-2 cursor-pointer">
+                <span class="text-lg">🎮</span>
+                <span x-text="t('revisionGameTab')"></span>
+            </button>
+        </nav>
+
+        <!-- ================= LESSON VIEW FOR SINGLE SHAPE (0 to 7) ================= -->
+        <template x-if="currentShape < 8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-7">
+                
+                <!-- LEFT / MAIN COLUMN: Interactive Simulation, Graph Canvas, Real-Life Box & Steps (7 cols) -->
+                <div class="lg:col-span-7 flex flex-col gap-6">
+
+                    <!-- CARD 1: Shape Title, Direct Numeric Inputs & Interactive Canvas / Unit Grid -->
+                    <div class="bg-white rounded-3xl p-6 shadow-xl border-2 border-indigo-100 relative overflow-hidden">
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-100">
+                            <div class="flex items-center gap-3">
+                                <span class="text-4xl p-3 bg-indigo-50 rounded-2xl shadow-inner" x-text="activeShape().icon"></span>
+                                <div>
+                                    <span class="text-xs font-bold uppercase tracking-wider text-indigo-500" x-text="t('shapeStepLabel') + ' ' + (currentShape + 1) + ' / 8'"></span>
+                                    <h2 class="text-2xl sm:text-3xl font-bold text-indigo-950" x-text="getShapeName(activeShape())"></h2>
+                                </div>
+                            </div>
+                            <button @click="replayAnimation()" class="bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold px-3.5 py-2 rounded-2xl text-xs sm:text-sm flex items-center gap-1.5 shadow-sm transition cursor-pointer">
+                                <span>🔄</span> <span x-text="t('replayAnimBtn')"></span>
+                            </button>
+                        </div>
+
+                        <!-- Direct Numeric Input Boxes (No Sliders) -->
+                        <div class="bg-indigo-50/80 p-4 rounded-2xl border border-indigo-200 mb-5">
+                            <div class="text-xs font-bold uppercase tracking-wider text-indigo-800 mb-3 flex items-center gap-1.5">
+                                <span>⌨️</span> <span x-text="t('enterDimensionsTitle')"></span>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                                <template x-for="(dim, key) in activeShape().dimensions" :key="key">
+                                    <div class="bg-white p-3 rounded-2xl border-2 border-indigo-100 shadow-sm flex flex-col gap-1">
+                                        <label class="text-xs font-bold text-slate-600" x-text="getDimLabel(dim)"></label>
+                                        <div class="flex items-center gap-2">
+                                            <input type="number" 
+                                                :min="dim.min" 
+                                                :max="dim.max" 
+                                                step="1"
+                                                x-model.number="dim.val" 
+                                                @input="onDimensionChange(key)"
+                                                class="w-full px-3 py-2 border-2 border-indigo-300 rounded-xl font-bold text-lg text-center text-indigo-950 bg-indigo-50/50 focus:outline-none focus:border-indigo-600">
+                                            <span class="text-sm font-bold text-slate-500" x-text="t('cmUnit')"></span>
+                                        </div>
+                                        <span class="text-[11px] text-slate-400" x-text="t('allowedRange') + ': ' + dim.min + ' - ' + dim.max"></span>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- CONDITIONAL VISUALIZATION: -->
+                        <!-- CASE A: SQUARE (0) & RECTANGLE (1) -> Strict Unit-Square Grid (NO NUMBERS inside squares) + Dimension Labels -->
+                        <template x-if="currentShape === 0 || currentShape === 1">
+                            <div class="bg-slate-900 rounded-3xl p-5 shadow-inner flex flex-col items-center justify-center relative">
+                                <div class="w-full flex items-center justify-between text-xs text-amber-300 font-bold mb-3 px-2">
+                                    <span x-text="t('unitSquareTitle')"></span>
+                                    <span class="bg-slate-800 px-2.5 py-1 rounded-full text-emerald-300" x-text="t('noNumbersHint')"></span>
+                                </div>
+
+                                <!-- Visual Container with Side Labels -->
+                                <div class="flex flex-col items-center justify-center my-2 w-full overflow-x-auto py-2">
+                                    <!-- Top Dimension Label -->
+                                    <div class="text-amber-300 font-bold text-sm mb-2 bg-slate-800 px-3 py-1 rounded-full border border-amber-400/40">
+                                        <span x-text="currentShape === 0 ? (t('sideWord') + ' = ' + activeShape().dimensions.side.val + ' ' + t('cmUnit')) : (t('lengthWord') + ' = ' + activeShape().dimensions.length.val + ' ' + t('cmUnit'))"></span>
+                                    </div>
+
+                                    <div class="flex items-center gap-3">
+                                        <!-- Left Dimension Label -->
+                                        <div class="text-sky-300 font-bold text-sm bg-slate-800 px-3 py-1 rounded-full border border-sky-400/40 whitespace-nowrap">
+                                            <span x-text="currentShape === 0 ? (t('sideWord') + ' = ' + activeShape().dimensions.side.val + ' ' + t('cmUnit')) : (t('breadthWord') + ' = ' + activeShape().dimensions.breadth.val + ' ' + t('cmUnit'))"></span>
+                                        </div>
+
+                                        <!-- Strict Unit Square Grid (NO NUMBERS INSIDE) -->
+                                        <div class="p-2.5 bg-slate-950 rounded-2xl border-4 border-amber-400 shadow-[0_0_20px_rgba(250,204,21,0.3)]">
+                                            <div class="grid gap-1.5" :style="getStrictRectGridStyle()">
+                                                <template x-for="cell in getStrictRectCellCount()" :key="cell">
+                                                    <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg transition-all duration-300 shadow-sm"
+                                                        :class="currentShape === 0 ? 'bg-gradient-to-br from-amber-300 to-amber-500 border border-amber-200' : 'bg-gradient-to-br from-sky-400 to-blue-600 border border-sky-200'">
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <p class="text-xs text-slate-300 text-center mt-3 bg-slate-800/80 px-4 py-2 rounded-xl" x-text="getVisualProofCaption()"></p>
+                            </div>
+                        </template>
+
+                        <!-- CASE B: ALL OTHER 6 SHAPES (2 to 7) -> Graph Sheet Background Canvas with Accurate Scaled Dimensions & Visual Proof Animation -->
+                        <template x-if="currentShape >= 2">
+                            <div class="rounded-3xl p-4 border-2 border-blue-200 bg-blue-50/40 shadow-inner">
+                                <div class="flex flex-wrap items-center justify-between gap-2 mb-2 px-1">
+                                    <span class="text-xs font-bold text-blue-900 flex items-center gap-1.5">
+                                        <span>📊</span> <span x-text="t('graphSheetTitle')"></span>
+                                    </span>
+                                    <span class="text-xs font-semibold text-indigo-700 bg-white px-2.5 py-1 rounded-full border border-indigo-200" x-text="t('graphScaleNote')"></span>
+                                </div>
+
+                                <!-- HTML5 Graph Paper Canvas -->
+                                <div class="w-full rounded-2xl overflow-hidden border-2 border-blue-300 shadow-md graph-paper-bg relative">
+                                    <canvas id="mainGraphCanvas" class="w-full h-[310px] block"></canvas>
+                                </div>
+
+                                <!-- Visual Proof Explanation Caption -->
+                                <div class="mt-3 bg-white p-3 rounded-2xl border border-blue-100 text-xs sm:text-sm font-medium text-slate-700 flex items-center gap-2.5 shadow-sm">
+                                    <span class="text-xl">💡</span>
+                                    <span x-text="getVisualProofCaption()"></span>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- CARD 2: LARGE REAL-LIFE EXAMPLE BOX -->
+                    <div class="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 rounded-3xl p-6 shadow-xl border-2 border-amber-300">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm" x-text="t('realLifeBadge')"></span>
+                            <span class="text-xs font-bold text-amber-800" x-text="getShapeName(activeShape())"></span>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row items-center gap-5 bg-white/90 p-5 rounded-2xl border border-amber-200 shadow-sm">
+                            <!-- Large Illustrated SVG Real-Life Object -->
+                            <div class="w-32 h-32 sm:w-36 sm:h-36 flex-shrink-0 bg-amber-100/70 rounded-3xl flex items-center justify-center p-3 border-2 border-amber-300 shadow-inner pulse-glow" x-html="activeShape().realLifeSvg">
+                            </div>
+
+                            <div class="flex-1 text-center sm:text-left">
+                                <h3 class="text-xl sm:text-2xl font-bold text-amber-950 mb-1" x-text="getRealLifeTitle(activeShape())"></h3>
+                                <p class="text-sm sm:text-base text-slate-700 leading-relaxed mb-3" x-text="getRealLifeDesc(activeShape())"></p>
+                                <div class="inline-flex items-center gap-2 bg-amber-100 text-amber-900 font-bold text-xs sm:text-sm px-3.5 py-2 rounded-xl border border-amber-300">
+                                    <span>📏</span>
+                                    <span x-text="getStep1Measurements()"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CARD 3: 5-STEP AREA CALCULATION BREAKDOWN -->
+                    <div class="bg-gradient-to-br from-indigo-700 via-indigo-800 to-purple-900 text-white rounded-3xl p-6 shadow-xl">
+                        <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <span>🧮</span> <span x-text="t('fiveStepsHeading')"></span>
+                        </h3>
+
+                        <div class="flex flex-col gap-3 text-sm sm:text-base">
+                            <!-- Step 1 -->
+                            <div class="bg-white/10 backdrop-blur-sm p-3.5 rounded-2xl border border-white/15 flex items-start gap-3">
+                                <span class="bg-amber-400 text-slate-950 font-bold px-3 py-1 rounded-full text-xs whitespace-nowrap mt-0.5" x-text="t('stepWord') + ' 1'"></span>
+                                <div>
+                                    <div class="font-bold text-amber-300 text-xs uppercase tracking-wider" x-text="t('step1Title')"></div>
+                                    <div class="font-semibold text-white mt-0.5" x-text="getStep1Measurements()"></div>
+                                </div>
+                            </div>
+
+                            <!-- Step 2 -->
+                            <div class="bg-white/10 backdrop-blur-sm p-3.5 rounded-2xl border border-white/15 flex items-start gap-3">
+                                <span class="bg-amber-400 text-slate-950 font-bold px-3 py-1 rounded-full text-xs whitespace-nowrap mt-0.5" x-text="t('stepWord') + ' 2'"></span>
+                                <div>
+                                    <div class="font-bold text-amber-300 text-xs uppercase tracking-wider" x-text="t('step2Title')"></div>
+                                    <div class="font-bold text-lg text-emerald-300 mt-0.5" x-text="getFormulaDisplay(activeShape())"></div>
+                                </div>
+                            </div>
+
+                            <!-- Step 3 -->
+                            <div class="bg-white/10 backdrop-blur-sm p-3.5 rounded-2xl border border-white/15 flex items-start gap-3">
+                                <span class="bg-amber-400 text-slate-950 font-bold px-3 py-1 rounded-full text-xs whitespace-nowrap mt-0.5" x-text="t('stepWord') + ' 3'"></span>
+                                <div>
+                                    <div class="font-bold text-amber-300 text-xs uppercase tracking-wider" x-text="t('step3Title')"></div>
+                                    <div class="font-semibold text-white mt-0.5" x-text="getStep3Substitution()"></div>
+                                </div>
+                            </div>
+
+                            <!-- Step 4 -->
+                            <div class="bg-white/10 backdrop-blur-sm p-3.5 rounded-2xl border border-white/15 flex items-start gap-3">
+                                <span class="bg-amber-400 text-slate-950 font-bold px-3 py-1 rounded-full text-xs whitespace-nowrap mt-0.5" x-text="t('stepWord') + ' 4'"></span>
+                                <div>
+                                    <div class="font-bold text-amber-300 text-xs uppercase tracking-wider" x-text="t('step4Title')"></div>
+                                    <div class="font-semibold text-white mt-0.5" x-text="getStep4Arithmetic()"></div>
+                                </div>
+                            </div>
+
+                            <!-- Step 5 -->
+                            <div class="bg-amber-400 text-slate-950 p-4 rounded-2xl font-bold flex flex-wrap items-center justify-between gap-2 shadow-lg">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-slate-900 text-amber-300 px-3 py-1 rounded-full text-xs" x-text="t('stepWord') + ' 5'"></span>
+                                    <span x-text="t('step5Title')"></span>
+                                </div>
+                                <div class="bg-indigo-950 text-amber-300 px-4 py-1.5 rounded-xl text-lg sm:text-xl tracking-wide shadow">
+                                    <span x-text="computeArea() + ' ' + t('sqCmUnit')"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN: Golden Formula (Repeated 3x) & Practice Zone with Labeled Geometric Diagram (5 cols) -->
+                <div class="lg:col-span-5 flex flex-col gap-6">
+
+                    <!-- CARD 4: GOLDEN FORMULA REPEATED 3 TIMES -->
+                    <div class="bg-white rounded-3xl p-6 shadow-xl border-2 border-amber-300">
+                        <div class="flex items-center gap-2.5 mb-2">
+                            <span class="text-2xl">🌟</span>
+                            <h3 class="text-xl font-bold text-amber-950" x-text="t('goldenFormulaHeading')"></h3>
+                        </div>
+                        <p class="text-xs text-slate-500 mb-3" x-text="t('repeatThreeNote')"></p>
+
+                        <div class="flex flex-col gap-2.5">
+                            <template x-for="rep in [1, 2, 3]" :key="rep">
+                                <div class="bg-gradient-to-r from-amber-50 to-yellow-50 border-l-4 border-amber-500 p-3 rounded-r-2xl shadow-sm flex items-center justify-between gap-2">
+                                    <span class="font-bold text-base sm:text-lg text-amber-950" x-text="rep + '. ' + getFormulaDisplay(activeShape())"></span>
+                                    <span class="bg-amber-200 text-amber-900 text-[11px] font-bold px-2.5 py-0.5 rounded-full whitespace-nowrap" x-text="'× ' + rep"></span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- CARD 5: PRACTICE ZONE (NO ANIMATION/GRID — CRISP STATIC LABELED DIAGRAM + 2 SEPARATE INPUTS & CHECK BUTTONS) -->
+                    <div class="bg-white rounded-3xl p-6 shadow-xl border-2 border-emerald-200 flex-1 flex flex-col justify-between">
+                        <div>
+                            <!-- Practice Header & Question Switcher -->
+                            <div class="flex items-center justify-between gap-2 mb-3">
+                                <h3 class="text-xl font-bold text-emerald-950 flex items-center gap-2">
+                                    <span>✍️</span> <span x-text="t('practiceZoneHeading')"></span>
+                                </h3>
+                                <div class="flex items-center gap-1.5 bg-emerald-100 p-1 rounded-xl">
+                                    <button @click="setPracticeQuestion(0)" 
+                                        :class="practiceIdx === 0 ? 'bg-emerald-600 text-white shadow' : 'text-emerald-900 hover:bg-emerald-200'"
+                                        class="px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer">
+                                        Q1
+                                    </button>
+                                    <button @click="setPracticeQuestion(1)" 
+                                        :class="practiceIdx === 1 ? 'bg-emerald-600 text-white shadow' : 'text-emerald-900 hover:bg-emerald-200'"
+                                        class="px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer">
+                                        Q2
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Practice Question Prompt -->
+                            <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl mb-4">
+                                <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-700 block mb-1" x-text="t('questionLabel') + ' ' + (practiceIdx + 1) + ' / 2'"></span>
+                                <p class="font-bold text-emerald-950 text-base leading-snug" x-text="getPracticeQuestionText()"></p>
+                            </div>
+
+                            <!-- STATIC LABELED GEOMETRIC DIAGRAM FOR THE PRACTICE QUESTION -->
+                            <div class="bg-slate-50 border-2 border-slate-200 rounded-2xl p-3 mb-4 flex flex-col items-center">
+                                <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1" x-text="t('practiceDiagramLabel')"></span>
+                                <div class="w-full flex items-center justify-center" x-html="getPracticeDiagramSvg()"></div>
+                            </div>
+
+                            <!-- 5-SECOND THINKING TIMER -->
+                            <div class="mb-4">
+                                <template x-if="timerRunning">
+                                    <div class="bg-amber-100 border-2 border-amber-300 text-amber-950 p-3 rounded-2xl text-center font-bold">
+                                        <div class="text-sm mb-1.5" x-text="t('thinkTimerMsg').replace('{sec}', timerSec)"></div>
+                                        <div class="w-full bg-amber-200 h-2.5 rounded-full overflow-hidden">
+                                            <div class="bg-amber-600 h-full transition-all duration-1000" :style="'width: ' + (timerSec * 20) + '%'"></div>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <template x-if="!timerRunning && !answerRevealed">
+                                    <button @click="startThinkTimer()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 px-4 rounded-2xl shadow transition flex items-center justify-center gap-2 text-sm cursor-pointer">
+                                        <span>⏳</span> <span x-text="t('startTimerBtn')"></span>
+                                    </button>
+                                </template>
+
+                                <template x-if="answerRevealed">
+                                    <div class="bg-indigo-50 border-2 border-indigo-200 p-3.5 rounded-2xl">
+                                        <div class="text-xs font-bold text-indigo-600 uppercase mb-1" x-text="t('revealedSolutionLabel')"></div>
+                                        <div class="text-sm font-bold text-indigo-950" x-text="getPracticeRevealedSolution()"></div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <!-- TWO SEPARATE INPUT BOXES WITH SEPARATE CHECK BUTTONS -->
+                            <div class="flex flex-col gap-3.5 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                                <!-- Box 1: Formula / Substitution Input + Check Formula Button -->
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1" x-text="t('inputFormulaLabel')"></label>
+                                    <div class="flex gap-2">
+                                        <input type="text" 
+                                            x-model="userFormulaInput" 
+                                            :placeholder="t('inputFormulaPlaceholder')"
+                                            class="flex-1 px-3 py-2 border-2 border-slate-300 rounded-xl text-sm font-semibold focus:outline-none focus:border-emerald-600 bg-white">
+                                        <button @click="checkPracticeFormula()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3.5 py-2 rounded-xl text-xs shadow transition whitespace-nowrap cursor-pointer" x-text="t('checkFormulaBtn')"></button>
+                                    </div>
+                                    <template x-if="formulaStatusMsg">
+                                        <div class="mt-1.5 text-xs font-bold px-2.5 py-1 rounded-lg" 
+                                            :class="formulaIsOk ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-900'"
+                                            x-text="formulaStatusMsg"></div>
+                                    </template>
+                                </div>
+
+                                <!-- Box 2: Final Numerical Answer Input + Check Answer Button -->
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1" x-text="t('inputAnswerLabel')"></label>
+                                    <div class="flex gap-2">
+                                        <input type="number" 
+                                            step="any"
+                                            x-model="userAnswerInput" 
+                                            :placeholder="t('inputAnswerPlaceholder')"
+                                            class="flex-1 px-3 py-2 border-2 border-slate-300 rounded-xl text-sm font-bold focus:outline-none focus:border-emerald-600 bg-white">
+                                        <button @click="checkPracticeAnswer()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-3.5 py-2 rounded-xl text-xs shadow transition whitespace-nowrap cursor-pointer" x-text="t('checkAnswerBtn')"></button>
+                                    </div>
+                                    <template x-if="answerStatusMsg">
+                                        <div class="mt-1.5 text-xs font-bold px-2.5 py-1 rounded-lg" 
+                                            :class="answerIsOk ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-900'"
+                                            x-text="answerStatusMsg"></div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Navigation Buttons (Next Question / Next Shape) -->
+                        <div class="flex items-center justify-between gap-3 mt-5 pt-3 border-t border-slate-100">
+                            <button @click="nextPracticeQuestion()" class="flex-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-950 font-bold py-2.5 px-4 rounded-2xl text-xs sm:text-sm transition cursor-pointer" x-text="t('nextQuestionBtn')"></button>
+                            <button @click="nextShape()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 px-4 rounded-2xl text-xs sm:text-sm shadow transition cursor-pointer" x-text="currentShape < 7 ? t('nextShapeBtn') : t('goToGameBtn')"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ================= GRAND REVISION GAME VIEW (currentShape === 8) ================= -->
+        <template x-if="currentShape === 8">
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border-2 border-pink-200">
+                <!-- Game Header & Score -->
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4 pb-6 mb-6 border-b border-pink-100">
+                    <div>
+                        <span class="bg-pink-100 text-pink-700 font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider" x-text="t('gameBadge')"></span>
+                        <h2 class="text-2xl sm:text-3xl font-bold text-pink-950 mt-1" x-text="t('gameTitle')"></h2>
+                        <p class="text-sm text-slate-600" x-text="t('gameSubtitle')"></p>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <div class="bg-amber-100 border-2 border-amber-300 px-5 py-2.5 rounded-2xl text-center">
+                            <span class="text-xs font-bold text-amber-800 block uppercase" x-text="t('scoreLabel')"></span>
+                            <span class="text-2xl font-bold text-amber-950" x-text="gameScore + ' / 8'"></span>
+                        </div>
+                        <button @click="resetGame()" class="bg-pink-600 hover:bg-pink-500 text-white font-bold px-4 py-3 rounded-2xl shadow transition text-sm cursor-pointer" x-text="t('restartGameBtn')"></button>
+                    </div>
+                </div>
+
+                <!-- Interactive 8-Shape Quiz Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <template x-for="(qItem, idx) in gameQuestions" :key="qItem.shapeId">
+                        <div class="rounded-3xl p-5 border-2 transition flex flex-col justify-between shadow-md"
+                            :class="qItem.solved ? 'bg-emerald-50 border-emerald-400' : 'bg-gradient-to-br from-indigo-50 to-pink-50 border-indigo-100'">
+                            <div>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-3xl p-2 bg-white rounded-2xl shadow-sm" x-text="shapes[idx].icon"></span>
+                                    <span class="text-xs font-bold px-2.5 py-1 rounded-full"
+                                        :class="qItem.solved ? 'bg-emerald-500 text-white' : 'bg-indigo-600 text-white'"
+                                        x-text="qItem.solved ? '✅' : '#' + (idx + 1)"></span>
+                                </div>
+                                <h3 class="font-bold text-lg text-indigo-950" x-text="getShapeName(shapes[idx])"></h3>
+                                <p class="text-xs font-semibold text-amber-800 bg-white/80 px-2.5 py-1.5 rounded-xl mt-1.5 mb-3 border border-amber-200">
+                                    🌟 <span x-text="getRealLifeTitle(shapes[idx])"></span>
+                                </p>
+                                <p class="text-xs font-bold text-slate-600 mb-2" x-text="t('selectFormulaPrompt')"></p>
+                            </div>
+
+                            <!-- Formula Choices -->
+                            <div class="flex flex-col gap-1.5">
+                                <template x-for="(opt, oIdx) in qItem.options" :key="oIdx">
+                                    <button @click="answerGameQuestion(idx, opt.isCorrect)"
+                                        :disabled="qItem.solved"
+                                        :class="qItem.solved && opt.isCorrect ? 'bg-emerald-600 text-white font-bold' : 'bg-white hover:bg-indigo-100 text-slate-800 border border-slate-200'"
+                                        class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold transition cursor-pointer">
+                                        <span x-text="lang === 'ta' ? opt.ta : (lang === 'en' ? opt.en : opt.en + ' | ' + opt.ta)"></span>
+                                    </button>
+                                </template>
+                            </div>
+
+                            <template x-if="qItem.feedback">
+                                <div class="mt-2.5 text-xs font-bold text-center"
+                                    :class="qItem.solved ? 'text-emerald-700' : 'text-rose-600'"
+                                    x-text="qItem.feedback"></div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Grand Celebration Banner -->
+                <div class="mt-8 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white p-6 rounded-3xl shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div>
+                        <h3 class="text-xl font-bold" x-text="t('closingPraiseTitle')"></h3>
+                        <p class="text-indigo-100 text-sm mt-0.5" x-text="t('closingPraiseSub')"></p>
+                    </div>
+                    <button @click="celebrate()" class="bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold px-6 py-3 rounded-2xl shadow-lg transition transform hover:scale-105 flex items-center gap-2 cursor-pointer">
+                        <span>🎉</span> <span x-text="t('celebrateBtn')"></span>
+                    </button>
+                </div>
+            </div>
+        </template>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-5 text-slate-500 text-xs border-t border-slate-200 bg-white/70">
+        <p>🏫 GHS, OTTIMEDU • 👨‍🏫 Creator: CHRISTURAJ.A, B.T.ASST. IN MATHS • Let's Learn Area of Shapes! (பரப்பளவு கற்றல்)</p>
+    </footer>
+
+    <!-- Application Logic -->
+    <script>
+        function mathLessonApp() {
+            return {
+                lang: 'both', // 'en', 'ta', 'both'
+                currentShape: 0,
+                practiceIdx: 0,
+                userFormulaInput: '',
+                userAnswerInput: '',
+                formulaStatusMsg: '',
+                formulaIsOk: false,
+                answerStatusMsg: '',
+                answerIsOk: false,
+                timerRunning: false,
+                timerSec: 5,
+                timerHandle: null,
+                answerRevealed: false,
+                animProgress: 0,
+                animDirection: 1,
+                musicPlaying: false,
+                musicInterval: null,
+                gameScore: 0,
+                gameQuestions: [],
+
+                // UI Dictionary for Full Bilingual / Single-Language Toggle
+                i18n: {
+                    creatorLabel: { en: 'Creator Name', ta: 'உருவாக்கியவர்', both: 'Creator / உருவாக்கியவர்' },
+                    subtitleBadge: { en: 'Middle School Interactive Math', ta: 'நடுநிலைப் பள்ளி கணிதப் பாடம்', both: 'Middle School Math • நடுநிலைப் பள்ளி கணிதம்' },
+                    mainTitle: { en: "Let's Learn Area of Shapes!", ta: 'வடிவங்களின் பரப்பளவு கற்போம்!', both: "Let's Learn Area of Shapes! • வடிவங்களின் பரப்பளவு கற்போம்!" },
+                    welcomeBanner: {
+                        en: 'Step-by-step visual lessons. Take your time — You can do it!',
+                        ta: 'படிப்படியாக காட்சிகளுடன் கற்போம். உங்களால் முடியும்!',
+                        both: 'Step-by-step visual lessons. You can do it! • படிப்படியாக கற்போம். உங்களால் முடியும்!'
+                    },
+                    musicOn: { en: 'Music: ON', ta: 'இசை: இயங்குகிறது', both: 'Music: ON / இசை' },
+                    musicOff: { en: 'Play Cheerful Music', ta: 'மகிழ்ச்சி இசை', both: 'Cheerful Music / இசை' },
+                    revisionGameTab: { en: 'Revision Game', ta: 'மதிப்பீட்டு விளையாட்டு', both: 'Revision Game (விளையாட்டு)' },
+                    shapeStepLabel: { en: 'Shape', ta: 'வடிவம்', both: 'Shape / வடிவம்' },
+                    replayAnimBtn: { en: 'Replay Animation', ta: 'அசைவூட்டம் மீண்டும்', both: 'Replay / மீண்டும்' },
+                    enterDimensionsTitle: { en: 'Type Shape Dimensions (Numbers):', ta: 'வடிவத்தின் அளவுகளை உள்ளிடவும்:', both: 'Type Dimensions / அளவுகளை உள்ளிடவும்:' },
+                    cmUnit: { en: 'cm', ta: 'செ.மீ', both: 'cm (செ.மீ)' },
+                    sqCmUnit: { en: 'sq cm', ta: 'ச.செ.மீ', both: 'sq cm (ச.செ.மீ)' },
+                    allowedRange: { en: 'Range', ta: 'வரம்பு', both: 'Range / வரம்பு' },
+                    unitSquareTitle: { en: 'Unit Square Grid (Strict Dimensions)', ta: 'ஓரலகு சதுரக் கட்டம்', both: 'Unit Square Grid / ஓரலகு சதுரக் கட்டம்' },
+                    noNumbersHint: { en: 'Count the squares!', ta: 'சதுரங்களை எண்ணுக!', both: 'Count squares / சதுரங்களை எண்ணுக' },
+                    sideWord: { en: 'Side', ta: 'பக்கம்', both: 'Side (பக்கம்)' },
+                    lengthWord: { en: 'Length', ta: 'நீளம்', both: 'Length (நீளம்)' },
+                    breadthWord: { en: 'Breadth', ta: 'அகலம்', both: 'Breadth (அகலம்)' },
+                    graphSheetTitle: { en: 'Graph Sheet Visual Proof', ta: 'வரைபடத் தாள் காட்சி விளக்கம்', both: 'Graph Sheet Visual Proof / வரைபடத் தாள் விளக்கம்' },
+                    graphScaleNote: { en: '1 Grid Box = 1 cm', ta: '1 கட்டம் = 1 செ.மீ', both: '1 Box = 1 cm (செ.மீ)' },
+                    realLifeBadge: { en: 'Real-Life Example', ta: 'நடைமுறை வாழ்க்கை உதாரணம்', both: 'Real-Life Example / நடைமுறை உதாரணம்' },
+                    fiveStepsHeading: { en: '5-Step Area Calculation', ta: '5-படி பரப்பளவு கணக்கீடு', both: '5-Step Calculation / 5-படி கணக்கீடு' },
+                    stepWord: { en: 'Step', ta: 'படி', both: 'Step / படி' },
+                    step1Title: { en: 'Identify Measurements', ta: 'அளவுகளை அடையாளம் காண்க', both: 'Identify Measurements / அளவுகள்' },
+                    step2Title: { en: 'Write Formula', ta: 'சூத்திரத்தை எழுதுக', both: 'Formula / சூத்திரம்' },
+                    step3Title: { en: 'Substitute Values', ta: 'மதிப்புகளைப் பிரதியிடுக', both: 'Substitute Values / பிரதியிடல்' },
+                    step4Title: { en: 'Arithmetic Step-by-Step', ta: 'படிப்படியாகப் பெருக்குக / வகுக்க', both: 'Arithmetic / கணக்கீடு' },
+                    step5Title: { en: 'Final Answer with Units', ta: 'இறுதி விடை (அலகுடன்)', both: 'Final Answer / இறுதி விடை' },
+                    goldenFormulaHeading: { en: 'Formula (Repeated 3 Times)', ta: 'சூத்திரம் (3 முறை கூறுவோம்)', both: 'Formula (3 Times) / சூத்திரம்' },
+                    repeatThreeNote: { en: 'Read aloud three times to remember easily!', ta: 'எளிதில் நினைவில் கொள்ள 3 முறை சத்தமாகப் படியுங்கள்!', both: 'Read 3 times / 3 முறை படியுங்கள்' },
+                    practiceZoneHeading: { en: 'Practice Zone', ta: 'பயிற்சிப் பகுதி', both: 'Practice Zone / பயிற்சிப் பகுதி' },
+                    questionLabel: { en: 'Question', ta: 'கேள்வி', both: 'Question / கேள்வி' },
+                    practiceDiagramLabel: { en: 'Given Measurements Diagram', ta: 'கொடுக்கப்பட்ட அளவுகளின் படம்', both: 'Given Diagram / அளவுகளின் படம்' },
+                    startTimerBtn: { en: 'Think for 5 Seconds Before Answer', ta: 'விடை காண 5 வினாடிகள் சிந்திக்கவும்', both: '5s Think Timer / 5 வினாடி சிந்தனை' },
+                    thinkTimerMsg: { en: '⏳ Think carefully... {sec} seconds left!', ta: '⏳ நன்றாக சிந்தியுங்கள்... இன்னும் {sec} வினாடிகள்!', both: '⏳ Think... {sec}s / சிந்தியுங்கள்... {sec} வி' },
+                    revealedSolutionLabel: { en: 'Step-by-Step Answer:', ta: 'சரியான விடை:', both: 'Solution / சரியான விடை:' },
+                    inputFormulaLabel: { en: '1. Write Formula or Substitution:', ta: '1. சூத்திரம் அல்லது பிரதியிடல் எழுதுக:', both: '1. Formula / சூத்திரம்:' },
+                    inputFormulaPlaceholder: { en: 'e.g. side x side or 4 x 4', ta: 'எ.கா: பக்கம் × பக்கம்', both: 'e.g. side x side / பக்கம் × பக்கம்' },
+                    checkFormulaBtn: { en: 'Check Formula', ta: 'சூத்திரம் சரிபார்', both: 'Check Formula / சரிபார்' },
+                    inputAnswerLabel: { en: '2. Write Final Number Answer:', ta: '2. இறுதி எண் விடையை எழுதுக:', both: '2. Final Answer / இறுதி விடை:' },
+                    inputAnswerPlaceholder: { en: 'e.g. 16', ta: 'எ.கா: 16', both: 'e.g. 16' },
+                    checkAnswerBtn: { en: 'Check Answer', ta: 'விடை சரிபார்', both: 'Check Answer / சரிபார்' },
+                    nextQuestionBtn: { en: 'Switch Question (Q1/Q2)', ta: 'அடுத்த கேள்வி (Q1/Q2)', both: 'Next Question / அடுத்த கேள்வி' },
+                    nextShapeBtn: { en: 'Next Shape ➡️', ta: 'அடுத்த வடிவம் ➡️', both: 'Next Shape / அடுத்த வடிவம் ➡️' },
+                    goToGameBtn: { en: 'Play Revision Game 🎮', ta: 'விளையாட்டுக்குச் செல் 🎮', both: 'Revision Game / விளையாட்டு 🎮' },
+                    gameBadge: { en: 'All 8 Shapes Challenge', ta: '8 வடிவங்கள் சவால்', both: '8 Shapes Challenge / 8 வடிவங்கள்' },
+                    gameTitle: { en: '🎮 Grand Revision Game: Match Shape & Formula!', ta: '🎮 மதிப்பீட்டு விளையாட்டு: வடிவமும் சூத்திரமும்!', both: '🎮 Grand Revision Game / மதிப்பீட்டு விளையாட்டு' },
+                    gameSubtitle: { en: 'Choose the correct area formula for each shape!', ta: 'ஒவ்வொரு வடிவத்திற்கும் சரியான பரப்பளவு சூத்திரத்தைத் தேர்ந்தெடுக்கவும்!', both: 'Pick the right formula! / சரியான சூத்திரத்தைத் தேர்ந்தெடுக்கவும்!' },
+                    scoreLabel: { en: 'Your Score', ta: 'உங்கள் மதிப்பெண்', both: 'Score / மதிப்பெண்' },
+                    restartGameBtn: { en: '🔄 Restart Game', ta: '🔄 மீண்டும் விளையாடு', both: '🔄 Restart / மீண்டும்' },
+                    selectFormulaPrompt: { en: 'Select correct formula:', ta: 'சரியான சூத்திரத்தைத் தேர்வு செய்க:', both: 'Select formula / சூத்திரம்:' },
+                    closingPraiseTitle: { en: '🌟 Excellent! You can do it!', ta: '🌟 மிக நன்று! உங்களால் முடியும்!', both: '🌟 Excellent! You can do it! • மிக நன்று! உங்களால் முடியும்!' },
+                    closingPraiseSub: { en: 'You practiced all 8 shapes step by step!', ta: '8 வடிவங்களின் பரப்பளவையும் சிறப்பாகக் கற்றுக்கொண்டீர்கள்!', both: 'Great job mastering all 8 shapes! • 8 வடிவங்களையும் கற்றுக்கொண்டீர்கள்!' },
+                    celebrateBtn: { en: 'Celebrate!', ta: 'கொண்டாடு!', both: 'Celebrate! / கொண்டாடு!' }
+                },
+
+                // 8 Shapes Complete Lesson Data
+                shapes: [
+                    {
+                        id: 'square',
+                        nameEn: 'Square',
+                        nameTa: 'சதுரம்',
+                        icon: '🟨',
+                        dimensions: {
+                            side: { labelEn: 'Side (s)', labelTa: 'பக்கம் (s)', val: 4, min: 2, max: 7 }
+                        },
+                        formulaEn: 'Area = Side × Side (s²)',
+                        formulaTa: 'பரப்பளவு = பக்கம் × பக்கம்',
+                        formulaKeywords: ['side', 's*s', 'sxs', 's^2', 'பக்கம்'],
+                        visualCaptionEn: 'Count the unit squares arranged in equal rows and columns: Side × Side.',
+                        visualCaptionTa: 'சமமான வரிசைகளில் உள்ள ஓரலகு சதுரங்களை எண்ணுங்கள்: பக்கம் × பக்கம்.',
+                        realLifeEn: 'Floor Tile (தரை ஓடு)',
+                        realLifeTa: 'தரை ஓடு (Floor Tile)',
+                        realLifeDescEn: 'A floor tile is shaped like a square. All 4 sides have the exact same length!',
+                        realLifeDescTa: 'தரை ஓடு சதுர வடிவத்தில் இருக்கும். இதன் 4 பக்கங்களும் சம அளவில் இருக்கும்!',
+                        realLifeSvg: `<svg viewBox="0 0 120 120" class="w-full h-full"><rect x="15" y="15" width="90" height="90" rx="8" fill="#fbbf24" stroke="#b45309" stroke-width="4"/><line x1="60" y1="15" x2="60" y2="105" stroke="#d97706" stroke-width="2" stroke-dasharray="4"/><line x1="15" y1="60" x2="105" y2="60" stroke="#d97706" stroke-width="2" stroke-dasharray="4"/><circle cx="60" cy="60" r="12" fill="#fef3c7" stroke="#b45309" stroke-width="2"/></svg>`,
+                        practice: [
+                            {
+                                qEn: 'Find the area of a square floor tile with side 4 cm.',
+                                qTa: '4 செ.மீ பக்கம் கொண்ட சதுர தரை ஓட்டின் பரப்பளவு காண்க.',
+                                ansNum: 16,
+                                solEn: 'Area = Side × Side = 4 × 4 = 16 sq cm',
+                                solTa: 'பரப்பளவு = பக்கம் × பக்கம் = 4 × 4 = 16 ச.செ.மீ',
+                                svg: `<svg viewBox="0 0 240 160" class="w-60 h-40"><rect x="75" y="25" width="90" height="90" fill="#fef08a" stroke="#ca8a04" stroke-width="3"/><text x="120" y="135" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e293b">Side = 4 cm</text><text x="175" y="75" text-anchor="start" font-size="13" font-weight="bold" fill="#b45309">4 cm</text></svg>`
+                            },
+                            {
+                                qEn: 'A square carrom board has a side of 6 cm. What is its area?',
+                                qTa: '6 செ.மீ பக்கம் கொண்ட சதுர கேரம் பலகையின் பரப்பளவு என்ன?',
+                                ansNum: 36,
+                                solEn: 'Area = Side × Side = 6 × 6 = 36 sq cm',
+                                solTa: 'பரப்பளவு = பக்கம் × பக்கம் = 6 × 6 = 36 ச.செ.மீ',
+                                svg: `<svg viewBox="0 0 240 160" class="w-60 h-40"><rect x="75" y="25" width="90" height="90" fill="#fde047" stroke="#a16207" stroke-width="3"/><text x="120" y="135" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e293b">Side = 6 cm</text><text x="175" y="75" text-anchor="start" font-size="13" font-weight="bold" fill="#b45309">6 cm</text></svg>`
+                            }
+                        ]
+                    },
+                    {
+                        id: 'rectangle',
+                        nameEn: 'Rectangle',
+                        nameTa: 'செவ்வகம்',
+                        icon: '🟦',
+                        dimensions: {
+                            length: { labelEn: 'Length (l)', labelTa: 'நீளம் (l)', val: 6, min: 3, max: 8 },
+                            breadth: { labelEn: 'Breadth (b)', labelTa: 'அகலம் (b)', val: 4, min: 2, max: 6 }
+                        },
+                        formulaEn: 'Area = Length × Breadth (l × b)',
+                        formulaTa: 'பரப்பளவு = நீளம் × அகலம்',
+                        formulaKeywords: ['length', 'breadth', 'l*b', 'lxb', 'நீளம்', 'அகலம்'],
+                        visualCaptionEn: 'Count the unit squares across Length columns and Breadth rows: Length × Breadth.',
+                        visualCaptionTa: 'நீள வரிசைகளிலும் அகல நிரைகளிலும் உள்ள ஓரலகு சதுரங்களை எண்ணுங்கள்: நீளம் × அகலம்.',
+                        realLifeEn: 'School Notebook (நோட்டுப் புத்தகம்)',
+                        realLifeTa: 'நோட்டுப் புத்தகம் (Notebook)',
+                        realLifeDescEn: 'Your school notebook cover is a rectangle with a longer Length and shorter Breadth.',
+                        realLifeDescTa: 'உங்கள் நோட்டுப் புத்தகத்தின் அட்டை செவ்வக வடிவில் நீளம் மற்றும் அகலத்துடன் இருக்கும்.',
+                        realLifeSvg: `<svg viewBox="0 0 120 120" class="w-full h-full"><rect x="25" y="15" width="70" height="90" rx="6" fill="#38bdf8" stroke="#0369a1" stroke-width="4"/><rect x="38" y="30" width="44" height="22" rx="3" fill="#ffffff" stroke="#0284c7" stroke-width="2"/><line x1="20" y1="30" x2="30" y2="30" stroke="#0f172a" stroke-width="4"/><line x1="20" y1="50" x2="30" y2="50" stroke="#0f172a" stroke-width="4"/><line x1="20" y1="70" x2="30" y2="70" stroke="#0f172a" stroke-width="4"/><line x1="20" y1="90" x2="30" y2="90" stroke="#0f172a" stroke-width="4"/></svg>`,
+                        practice: [
+                            {
+                                qEn: 'Find the area of a notebook with length 7 cm and breadth 4 cm.',
+                                qTa: 'நீளம் 7 செ.மீ மற்றும் அகலம் 4 செ.மீ கொண்ட நோட்டுப் புத்தகத்தின் பரப்பளவு காண்க.',
+                                ansNum: 28,
+                                solEn: 'Area = Length × Breadth = 7 × 4 = 28 sq cm',
+                                solTa: 'பரப்பளவு = நீளம் × அகலம் = 7 × 4 = 28 ச.செ.மீ',
+                                svg: `<svg viewBox="0 0 260 160" class="w-64 h-40"><rect x="55" y="30" width="130" height="75" fill="#bae6fd" stroke="#0284c7" stroke-width="3"/><text x="120" y="125" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e293b">Length = 7 cm</text><text x="193" y="72" text-anchor="start" font-size="13" font-weight="bold" fill="#0369a1">4 cm</text></svg>`
+                            },
+                            {
+                                qEn: 'A classroom blackboard has length 8 cm and breadth 3 cm. Find its area.',
+                                qTa: 'நீளம் 8 செ.மீ, அகலம் 3 செ.மீ கொண்ட கரும்பலகையின் பரப்பளவு என்ன?',
+                                ansNum: 24,
+                                solEn: 'Area = Length × Breadth = 8 × 3 = 24 sq cm',
+                                solTa: 'பரப்பளவு = நீளம் × அகலம் = 8 × 3 = 24 ச.செ.மீ',
+                                svg: `<svg viewBox="0 0 260 160" class="w-64 h-40"><rect x="50" y="35" width="140" height="65" fill="#93c5fd" stroke="#1d4ed8" stroke-width="3"/><text x="120" y="120" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e293b">Length = 8 cm</text><text x="198" y="72" text-anchor="start" font-size="13" font-weight="bold" fill="#1d4ed8">3 cm</text></svg>`
+                            }
+                        ]
+                    },
+                    {
+                        id: 'triangle',
+                        nameEn: 'Triangle',
+                        nameTa: 'முக்கோணம்',
+                        icon: '🔺',
+                        dimensions: {
+                            base: { labelEn: 'Base (b)', labelTa: 'அடிப்பக்கம் (b)', val: 6, min: 2, max: 10 },
+                            height: { labelEn: 'Height (h)', labelTa: 'உயரம் (h)', val: 4, min: 2, max: 8 }
+                        },
+                        formulaEn: 'Area = ½ × Base × Height',
+                        formulaTa: 'பரப்பளவு = ½ × அடிப்பக்கம் × உயரம்',
+                        formulaKeywords: ['base', 'height', '1/2', '0.5', 'அடி', 'உயரம்'],
+                        visualCaptionEn: 'Watch on the graph sheet: Two identical triangles join to form a rectangle! So 1 triangle = ½ × Base × Height.',
+                        visualCaptionTa: 'வரைபடத் தாளில் பாருங்கள்: இரண்டு சம முக்கோணங்கள் இணைந்து ஒரு செவ்வகமாகும்! எனவே பரப்பளவு = ½ × அடி × உயரம்.',
+                        realLifeEn: 'Triangular Sandwich (முக்கோண சாண்ட்விச்)',
+                        realLifeTa: 'முக்கோண சாண்ட்விச் (Sandwich)',
+                        realLifeDescEn: 'When a square bread slice is cut diagonally, you get two tasty triangular sandwiches!',
+                        realLifeDescTa: 'ஒரு சதுர ரொட்டித் துண்டை குறுக்காக வெட்டினால் இரண்டு முக்கோண சாண்ட்விச்கள் கிடைக்கும்!',
+                        realLifeSvg: `<svg viewBox="0 0 120 120" class="w-full h-full"><polygon points="60,18 105,98 15,98" fill="#4ade80" stroke="#15803d" stroke-width="4" stroke-linejoin="round"/><polygon points="60,28 96,92 24,92" fill="#fef08a" stroke="#ca8a04" stroke-width="2"/><circle cx="52" cy="70" r="5" fill="#ef4444"/><circle cx="70" cy="75" r="5" fill="#ef4444"/><circle cx="60" cy="54" r="4" fill="#16a34a"/></svg>`,
+                        practice: [
+                            {
+                                qEn: 'Find the area of a triangle with base 6 cm and height 4 cm.',
+                                qTa: 'அடிப்பக்கம் 6 செ.மீ மற்றும் உயரம் 4 செ.மீ கொண்ட முக்கோணத்தின் பரப்பளவு காண்க.',
+                                ansNum: 12,
+                                solEn: 'Area = ½ × Base × Height = ½ × 6 × 4 = 12 sq cm',
+                                solTa: 'பரப்பளவு = ½ × அடி × உயரம் = ½ × 6 × 4 = 12 ச.செ.மீ',
+                                svg: `<svg viewBox="0 0 250 165" class="w-64 h-40"><polygon points="125,22 195,122 55,122" fill="#bbf7d0" stroke="#15803d" stroke-width="3"/><line x1="125" y1="22" x2="125" y2="122" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="5"/><text x="132" y="80" font-size="13" font-weight="bold" fill="#dc2626">h = 4 cm</text><text x="125" y="142" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e293b">Base = 6 cm</text></svg>`
+                            },
+                            {
+                                qEn: 'A triangular flag has base 8 cm and height 5 cm. Find its area.',
+                                qTa: 'அடிப்பக்கம் 8 செ.மீ, உயரம் 5 செ.மீ கொண்ட முக்கோணக் கொடியின் பரப்பளவு என்ன?',
+                                ansNum: 20,
+                                solEn: 'Area = ½ × Base × Height = ½ × 8 × 5 = 20 sq cm',
+                                solTa: 'பரப்பளவு = ½ × அடி × உயரம் = ½ × 8 × 5 = 20 ச.செ.மீ',
+                                svg: `<svg viewBox="0 0 250 165" class="w-64 h-40"><polygon points="125,20 205,122 45,122" fill="#86efac" stroke="#166534" stroke-width="3"/><line x1="125" y1="20" x2="125" y2="122" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="5"/><text x="132" y="78" font-size="13" font-weight="bold" fill="#dc2626">h = 5 cm</text><text x="125" y="142" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e293b">Base = 8 cm</text></svg>`
+                            }
+                        ]
+                    },
+                    {
+                        id: 'parallelogram',
+                        nameEn: 'Parallelogram',
+                        nameTa: 'இணைகரம்',
+                        icon: '▱',
+                        dimensions: {
+                            base: { labelEn: 'Base (b)', labelTa: 'அடிப்பக்கம் (b)', val: 6, min: 3, max: 9 },
+                            height: { labelEn: 'Height (h)', labelTa: 'உயரம் (h)', val: 4, min: 2, max: 7 }
+                        },
+                        formulaEn: 'Area = Base × Height (b × h)',
+                        formulaTa: 'பரப்பளவு = அடிப்பக்கம் × உயரம்',
+                        formulaKeywords: ['base', 'height', 'b*h', 'bxh', 'அடி', 'உயரம்'],
+                        visualCaptionEn: 'Watch on the graph sheet: The left triangle slice moves to the right side to form a neat rectangle! Area = Base × Height.',
+                        visualCaptionTa: 'வரைபடத் தாளில் பாருங்கள்: இடது முக்கோணப் பகுதி வலதுபுறம் நகர்ந்து செவ்வகமாக மாறுகிறது! பரப்பளவு = அடி × உயரம்.',
+                        realLifeEn: 'Playground Slide Side (சறுக்கு பலகை)',
+                        realLifeTa: 'சறுக்கு பலகை (Playground Slide)',
+                        realLifeDescEn: 'The slanted side panel of a playground slide or staircase railing forms a parallelogram!',
+                        realLifeDescTa: 'பூங்கா சறுக்கு பலகையின் பக்கவாட்டுப் பகுதி இணைகர வடிவில் இருக்கும்!',
+                        realLifeSvg: `<svg viewBox="0 0 120 120" class="w-full h-full"><polygon points="35,25 105,25 85,95 15,95" fill="#fb923c" stroke="#c2410c" stroke-width="4" stroke-linejoin="round"/><line x1="35" y1="25" x2="35" y2="95" stroke="#7c2d12" stroke-width="2.5" stroke-dasharray="4"/></svg>`,
+                        practice: [
+                            {
+                                qEn: 'Find the area of a parallelogram with base 7 cm and height 4 cm.',
+                                qTa: 'அடிப்பக்கம் 7 செ.மீ மற்றும் உயரம் 4 செ.மீ கொண்ட இணைகரத்தின் பரப்பளவு காண்க.',
+                                ansNum: 28,
+                                solEn: 'Area = Base × Height = 7 × 4 = 28 sq cm',
+                                solTa: 'பரப்பளவு = அடி × உயரம் = 7 × 4 = 28 ச.செ.மீ',
+                                svg: `<svg viewBox="0 0 260 165" class="w-64 h-40"><polygon points="75,30 205,30 175,120 45,120" fill="#fed7aa" stroke="#ea580c" stroke-width="3"/><line x1="75" y1="30" x2="75" y2="120" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="5"/><text x="82" y="80" font-size="13" font-weight="bold" fill="#dc2626">h = 4 cm</text><text x="115" y="140" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e293b">Base = 7 cm</text></svg>`
+                            },
+                            {
+                                qEn: 'Base = 6 cm and Height = 5 cm. Find the area of the parallelogram.',
+                                qTa: 'அடிப்பக்கம் 6 செ.மீ, உயரம் 5 செ.மீ எனில் இணைகரத்தின் பரப்பளவு என்ன?',
+                                ansNum: 30,
+                                solEn: 'Area = Base × Height = 6 × 5 = 30 sq cm',
+                                solTa: 'பரப்பளவு = அடி × உயரம் = 6 × 5 = 30 ச.செ.மீ',
+                                svg: `<svg viewBox="0 0 260 165" class="w-64 h-40"><polygon points="80,28 200,28 170,120 50,120" fill="#fdba74" stroke="#c2410c" stroke-width="3"/><line x1="80" y1="28" x2="80" y2="120" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="5"/><text x="87" y="78" font-size="13" font-weight="bold" fill="#dc2626">h = 5 cm</text><text x="115" y="140" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e293b">Base = 6 cm</text></svg>`
+                            }
+                        ]
+                    },
+                    {
+                        id: 'trapezoid',
+                        nameEn: 'Trapezoid',
+                        nameTa: 'சரிவகம்',
+                        icon: '⏢',
+                        dimensions: {
+                            a: { labelEn: 'Top Base (a)', labelTa: 'மேல் பக்கம் (a)', val: 4, min: 2, max: 8 },
+                            b: { labelEn: 'Bottom Base (b)', labelTa: 'கீழ் பக்கம் (b)', val: 8, min: 4, max: 10 },
+                            h: { labelEn: 'Height (h)', labelTa: 'உயரம் (h)', val: 4, min: 2, max: 7 }
+                        },
+                        formulaEn: 'Area = ½ × (a + b) × h',
+                        formulaTa: 'பரப்பளவு = ½ × (a + b) × உயரம்',
+                        formulaKeywords: ['a+b', 'a + b', '1/2', '0.5', 'உயரம்'],
+                        visualCaptionEn: 'Watch on the graph sheet: Averaging the two parallel sides (a and b) and multiplying by height (h) gives the area!',
+                        visualCaptionTa: 'வரைபடத் தாளில் பாருங்கள்: இரண்டு இணைப் பக்கங்களின் (a, b) சராசரியை உயரத்தால் (h) பெருக்கினால் பரப்பளவு கிடைக்கும்!',
+                        realLifeEn: 'Handbag / School Ramp (கைப்பை)',
+                        realLifeTa: 'கைப்பை (Handbag)',
+                        realLifeDescEn: 'A stylish handbag or a stage ramp has two parallel top and bottom edges of different lengths.',
+                        realLifeDescTa: 'கைப்பை அல்லது மேடை சாய்வுதளம் வெவ்வேறு நீளமுள்ள இரண்டு இணைப் பக்கங்களைக் கொண்ட சரிவகம் ஆகும்.',
+                        realLifeSvg: `<svg viewBox="0 0 120 120" class="w-full h-full"><path d="M45,35 C45,15 75,15 75,35" fill="none" stroke="#6b21a8" stroke-width="5"/><polygon points="35,35 85,35 102,98 18,98" fill="#c084fc" stroke="#7e22ce" stroke-width="4" stroke-linejoin="round"/><circle cx="60" cy="58" r="5" fill="#fef08a"/></svg>`,
+                        practice: [
+                            {
+                                qEn: 'Find the area of a trapezoid with parallel sides a = 4 cm, b = 6 cm, and height h = 5 cm.',
+                                qTa: 'இணைப் பக்கங்கள் a = 4 செ.மீ, b = 6 செ.மீ மற்றும் உயரம் h = 5 செ.மீ கொண்ட சரிவகத்தின் பரப்பளவு காண்க.',
+                                ansNum: 25,
+                                solEn: 'Area = ½ × (4 + 6) × 5 = ½ × 10 × 5 = 25 sq cm',
+                                solTa: 'பரப்பளவு = ½ × (4 + 6) × 5 = ½ × 10 × 5 = 25 ச.செ.மீ',
+                                svg: `<svg viewBox="0 0 260 170" class="w-64 h-40"><polygon points="85,35 165,35 195,120 55,120" fill="#e9d5ff" stroke="#7e22ce" stroke-width="3"/><line x1="85" y1="35" x2="85" y2="120" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="5"/><text x="125" y="25" text-anchor="middle" font-size="13" font-weight="bold" fill="#6b21a8">a = 4 cm</text><text x="125" y="140" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e293b">b = 6 cm</text><text x="92" y="82" font-size="12" font-weight="bold" fill="#dc2626">h = 5 cm</text></svg>`
+                            },
+                            {
+                                qEn: 'Parallel sides are a = 5 cm and b = 7 cm, with height h = 4 cm. Find the area.',
+                                qTa: 'a = 5 செ.மீ, b = 7 செ.மீ, உயரம் h = 4 செ.மீ கொண்ட சரிவகத்தின் பரப்பளவு என்ன?',
+                                ansNum: 24,
+                                solEn: 'Area = ½ × (5 + 7) × 4 = ½ × 12 × 4 = 24 sq cm',
+                                solTa: 'பரப்பளவு = ½ × (5 + 7) × 4 = ½ × 12 × 4 = 24 ச.செ.மீ',
+                                svg: `<svg viewBox="0 0 260 170" class="w-64 h-40"><polygon points="80,35 170,35 200,120 50,120" fill="#d8b4fe" stroke="#6b21a8" stroke-width="3"/><line x1="80" y1="35" x2="80" y2="120" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="5"/><text x="125" y="25" text-anchor="middle" font-size="13" font-weight="bold" fill="#6b21a8">a = 5 cm</text><text x="125" y="140" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e293b">b = 7 cm</text><text x="87" y="82" font-size="12" font-weight="bold" fill="#dc2626">h = 4 cm</text></svg>`
+                            }
+                        ]
+                    },
+                    {
+                        id: 'circle',
+                        nameEn: 'Circle',
+                        nameTa: 'வட்டம்',
+                        icon: '🔴',
+                        dimensions: {
+                            radius: { labelEn: 'Radius (r)', labelTa: 'ஆரம் (r)', val: 7, min: 2, max: 8 }
+                        },
+                        formulaEn: 'Area = π × r²  (π ≈ 22/7 or 3.14)',
+                        formulaTa: 'பரப்பளவு = π × r²  (π ≈ 22/7)',
+                        formulaKeywords: ['pi', 'π', 'r^2', 'r*r', 'rxr', 'ஆரம்'],
+                        visualCaptionEn: 'Watch on the graph sheet: A circle is sliced into pizza wedges from its center using Radius (r). Area = π × r².',
+                        visualCaptionTa: 'வரைபடத் தாளில் பாருங்கள்: வட்டம் அதன் மையத்திலிருந்து ஆரம் (r) கொண்டு பீட்சா துண்டுகளாகப் பிரிக்கப்படுகிறது. பரப்பளவு = πr².',
+                        realLifeEn: 'Round Pizza / Clock (பீட்சா / கடிகாரம்)',
+                        realLifeTa: 'பீட்சா / கடிகாரம் (Pizza)',
+                        realLifeDescEn: 'A delicious round pizza or wall clock is a circle. Every slice goes from the center to the edge (Radius)!',
+                        realLifeDescTa: 'சுவையான பீட்சா அல்லது சுவர் கடிகாரம் வட்ட வடிவில் இருக்கும். மையத்திலிருந்து விளிம்பு வரை உள்ள தூரம் ஆரம் (r)!',
+                        realLifeSvg: `<svg viewBox="0 0 120 120" class="w-full h-full"><circle cx="60" cy="60" r="46" fill="#f97316" stroke="#9a3412" stroke-width="4"/><circle cx="60" cy="60" r="38" fill="#fde047"/><line x1="60" y1="60" x2="98" y2="60" stroke="#dc2626" stroke-width="3"/><circle cx="60" cy="60" r="4" fill="#1e293b"/><circle cx="48" cy="42" r="5" fill="#dc2626"/><circle cx="72" cy="45" r="5" fill="#dc2626"/><circle cx="52" cy="76" r="5" fill="#dc2626"/></svg>`,
+                        practice: [
+                            {
+                                qEn: 'Find the area of a circular pizza with radius r = 7 cm. (Use π = 22/7)',
+                                qTa: 'ஆரம் r = 7 செ.மீ கொண்ட வட்ட பீட்சாவின் பரப்பளவு காண்க. (π = 22/7)',
+                                ansNum: 154,
+                                solEn: 'Area = (22/7) × 7 × 7 = 22 × 7 = 154 sq cm',
+                                solTa: 'பரப்பளவு = (22/7) × 7 × 7 = 22 × 7 = 154 ச.செ.மீ',
+                                svg: `<svg viewBox="0 0 240 165" class="w-60 h-40"><circle cx="120" cy="82" r="55" fill="#fecaca" stroke="#dc2626" stroke-width="3"/><line x1="120" y1="82" x2="175" y2="82" stroke="#1e293b" stroke-width="2.5"/><circle cx="120" cy="82" r="3.5" fill="#1e293b"/><text x="148" y="74" text-anchor="middle" font-size="13" font-weight="bold" fill="#991b1b">r = 7 cm</text></svg>`
+                            },
+                            {
+                                qEn: 'A circular plate has radius r = 14 cm. Find its area. (Use π = 22/7)',
+                                qTa: 'ஆரம் r = 14 செ.மீ கொண்ட வட்டத் தட்டின் பரப்பளவு என்ன? (π = 22/7)',
+                                ansNum: 616,
+                                solEn: 'Area = (22/7) × 14 × 14 = 22 × 2 × 14 = 616 sq cm',
+                                solTa: 'பரப்பளவு = (22/7) × 14 × 14 = 22 × 2 × 14 = 616 ச.செ.மீ',
+                                svg: `<svg viewBox="0 0 240 165" class="w-60 h-40"><circle cx="120" cy="82" r="55" fill="#fca5a5" stroke="#b91c1c" stroke-width="3"/><line x1="120" y1="82" x2="175" y2="82" stroke="#1e293b" stroke-width="2.5"/><circle cx="120" cy="82" r="3.5" fill="#1e293b"/><text x="148" y="74" text-anchor="middle" font-size="13" font-weight="bold" fill="#7f1d1d">r = 14 cm</text></svg>`
+                            }
+                        ]
+                    },
+                    {
+                        id: 'rhombus',
+                        nameEn: 'Rhombus',
+                        nameTa: 'சாய்சதுரம்',
+                        icon: '💠',
+                        dimensions: {
+                            d1: { labelEn: 'Diagonal 1 (d₁)', labelTa: 'மூலைவிட்டம் 1 (d₁)', val: 8, min: 2, max: 12 },
+                            d2: { labelEn: 'Diagonal 2 (d₂)', labelTa: 'மூலைவிட்டம் 2 (d₂)', val: 6, min: 2, max: 10 }
+                        },
+                        formulaEn: 'Area = ½ × d₁ × d₂',
+                        formulaTa: 'பரப்பளவு = ½ × d₁ × d₂',
+                        formulaKeywords: ['d1', 'd2', '1/2', '0.5', 'மூலைவிட்டம்'],
+                        visualCaptionEn: 'Watch on the graph sheet: The rhombus fits neatly inside a bounding rectangle of size d₁ × d₂, taking up exactly half its area!',
+                        visualCaptionTa: 'வரைபடத் தாளில் பாருங்கள்: சாய்சதுரம் d₁ × d₂ அளவுள்ள செவ்வகத்தின் சரிபாதி பரப்பளவைக் கொண்டுள்ளது!',
+                        realLifeEn: 'Diamond Wall Tile (வைர வடிவ ஓடு)',
+                        realLifeTa: 'வைர வடிவ ஓடு (Diamond Tile)',
+                        realLifeDescEn: 'A decorative diamond-shaped wall tile or street sign has 4 equal sides and 2 crossing diagonals!',
+                        realLifeDescTa: 'அலங்கார வைர வடிவ ஓடு அல்லது சாலை அறிவிப்புப் பலகை இரண்டு செங்குத்து மூலைவிட்டங்களைக் கொண்ட சாய்சதுரம் ஆகும்.',
+                        realLifeSvg: `<svg viewBox="0 0 120 120" class="w-full h-full"><polygon points="60,14 102,60 60,106 18,60" fill="#2dd4bf" stroke="#0f766e" stroke-width="4" stroke-linejoin="round"/><line x1="60" y1="14" x2="60" y2="106" stroke="#115e59" stroke-width="2" stroke-dasharray="4"/><line x1="18" y1="60" x2="102" y2="60" stroke="#115e59" stroke-width="2" stroke-dasharray="4"/></svg>`,
+                        practice: [
+                            {
+                                qEn: 'Find the area of a rhombus with diagonals d₁ = 8 cm and d₂ = 6 cm.',
+                                qTa: 'மூலைவிட்டங்கள் d₁ = 8 செ.மீ மற்றும் d₂ = 6 செ.மீ கொண்ட சாய்சதுரத்தின் பரப்பளவு காண்க.',
+                                ansNum: 24,
+                                solEn: 'Area = ½ × d₁ × d₂ = ½ × 8 × 6 = 24 sq cm',
+                                solTa: 'பரப்பளவு = ½ × d₁ × d₂ = ½ × 8 × 6 = 24 ச.செ.மீ',
+                                svg: `<svg viewBox="0 0 250 165" class="w-64 h-40"><polygon points="125,22 195,82 125,142 55,82" fill="#99f6e4" stroke="#0d9488" stroke-width="3"/><line x1="55" y1="82" x2="195" y2="82" stroke="#dc2626" stroke-width="2" stroke-dasharray="4"/><line x1="125" y1="22" x2="125" y2="142" stroke="#1d4ed8" stroke-width="2" stroke-dasharray="4"/><text x="162" y="75" font-size="12" font-weight="bold" fill="#dc2626">d₁=8cm</text><text x="130" y="115" font-size="12" font-weight="bold" fill="#1d4ed8">d₂=6cm</text></svg>`
+                            },
+                            {
+                                qEn: 'Diagonals of a rhombus are 10 cm and 4 cm. Find its area.',
+                                qTa: 'மூலைவிட்டங்கள் 10 செ.மீ, 4 செ.மீ கொண்ட சாய்சதுரத்தின் பரப்பளவு என்ன?',
+                                ansNum: 20,
+                                solEn: 'Area = ½ × 10 × 4 = 20 sq cm',
+                                solTa: 'பரப்பளவு = ½ × 10 × 4 = 20 ச.செ.மீ',
+                                svg: `<svg viewBox="0 0 250 165" class="w-64 h-40"><polygon points="125,25 205,82 125,139 45,82" fill="#5eead4" stroke="#0f766e" stroke-width="3"/><line x1="45" y1="82" x2="205" y2="82" stroke="#dc2626" stroke-width="2" stroke-dasharray="4"/><line x1="125" y1="25" x2="125" y2="139" stroke="#1d4ed8" stroke-width="2" stroke-dasharray="4"/><text x="165" y="75" font-size="12" font-weight="bold" fill="#dc2626">d₁=10cm</text><text x="130" y="114" font-size="12" font-weight="bold" fill="#1d4ed8">d₂=4cm</text></svg>`
+                            }
+                        ]
+                    },
+                    {
+                        id: 'kite',
+                        nameEn: 'Kite',
+                        nameTa: 'காற்றாடி வடிவம்',
+                        icon: '🪁',
+                        dimensions: {
+                            d1: { labelEn: 'Vertical Stick (d₁)', labelTa: 'நெடுக்குக் குச்சி (d₁)', val: 10, min: 4, max: 12 },
+                            d2: { labelEn: 'Cross Stick (d₂)', labelTa: 'குறுக்குக் குச்சி (d₂)', val: 6, min: 2, max: 10 }
+                        },
+                        formulaEn: 'Area = ½ × d₁ × d₂',
+                        formulaTa: 'பரப்பளவு = ½ × d₁ × d₂',
+                        formulaKeywords: ['d1', 'd2', '1/2', '0.5', 'மூலைவிட்டம்'],
+                        visualCaptionEn: 'Watch on the graph sheet: The two bamboo sticks (d₁ and d₂) cross at right angles! Area = ½ × d₁ × d₂.',
+                        visualCaptionTa: 'வரைபடத் தாளில் பாருங்கள்: இரண்டு குச்சிகளும் (d₁, d₂) செங்கோணத்தில் வெட்டுகின்றன! பரப்பளவு = ½ × d₁ × d₂.',
+                        realLifeEn: 'Flying Paper Kite (பறக்கும் காற்றாடி)',
+                        realLifeTa: 'பறக்கும் காற்றாடி (Flying Kite)',
+                        realLifeDescEn: 'A colorful kite flying in the sky uses two crossed bamboo sticks as its diagonals!',
+                        realLifeDescTa: 'வானத்தில் பறக்கும் வண்ணமயமான காற்றாடியில் குறுக்காக கட்டப்பட்ட இரண்டு குச்சிகள் மூலைவிட்டங்கள் ஆகும்!',
+                        realLifeSvg: `<svg viewBox="0 0 120 120" class="w-full h-full"><polygon points="60,12 98,48 60,102 22,48" fill="#f43f5e" stroke="#9f1239" stroke-width="4" stroke-linejoin="round"/><line x1="60" y1="12" x2="60" y2="102" stroke="#fef08a" stroke-width="2.5"/><line x1="22" y1="48" x2="98" y2="48" stroke="#fef08a" stroke-width="2.5"/><path d="M60,102 Q50,112 65,118" fill="none" stroke="#9f1239" stroke-width="3"/></svg>`,
+                        practice: [
+                            {
+                                qEn: 'Find the area of a flying kite with diagonals d₁ = 10 cm and d₂ = 6 cm.',
+                                qTa: 'மூலைவிட்டங்கள் d₁ = 10 செ.மீ மற்றும் d₂ = 6 செ.மீ கொண்ட காற்றாடியின் பரப்பளவு காண்க.',
+                                ansNum: 30,
+                                solEn: 'Area = ½ × d₁ × d₂ = ½ × 10 × 6 = 30 sq cm',
+                                solTa: 'பரப்பளவு = ½ × d₁ × d₂ = ½ × 10 × 6 = 30 ச.செ.மீ',
+                                svg: `<svg viewBox="0 0 250 170" class="w-64 h-40"><polygon points="125,18 180,62 125,142 70,62" fill="#fecdd3" stroke="#e11d48" stroke-width="3"/><line x1="70" y1="62" x2="180" y2="62" stroke="#1d4ed8" stroke-width="2" stroke-dasharray="4"/><line x1="125" y1="18" x2="125" y2="142" stroke="#047857" stroke-width="2" stroke-dasharray="4"/><text x="155" y="55" font-size="12" font-weight="bold" fill="#1d4ed8">d₂=6cm</text><text x="130" y="108" font-size="12" font-weight="bold" fill="#047857">d₁=10cm</text></svg>`
+                            },
+                            {
+                                qEn: 'A kite has stick lengths d₁ = 8 cm and d₂ = 7 cm. Find its area.',
+                                qTa: 'குச்சிகளின் நீளம் d₁ = 8 செ.மீ, d₂ = 7 செ.மீ கொண்ட காற்றாடியின் பரப்பளவு என்ன?',
+                                ansNum: 28,
+                                solEn: 'Area = ½ × 8 × 7 = 28 sq cm',
+                                solTa: 'பரப்பளவு = ½ × 8 × 7 = 28 ச.செ.மீ',
+                                svg: `<svg viewBox="0 0 250 170" class="w-64 h-40"><polygon points="125,20 185,65 125,140 65,65" fill="#fda4af" stroke="#be123c" stroke-width="3"/><line x1="65" y1="65" x2="185" y2="65" stroke="#1d4ed8" stroke-width="2" stroke-dasharray="4"/><line x1="125" y1="20" x2="125" y2="140" stroke="#047857" stroke-width="2" stroke-dasharray="4"/><text x="155" y="58" font-size="12" font-weight="bold" fill="#1d4ed8">d₂=7cm</text><text x="130" y="108" font-size="12" font-weight="bold" fill="#047857">d₁=8cm</text></svg>`
+                            }
+                        ]
+                    }
+                ],
+
+                initApp() {
+                    this.buildRevisionGame();
+                    setInterval(() => {
+                        this.animProgress += 0.015 * this.animDirection;
+                        if (this.animProgress >= 1) {
+                            this.animProgress = 1;
+                            this.animDirection = -1;
+                        } else if (this.animProgress <= 0) {
+                            this.animProgress = 0;
+                            this.animDirection = 1;
+                        }
+                        if (this.currentShape >= 2 && this.currentShape < 8) {
+                            this.drawGraphCanvas();
+                        }
+                    }, 45);
+                },
+
+                t(key) {
+                    const entry = this.i18n[key];
+                    if (!entry) return key;
+                    return entry[this.lang] || entry.both;
+                },
+
+                setLang(newLang) {
+                    this.lang = newLang;
+                    this.$nextTick(() => {
+                        if (this.currentShape >= 2 && this.currentShape < 8) {
+                            this.drawGraphCanvas();
+                        }
+                    });
+                },
+
+                activeShape() {
+                    return this.shapes[this.currentShape];
+                },
+
+                getShapeName(shape) {
+                    if (this.lang === 'en') return shape.nameEn;
+                    if (this.lang === 'ta') return shape.nameTa;
+                    return `${shape.nameEn} (${shape.nameTa})`;
+                },
+
+                getDimLabel(dim) {
+                    if (this.lang === 'en') return dim.labelEn;
+                    if (this.lang === 'ta') return dim.labelTa;
+                    return `${dim.labelEn} / ${dim.labelTa}`;
+                },
+
+                getRealLifeTitle(shape) {
+                    if (this.lang === 'en') return shape.realLifeEn;
+                    if (this.lang === 'ta') return shape.realLifeTa;
+                    return shape.realLifeEn;
+                },
+
+                getRealLifeDesc(shape) {
+                    if (this.lang === 'en') return shape.realLifeDescEn;
+                    if (this.lang === 'ta') return shape.realLifeDescTa;
+                    return `${shape.realLifeDescEn} ${shape.realLifeDescTa}`;
+                },
+
+                getFormulaDisplay(shape) {
+                    if (this.lang === 'en') return shape.formulaEn;
+                    if (this.lang === 'ta') return shape.formulaTa;
+                    return `${shape.formulaEn}  |  ${shape.formulaTa}`;
+                },
+
+                getVisualProofCaption() {
+                    const s = this.activeShape();
+                    if (this.lang === 'en') return s.visualCaptionEn;
+                    if (this.lang === 'ta') return s.visualCaptionTa;
+                    return `${s.visualCaptionEn} (${s.visualCaptionTa})`;
+                },
+
+                selectShape(idx) {
+                    this.currentShape = idx;
+                    this.practiceIdx = 0;
+                    this.resetPracticeState();
+                    this.replayAnimation();
+                    this.$nextTick(() => {
+                        if (idx >= 2 && idx < 8) this.drawGraphCanvas();
+                    });
+                },
+
+                selectGame() {
+                    this.currentShape = 8;
+                    this.celebrate();
+                },
+
+                replayAnimation() {
+                    this.animProgress = 0;
+                    this.animDirection = 1;
+                    if (this.currentShape >= 2 && this.currentShape < 8) {
+                        this.drawGraphCanvas();
+                    }
+                },
+
+                onDimensionChange(key) {
+                    const d = this.activeShape().dimensions[key];
+                    if (isNaN(d.val) || d.val < d.min) d.val = d.min;
+                    if (d.val > d.max) d.val = d.max;
+                    if (this.currentShape >= 2 && this.currentShape < 8) {
+                        this.drawGraphCanvas();
+                    }
+                },
+
+                // Strict Unit Square Grid Helpers (ONLY for Square & Rectangle, NO numbers inside squares)
+                getStrictRectGridStyle() {
+                    const d = this.activeShape().dimensions;
+                    const cols = this.currentShape === 0 ? d.side.val : d.length.val;
+                    return `grid-template-columns: repeat(${cols}, minmax(0, 1fr));`;
+                },
+
+                getStrictRectCellCount() {
+                    const d = this.activeShape().dimensions;
+                    if (this.currentShape === 0) return d.side.val * d.side.val;
+                    return d.length.val * d.breadth.val;
+                },
+
+                // 5-Step Calculation Generators
+                getStep1Measurements() {
+                    const d = this.activeShape().dimensions;
+                    const idx = this.currentShape;
+                    const u = this.t('cmUnit');
+                    if (idx === 0) return `${this.t('sideWord')} (s) = ${d.side.val} ${u}`;
+                    if (idx === 1) return `${this.t('lengthWord')} (l) = ${d.length.val} ${u}, ${this.t('breadthWord')} (b) = ${d.breadth.val} ${u}`;
+                    if (idx === 2 || idx === 3) return `Base (b) = ${d.base.val} ${u}, Height (h) = ${d.height.val} ${u}`;
+                    if (idx === 4) return `a = ${d.a.val} ${u}, b = ${d.b.val} ${u}, Height (h) = ${d.h.val} ${u}`;
+                    if (idx === 5) return `Radius (r) = ${d.radius.val} ${u}`;
+                    return `d₁ = ${d.d1.val} ${u}, d₂ = ${d.d2.val} ${u}`;
+                },
+
+                getStep3Substitution() {
+                    const d = this.activeShape().dimensions;
+                    const idx = this.currentShape;
+                    if (idx === 0) return `${d.side.val} × ${d.side.val}`;
+                    if (idx === 1) return `${d.length.val} × ${d.breadth.val}`;
+                    if (idx === 2) return `½ × ${d.base.val} × ${d.height.val}`;
+                    if (idx === 3) return `${d.base.val} × ${d.height.val}`;
+                    if (idx === 4) return `½ × (${d.a.val} + ${d.b.val}) × ${d.h.val}`;
+                    if (idx === 5) return `(22 / 7) × ${d.radius.val} × ${d.radius.val}`;
+                    return `½ × ${d.d1.val} × ${d.d2.val}`;
+                },
+
+                getStep4Arithmetic() {
+                    const d = this.activeShape().dimensions;
+                    const idx = this.currentShape;
+                    if (idx === 0) return `${d.side.val} × ${d.side.val} = ${d.side.val * d.side.val}`;
+                    if (idx === 1) return `${d.length.val} × ${d.breadth.val} = ${d.length.val * d.breadth.val}`;
+                    if (idx === 2) return `½ × (${d.base.val * d.height.val}) = ${0.5 * d.base.val * d.height.val}`;
+                    if (idx === 3) return `${d.base.val} × ${d.height.val} = ${d.base.val * d.height.val}`;
+                    if (idx === 4) {
+                        const sum = d.a.val + d.b.val;
+                        return `½ × ${sum} × ${d.h.val} = ${0.5 * sum * d.h.val}`;
+                    }
+                    if (idx === 5) {
+                        const r2 = d.radius.val * d.radius.val;
+                        const res = ((22 / 7) * r2).toFixed(2).replace(/\.00$/, '');
+                        return `(22 / 7) × ${r2} = ${res}`;
+                    }
+                    return `½ × (${d.d1.val * d.d2.val}) = ${0.5 * d.d1.val * d.d2.val}`;
+                },
+
+                computeArea() {
+                    const d = this.activeShape().dimensions;
+                    const idx = this.currentShape;
+                    if (idx === 0) return d.side.val * d.side.val;
+                    if (idx === 1) return d.length.val * d.breadth.val;
+                    if (idx === 2) return 0.5 * d.base.val * d.height.val;
+                    if (idx === 3) return d.base.val * d.height.val;
+                    if (idx === 4) return 0.5 * (d.a.val + d.b.val) * d.h.val;
+                    if (idx === 5) return ((22 / 7) * d.radius.val * d.radius.val).toFixed(2).replace(/\.00$/, '');
+                    return 0.5 * d.d1.val * d.d2.val;
+                },
+
+                // Graph Sheet Canvas Drawing for Shapes 2 to 7 (Accurately Scaled + Visual Proof + Measurement Labels)
+                drawGraphCanvas() {
+                    const canvas = document.getElementById('mainGraphCanvas');
+                    if (!canvas) return;
+                    const ctx = canvas.getContext('2d');
+                    const rect = canvas.getBoundingClientRect();
+                    canvas.width = rect.width || 560;
+                    canvas.height = 310;
+
+                    const W = canvas.width;
+                    const H = canvas.height;
+                    ctx.clearRect(0, 0, W, H);
+
+                    // Scale factor: 1 cm = 24 px
+                    const scale = 24;
+                    const cx = W / 2;
+                    const cy = H / 2 + 10;
+                    const idx = this.currentShape;
+                    const d = this.activeShape().dimensions;
+                    const u = this.lang === 'ta' ? 'செ.மீ' : 'cm';
+
+                    ctx.save();
+                    ctx.font = 'bold 14px Fredoka, Noto Sans Tamil, sans-serif';
+                    ctx.textAlign = 'center';
+
+                    if (idx === 2) {
+                        // TRIANGLE: Scaled Base & Height + Ghost Duplicate Triangle Forming Rectangle
+                        const bw = d.base.val * scale;
+                        const hh = d.height.val * scale;
+                        const x0 = cx - bw / 2;
+                        const y0 = cy + hh / 2;
+
+                        // Animated Twin Triangle (visual proof of 1/2 rectangle)
+                        const slideOffset = (1 - this.animProgress) * 45;
+                        ctx.save();
+                        ctx.translate(slideOffset, -slideOffset * 0.6);
+                        ctx.fillStyle = 'rgba(251, 191, 36, 0.28)';
+                        ctx.strokeStyle = '#d97706';
+                        ctx.setLineDash([5, 5]);
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.moveTo(cx, y0 - hh);
+                        ctx.lineTo(x0 + bw, y0 - hh);
+                        ctx.lineTo(x0 + bw, y0);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.stroke();
+                        ctx.restore();
+
+                        // Primary Triangle
+                        ctx.fillStyle = 'rgba(34, 197, 94, 0.45)';
+                        ctx.strokeStyle = '#15803d';
+                        ctx.lineWidth = 3.5;
+                        ctx.beginPath();
+                        ctx.moveTo(x0, y0);
+                        ctx.lineTo(x0 + bw, y0);
+                        ctx.lineTo(cx, y0 - hh);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.stroke();
+
+                        // Height Dashed Line
+                        ctx.strokeStyle = '#dc2626';
+                        ctx.setLineDash([5, 4]);
+                        ctx.lineWidth = 2.5;
+                        ctx.beginPath();
+                        ctx.moveTo(cx, y0 - hh);
+                        ctx.lineTo(cx, y0);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+
+                        // Measurement Labels
+                        ctx.fillStyle = '#0f172a';
+                        ctx.fillText(`Base (b) = ${d.base.val} ${u}`, cx, y0 + 22);
+                        ctx.fillStyle = '#dc2626';
+                        ctx.fillText(`h = ${d.height.val} ${u}`, cx + 45, y0 - hh / 2);
+
+                    } else if (idx === 3) {
+                        // PARALLELOGRAM: Scaled Base & Height + Left Triangle Slicing & Sliding to Right
+                        const bw = d.base.val * scale;
+                        const hh = d.height.val * scale;
+                        const skew = 36;
+                        const x0 = cx - bw / 2 - skew / 2;
+                        const y0 = cy + hh / 2;
+
+                        // Main Parallelogram
+                        ctx.fillStyle = 'rgba(249, 115, 22, 0.42)';
+                        ctx.strokeStyle = '#c2410c';
+                        ctx.lineWidth = 3.5;
+                        ctx.beginPath();
+                        ctx.moveTo(x0, y0);
+                        ctx.lineTo(x0 + bw, y0);
+                        ctx.lineTo(x0 + bw + skew, y0 - hh);
+                        ctx.lineTo(x0 + skew, y0 - hh);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.stroke();
+
+                        // Animated Sliced Triangle Moving to Right Side
+                        const moveX = this.animProgress * bw;
+                        ctx.fillStyle = 'rgba(59, 130, 246, 0.35)';
+                        ctx.strokeStyle = '#2563eb';
+                        ctx.setLineDash([5, 4]);
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.moveTo(x0 + moveX, y0);
+                        ctx.lineTo(x0 + skew + moveX, y0);
+                        ctx.lineTo(x0 + skew + moveX, y0 - hh);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+
+                        // Height Line
+                        ctx.strokeStyle = '#dc2626';
+                        ctx.lineWidth = 2.5;
+                        ctx.beginPath();
+                        ctx.moveTo(x0 + skew, y0 - hh);
+                        ctx.lineTo(x0 + skew, y0);
+                        ctx.stroke();
+
+                        ctx.fillStyle = '#0f172a';
+                        ctx.fillText(`Base (b) = ${d.base.val} ${u}`, x0 + bw / 2, y0 + 22);
+                        ctx.fillStyle = '#dc2626';
+                        ctx.fillText(`h = ${d.height.val} ${u}`, x0 + skew + 42, y0 - hh / 2);
+
+                    } else if (idx === 4) {
+                        // TRAPEZOID: Scaled Top Base (a), Bottom Base (b), Height (h)
+                        const topW = d.a.val * scale;
+                        const botW = d.b.val * scale;
+                        const hh = d.h.val * scale;
+                        const yBot = cy + hh / 2;
+                        const yTop = cy - hh / 2;
+
+                        ctx.fillStyle = 'rgba(168, 85, 247, 0.42)';
+                        ctx.strokeStyle = '#7e22ce';
+                        ctx.lineWidth = 3.5;
+                        ctx.beginPath();
+                        ctx.moveTo(cx - botW / 2, yBot);
+                        ctx.lineTo(cx + botW / 2, yBot);
+                        ctx.lineTo(cx + topW / 2, yTop);
+                        ctx.lineTo(cx - topW / 2, yTop);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.stroke();
+
+                        // Animated Midline Average Highlight
+                        const midW = ((topW + botW) / 2) * (0.6 + 0.4 * this.animProgress);
+                        ctx.strokeStyle = '#f59e0b';
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.moveTo(cx - midW / 2, cy);
+                        ctx.lineTo(cx + midW / 2, cy);
+                        ctx.stroke();
+
+                        // Height Line
+                        ctx.strokeStyle = '#dc2626';
+                        ctx.setLineDash([5, 4]);
+                        ctx.lineWidth = 2.5;
+                        ctx.beginPath();
+                        ctx.moveTo(cx - topW / 2, yTop);
+                        ctx.lineTo(cx - topW / 2, yBot);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+
+                        ctx.fillStyle = '#6b21a8';
+                        ctx.fillText(`a = ${d.a.val} ${u}`, cx, yTop - 10);
+                        ctx.fillStyle = '#0f172a';
+                        ctx.fillText(`b = ${d.b.val} ${u}`, cx, yBot + 22);
+                        ctx.fillStyle = '#dc2626';
+                        ctx.fillText(`h = ${d.h.val} ${u}`, cx - topW / 2 + 40, cy + 4);
+
+                    } else if (idx === 5) {
+                        // CIRCLE: Scaled Radius (r) with Animated Radial Sector Sweep
+                        const rPx = Math.min(d.radius.val * 15, 115);
+
+                        // Full Circle
+                        ctx.fillStyle = 'rgba(239, 68, 68, 0.35)';
+                        ctx.strokeStyle = '#dc2626';
+                        ctx.lineWidth = 3.5;
+                        ctx.beginPath();
+                        ctx.arc(cx, cy - 8, rPx, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.stroke();
+
+                        // Animated Sweeping Sector
+                        ctx.fillStyle = 'rgba(250, 204, 21, 0.45)';
+                        ctx.beginPath();
+                        ctx.moveTo(cx, cy - 8);
+                        ctx.arc(cx, cy - 8, rPx, 0, Math.PI * 2 * this.animProgress);
+                        ctx.closePath();
+                        ctx.fill();
+
+                        // Radius Line
+                        ctx.strokeStyle = '#0f172a';
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.moveTo(cx, cy - 8);
+                        ctx.lineTo(cx + rPx, cy - 8);
+                        ctx.stroke();
+
+                        // Center Dot
+                        ctx.fillStyle = '#0f172a';
+                        ctx.beginPath();
+                        ctx.arc(cx, cy - 8, 4, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        ctx.fillStyle = '#991b1b';
+                        ctx.fillText(`Radius (r) = ${d.radius.val} ${u}`, cx + rPx / 2, cy - 18);
+
+                    } else if (idx === 6 || idx === 7) {
+                        // RHOMBUS (6) & KITE (7): Scaled Diagonals d1 & d2 + Bounding Rectangle Proof
+                        const d1Px = Math.min(d.d1.val * 20, 220);
+                        const d2Px = Math.min(d.d2.val * 20, 220);
+
+                        // Bounding Rectangle (Visual Proof of 1/2 d1 * d2)
+                        ctx.strokeStyle = `rgba(59, 130, 246, ${0.25 + 0.55 * this.animProgress})`;
+                        ctx.setLineDash([6, 4]);
+                        ctx.lineWidth = 2;
+                        if (idx === 6) {
+                            ctx.strokeRect(cx - d1Px / 2, cy - d2Px / 2 - 6, d1Px, d2Px);
+                        } else {
+                            ctx.strokeRect(cx - d2Px / 2, cy - d1Px / 2 - 6, d2Px, d1Px);
+                        }
+                        ctx.setLineDash([]);
+
+                        ctx.beginPath();
+                        if (idx === 6) {
+                            // Rhombus symmetric diagonals
+                            ctx.moveTo(cx, cy - d2Px / 2 - 6);
+                            ctx.lineTo(cx + d1Px / 2, cy - 6);
+                            ctx.lineTo(cx, cy + d2Px / 2 - 6);
+                            ctx.lineTo(cx - d1Px / 2, cy - 6);
+                        } else {
+                            // Kite asymmetric vertical diagonal d1 and horizontal d2
+                            const topPart = d1Px * 0.35;
+                            const botPart = d1Px * 0.65;
+                            ctx.moveTo(cx, cy - topPart - 6);
+                            ctx.lineTo(cx + d2Px / 2, cy - 6);
+                            ctx.lineTo(cx, cy + botPart - 6);
+                            ctx.lineTo(cx - d2Px / 2, cy - 6);
+                        }
+                        ctx.closePath();
+                        ctx.fillStyle = idx === 6 ? 'rgba(20, 184, 166, 0.42)' : 'rgba(244, 63, 94, 0.42)';
+                        ctx.strokeStyle = idx === 6 ? '#0f766e' : '#be123c';
+                        ctx.lineWidth = 3.5;
+                        ctx.fill();
+                        ctx.stroke();
+
+                        // Draw Diagonals Inside
+                        ctx.strokeStyle = '#1e293b';
+                        ctx.setLineDash([4, 4]);
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        if (idx === 6) {
+                            ctx.moveTo(cx - d1Px / 2, cy - 6);
+                            ctx.lineTo(cx + d1Px / 2, cy - 6);
+                            ctx.moveTo(cx, cy - d2Px / 2 - 6);
+                            ctx.lineTo(cx, cy + d2Px / 2 - 6);
+                        } else {
+                            const topPart = d1Px * 0.35;
+                            const botPart = d1Px * 0.65;
+                            ctx.moveTo(cx - d2Px / 2, cy - 6);
+                            ctx.lineTo(cx + d2Px / 2, cy - 6);
+                            ctx.moveTo(cx, cy - topPart - 6);
+                            ctx.lineTo(cx, cy + botPart - 6);
+                        }
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+
+                        ctx.fillStyle = '#0f172a';
+                        ctx.fillText(`d₁ = ${d.d1.val} ${u}  |  d₂ = ${d.d2.val} ${u}`, cx, H - 14);
+                    }
+
+                    ctx.restore();
+                },
+
+                // Practice Zone Methods
+                getPracticeQuestionText() {
+                    const p = this.activeShape().practice[this.practiceIdx];
+                    if (this.lang === 'en') return p.qEn;
+                    if (this.lang === 'ta') return p.qTa;
+                    return `${p.qEn} (${p.qTa})`;
+                },
+
+                getPracticeDiagramSvg() {
+                    return this.activeShape().practice[this.practiceIdx].svg;
+                },
+
+                getPracticeRevealedSolution() {
+                    const p = this.activeShape().practice[this.practiceIdx];
+                    if (this.lang === 'en') return p.solEn;
+                    if (this.lang === 'ta') return p.solTa;
+                    return `${p.solEn}  |  ${p.solTa}`;
+                },
+
+                setPracticeQuestion(qIdx) {
+                    this.practiceIdx = qIdx;
+                    this.resetPracticeState();
+                },
+
+                nextPracticeQuestion() {
+                    this.practiceIdx = (this.practiceIdx + 1) % 2;
+                    this.resetPracticeState();
+                },
+
+                nextShape() {
+                    if (this.currentShape < 7) {
+                        this.selectShape(this.currentShape + 1);
+                    } else {
+                        this.selectGame();
+                    }
+                },
+
+                resetPracticeState() {
+                    this.userFormulaInput = '';
+                    this.userAnswerInput = '';
+                    this.formulaStatusMsg = '';
+                    this.formulaIsOk = false;
+                    this.answerStatusMsg = '';
+                    this.answerIsOk = false;
+                    this.timerRunning = false;
+                    this.timerSec = 5;
+                    this.answerRevealed = false;
+                    if (this.timerHandle) clearInterval(this.timerHandle);
+                },
+
+                startThinkTimer() {
+                    this.timerRunning = true;
+                    this.timerSec = 5;
+                    if (this.timerHandle) clearInterval(this.timerHandle);
+                    this.timerHandle = setInterval(() => {
+                        this.timerSec--;
+                        if (this.timerSec <= 0) {
+                            clearInterval(this.timerHandle);
+                            this.timerRunning = false;
+                            this.answerRevealed = true;
+                            this.playChime([523.25, 659.25]);
+                        }
+                    }, 1000);
+                },
+
+                checkPracticeFormula() {
+                    const val = this.userFormulaInput.trim().toLowerCase();
+                    if (!val) {
+                        this.formulaIsOk = false;
+                        this.formulaStatusMsg = this.lang === 'ta'
+                            ? '💡 முதலில் சூத்திரத்தை எழுதுங்கள்! உங்களால் முடியும்!'
+                            : '💡 Please enter the formula first! You can do it!';
+                        return;
+                    }
+                    const keywords = this.activeShape().formulaKeywords;
+                    const hasDigitOrOp = /[0-9×*x]/.test(val);
+                    const matched = keywords.some(k => val.includes(k)) || hasDigitOrOp;
+                    if (matched) {
+                        this.formulaIsOk = true;
+                        this.formulaStatusMsg = this.lang === 'ta'
+                            ? '🌟 மிக நன்று! சூத்திரம் சரியாக உள்ளது!'
+                            : '🌟 Excellent! Great formula setup!';
+                        this.playChime([587.33, 783.99]);
+                    } else {
+                        this.formulaIsOk = false;
+                        this.formulaStatusMsg = this.lang === 'ta'
+                            ? '💡 மீண்டும் முயற்சி செய்! மேலே உள்ள தங்கச் சூத்திரத்தைப் பாருங்கள்.'
+                            : '💡 Try again! Look at the Golden Formula box above.';
+                    }
+                },
+
+                checkPracticeAnswer() {
+                    const num = parseFloat(this.userAnswerInput);
+                    const expected = this.activeShape().practice[this.practiceIdx].ansNum;
+                    if (isNaN(num)) {
+                        this.answerIsOk = false;
+                        this.answerStatusMsg = this.lang === 'ta'
+                            ? '💡 எண் விடையை உள்ளிடவும்!'
+                            : '💡 Please enter a number answer!';
+                        return;
+                    }
+                    if (Math.abs(num - expected) < 0.2) {
+                        this.answerIsOk = true;
+                        this.answerStatusMsg = this.lang === 'ta'
+                            ? '🎉 மிக நன்று! சரியான விடை!'
+                            : '🎉 Excellent! Correct answer! You can do it!';
+                        this.celebrate();
+                    } else {
+                        this.answerIsOk = false;
+                        this.answerStatusMsg = this.lang === 'ta'
+                            ? '💡 மீண்டும் முயற்சி செய்! உங்களால் முடியும்!'
+                            : '💡 Try again! Check your multiplication carefully — You can do it!';
+                    }
+                },
+
+                // Grand Revision Game Methods
+                buildRevisionGame() {
+                    this.gameScore = 0;
+                    this.gameQuestions = this.shapes.map((shape, idx) => {
+                        const wrongPool = this.shapes.filter((_, i) => i !== idx);
+                        const shuffledWrong = wrongPool.sort(() => 0.5 - Math.random()).slice(0, 2);
+                        const options = [
+                            { en: shape.formulaEn, ta: shape.formulaTa, isCorrect: true },
+                            { en: shuffledWrong[0].formulaEn, ta: shuffledWrong[0].formulaTa, isCorrect: false },
+                            { en: shuffledWrong[1].formulaEn, ta: shuffledWrong[1].formulaTa, isCorrect: false }
+                        ].sort(() => 0.5 - Math.random());
+
+                        return {
+                            shapeId: shape.id,
+                            solved: false,
+                            feedback: '',
+                            options
+                        };
+                    });
+                },
+
+                answerGameQuestion(qIdx, isCorrect) {
+                    const q = this.gameQuestions[qIdx];
+                    if (q.solved) return;
+                    if (isCorrect) {
+                        q.solved = true;
+                        q.feedback = this.lang === 'ta' ? '🎉 மிக நன்று!' : '🎉 Excellent!';
+                        this.gameScore++;
+                        this.celebrate();
+                    } else {
+                        q.feedback = this.lang === 'ta' ? '💡 மீண்டும் முயற்சி செய்!' : '💡 Try again! You can do it!';
+                    }
+                },
+
+                resetGame() {
+                    this.buildRevisionGame();
+                },
+
+                // Web Audio API Cheerful Melody & Chimes (No external URLs)
+                playChime(freqs = [523.25, 659.25, 783.99, 1046.50]) {
+                    try {
+                        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                        const ctx = new AudioCtx();
+                        const now = ctx.currentTime;
+                        freqs.forEach((f, i) => {
+                            const osc = ctx.createOscillator();
+                            const gain = ctx.createGain();
+                            osc.type = 'triangle';
+                            osc.frequency.setValueAtTime(f, now + i * 0.11);
+                            gain.gain.setValueAtTime(0.16, now + i * 0.11);
+                            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.11 + 0.28);
+                            osc.connect(gain);
+                            gain.connect(ctx.destination);
+                            osc.start(now + i * 0.11);
+                            osc.stop(now + i * 0.11 + 0.28);
+                        });
+                    } catch (e) {}
+                },
+
+                toggleMusic() {
+                    this.musicPlaying = !this.musicPlaying;
+                    if (this.musicPlaying) {
+                        const melody = [523.25, 587.33, 659.25, 523.25, 659.25, 783.99, 659.25, 587.33];
+                        let step = 0;
+                        this.playChime([melody[0]]);
+                        this.musicInterval = setInterval(() => {
+                            step = (step + 1) % melody.length;
+                            this.playChime([melody[step]]);
+                        }, 650);
+                    } else {
+                        if (this.musicInterval) clearInterval(this.musicInterval);
+                    }
+                },
+
+                celebrate() {
+                    this.playChime([523.25, 659.25, 783.99, 1046.50]);
+                    try {
+                        confetti({
+                            particleCount: 85,
+                            spread: 70,
+                            origin: { y: 0.65 }
+                        });
+                    } catch (e) {}
+                }
+            };
+        }
+    </script>
+</body>
+</html>

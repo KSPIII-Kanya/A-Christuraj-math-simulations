@@ -1,0 +1,3035 @@
+<!DOCTYPE html>
+<html lang="ta" class="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>10th Maths: Graphs of Variations | GHS, OTTIMEDU</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+Tamil:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'Noto Sans Tamil', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', 'Noto Sans Tamil', sans-serif;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(100, 116, 139, 0.35);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(100, 116, 139, 0.55);
+    }
+    .point-chip {
+      touch-action: none;
+      user-select: none;
+    }
+    @keyframes pulseRing {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.45); }
+      50% { transform: scale(1.03); box-shadow: 0 0 0 6px rgba(79, 70, 229, 0); }
+    }
+    .next-point-highlight {
+      animation: pulseRing 1.8s infinite ease-in-out;
+    }
+    @keyframes popCelebration {
+      0% { transform: translateY(14px) scale(0.92); opacity: 0; }
+      100% { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    .toast-animate {
+      animation: popCelebration 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200 min-h-screen flex flex-col">
+
+  <!-- TOP HEADER WITH SCHOOL & CREATOR ATTRIBUTION -->
+  <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-[1680px] mx-auto px-3 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-3">
+      <!-- Left: Emblem, Title, School & Creator -->
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-700 flex items-center justify-center text-white font-black text-lg shadow-md shrink-0">
+          10
+        </div>
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <h1 id="app-title" class="text-sm sm:text-lg font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+              10-ஆம் வகுப்பு கணிதம்: மாறுபாடுகளின் வரைபடங்கள்
+            </h1>
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-900 dark:bg-emerald-900/70 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-700">
+              🏫 GHS, OTTIMEDU
+            </span>
+          </div>
+          <div class="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-0.5 text-[11px] sm:text-xs">
+            <span id="creator-badge" class="font-extrabold text-indigo-700 dark:text-indigo-300">
+              👨‍🏫 Created by: A. CHRISTURAJ, B.T. ASST. IN MATHEMATICS
+            </span>
+            <span class="text-slate-300 dark:text-slate-700 hidden md:inline">|</span>
+            <span id="app-subtitle" class="text-slate-500 dark:text-slate-400 font-medium hidden md:inline">
+              பயிற்சி 3.15 & எடுத்துக்காட்டுகள் (1 செ.மீ = 10 × 10 மி.மீ வரைபடத் தாள்)
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Language, Quadrant, Custom Explorer, Theme -->
+      <div class="flex flex-wrap items-center gap-2">
+        <!-- Bilingual Switcher -->
+        <div class="inline-flex rounded-xl bg-slate-100 dark:bg-slate-800 p-1 border border-slate-200 dark:border-slate-700">
+          <button id="btn-lang-ta" onclick="setLanguage('ta')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition bg-emerald-600 text-white shadow-sm">
+            தமிழ்
+          </button>
+          <button id="btn-lang-en" onclick="setLanguage('en')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-600 dark:text-slate-300 hover:text-slate-900">
+            English
+          </button>
+        </div>
+
+        <!-- Quadrant Selector -->
+        <div class="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-xl border border-slate-200 dark:border-slate-700">
+          <span id="lbl-quadrant" class="text-xs font-semibold text-slate-600 dark:text-slate-300 hidden sm:inline">Quadrant:</span>
+          <select id="quadrant-select" onchange="applyQuadrantMode(this.value)" class="bg-transparent text-xs font-bold text-slate-800 dark:text-slate-100 focus:outline-none cursor-pointer">
+            <option value="Q1" class="dark:bg-slate-800">Q1 Only (+x, +y)</option>
+            <option value="ALL" class="dark:bg-slate-800">All 4 Quadrants (±x, ±y)</option>
+            <option value="Q1Q2" class="dark:bg-slate-800">Q1 & Q2 (±x, +y)</option>
+            <option value="Q1Q4" class="dark:bg-slate-800">Q1 & Q4 (+x, ±y)</option>
+          </select>
+        </div>
+
+        <!-- Custom Function Lab Toggle -->
+        <button id="btn-sandbox" onclick="toggleSandboxMode()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-50 text-indigo-700 dark:bg-indigo-950/70 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 hover:bg-indigo-100 transition">
+          <span id="txt-sandbox">ƒ(x) Custom Lab</span>
+        </button>
+
+        <!-- Dark / Light Mode Toggle -->
+        <button id="btn-theme" onclick="toggleTheme()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-amber-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 transition" title="Toggle Dark/Light Mode">
+          <svg class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          <svg class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 10 QUESTION SELECTOR STRIP -->
+  <section class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-3 sm:px-6 py-2">
+    <div class="max-w-[1680px] mx-auto">
+      <div class="flex items-center justify-between mb-1.5">
+        <span id="lbl-select-q" class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          வினாவைத் தேர்ந்தெடுக்கவும் (10 வினாக்கள்):
+        </span>
+        <span id="current-variation-badge" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300">
+          நேர்மாறுபாடு (Direct Variation)
+        </span>
+      </div>
+      <div id="question-boxes" class="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-1.5">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+  </section>
+
+  <!-- FLOATING APPRECIATION & FEEDBACK TOAST -->
+  <div id="toast-banner" class="hidden fixed bottom-4 right-4 z-50 max-w-md px-4 py-3 rounded-2xl shadow-2xl border text-xs sm:text-sm font-extrabold flex items-center gap-2.5">
+    <span id="toast-icon" class="text-xl">🌟</span>
+    <span id="toast-message"></span>
+  </div>
+
+  <!-- MAIN SPLIT-SCREEN WORKSPACE -->
+  <main class="flex-1 max-w-[1680px] w-full mx-auto p-3 sm:p-4 grid grid-cols-1 lg:grid-cols-12 gap-4">
+
+    <!-- LEFT PANE: Question, Scale Table, Data Table & 5-Step Solution (Auto + Manual Student Mode) -->
+    <div class="lg:col-span-5 flex flex-col gap-3 lg:max-h-[calc(100vh-142px)] lg:overflow-y-auto pr-0.5">
+
+      <!-- 1. Question Display Pane -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-3.5 shadow-sm">
+        <div class="flex items-start justify-between gap-2 mb-1.5">
+          <div>
+            <span id="q-code" class="inline-block text-xs font-extrabold px-2.5 py-0.5 rounded-lg bg-emerald-600 text-white mb-1">
+              எடுத்துக்காட்டு 3.47
+            </span>
+            <h2 id="q-title" class="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-snug">
+              விட்டமும் சுற்றளவும் (நேர்மாறுபாடு)
+            </h2>
+          </div>
+          <span class="shrink-0 text-[11px] font-bold px-2.5 py-1 rounded-xl bg-emerald-50 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+            10th TN Maths
+          </span>
+        </div>
+
+        <p id="q-body" class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+          ...
+        </p>
+      </div>
+
+      <!-- Custom Function & Parameter Sliders Pane (Sandbox Mode) -->
+      <div id="custom-function-pane" class="hidden bg-white dark:bg-slate-900 rounded-2xl border border-indigo-200 dark:border-indigo-900 p-3.5 shadow-sm space-y-2.5">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider text-indigo-700 dark:text-indigo-400">
+            Custom Function & Live Parameter Sliders
+          </h3>
+          <button onclick="toggleSandboxMode()" class="text-xs text-slate-400 hover:text-slate-600 font-bold">✕</button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <div class="sm:col-span-2">
+            <label class="block text-[11px] font-bold text-slate-500 mb-1">Equation y = f(x) (use a, b, c, k):</label>
+            <input id="custom-eq-input" type="text" value="a * x^2 + b * x + c" oninput="onCustomEquationChange()" class="w-full px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-mono text-xs font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-500 mb-1">Presets:</label>
+            <select onchange="applyCustomPreset(this.value)" class="w-full px-2 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-semibold">
+              <option value="a * x^2 + b * x + c">Quadratic: ax²+bx+c</option>
+              <option value="k * x">Direct: y = kx</option>
+              <option value="k / x">Inverse: y = k/x</option>
+              <option value="a * sin(b * x) + c">Sine: a·sin(bx)+c</option>
+            </select>
+          </div>
+        </div>
+        <div id="parameter-sliders-container" class="grid grid-cols-1 sm:grid-cols-3 gap-2"></div>
+        <div class="grid grid-cols-3 gap-2 pt-1.5 border-t border-slate-200 dark:border-slate-800">
+          <div>
+            <label class="block text-[10px] font-bold text-slate-500">X Min</label>
+            <input id="range-xmin" type="number" value="-5" step="1" onchange="rebuildCustomTable()" class="w-full px-2 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-bold" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-slate-500">X Max</label>
+            <input id="range-xmax" type="number" value="5" step="1" onchange="rebuildCustomTable()" class="w-full px-2 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-bold" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-slate-500">X Step</label>
+            <input id="range-xstep" type="number" value="1" step="0.5" min="0.1" onchange="rebuildCustomTable()" class="w-full px-2 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-bold" />
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Structured Scale Table (Axis | cm | Units) -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-3.5 shadow-sm">
+        <div class="flex items-center justify-between mb-2">
+          <h3 id="lbl-scale-table-title" class="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white">
+            அளவுத்திட்டம் அட்டவணை (Scale Table: 1 cm = Units)
+          </h3>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+            1 cm (X) = 1 cm (Y) Equal Grid
+          </span>
+        </div>
+        <div class="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
+          <table class="w-full text-xs text-center border-collapse">
+            <thead class="bg-emerald-50 dark:bg-emerald-950/70 text-emerald-900 dark:text-emerald-200 font-extrabold">
+              <tr>
+                <th id="th-axis" class="py-1.5 px-2 border-r border-slate-200 dark:border-slate-700">அச்சு (Axis)</th>
+                <th id="th-cm" class="py-1.5 px-2 border-r border-slate-200 dark:border-slate-700">செ.மீ (cm)</th>
+                <th id="th-units" class="py-1.5 px-2">அலகுகள் (Units per 1 cm)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 dark:divide-slate-700 font-semibold">
+              <tr class="bg-white dark:bg-slate-900">
+                <td id="td-xaxis-name" class="py-1.5 px-2 font-bold border-r border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200">X - அச்சு</td>
+                <td id="td-x-cm" class="py-1.5 px-2 border-r border-slate-200 dark:border-slate-700 font-mono">1 செ.மீ (1 cm)</td>
+                <td class="py-1 px-2 flex items-center justify-center gap-1.5">
+                  <input id="input-scale-x" type="number" step="any" min="0.01" onchange="onScaleUnitChange('x', this.value)" class="w-20 text-center px-1.5 py-0.5 rounded-lg border border-emerald-300 dark:border-emerald-700 bg-emerald-50/50 dark:bg-slate-800 font-mono font-extrabold text-emerald-800 dark:text-emerald-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+                  <span id="span-scale-x-unit" class="text-[11px] text-slate-600 dark:text-slate-300 font-bold">அலகு</span>
+                </td>
+              </tr>
+              <tr class="bg-slate-50/60 dark:bg-slate-800/40">
+                <td id="td-yaxis-name" class="py-1.5 px-2 font-bold border-r border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200">Y - அச்சு</td>
+                <td id="td-y-cm" class="py-1.5 px-2 border-r border-slate-200 dark:border-slate-700 font-mono">1 செ.மீ (1 cm)</td>
+                <td class="py-1 px-2 flex items-center justify-center gap-1.5">
+                  <input id="input-scale-y" type="number" step="any" min="0.01" onchange="onScaleUnitChange('y', this.value)" class="w-20 text-center px-1.5 py-0.5 rounded-lg border border-emerald-300 dark:border-emerald-700 bg-emerald-50/50 dark:bg-slate-800 font-mono font-extrabold text-emerald-800 dark:text-emerald-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+                  <span id="span-scale-y-unit" class="text-[11px] text-slate-600 dark:text-slate-300 font-bold">அலகு</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 3. Step 1: Synchronized Data Table (Auto Mode vs Student Entry Mode with Appreciation) -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-3.5 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+          <div>
+            <h3 id="lbl-table-title" class="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white">
+              படி 1: அட்டவணை (Synchronized Data Table)
+            </h3>
+            <p id="lbl-table-hint" class="text-[11px] text-slate-500 dark:text-slate-400">
+              தானியங்கி அட்டவணை அல்லது மாணவர் மதிப்புகளை உள்ளிடவும்
+            </p>
+          </div>
+          <div class="inline-flex rounded-xl bg-slate-100 dark:bg-slate-800 p-1 border border-slate-200 dark:border-slate-700">
+            <button id="btn-table-auto" onclick="setTableMode('auto')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition bg-emerald-600 text-white shadow-sm">
+              தானியங்கி
+            </button>
+            <button id="btn-table-student" onclick="setTableMode('student')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-600 dark:text-slate-300">
+              மாணவர் நிரப்புக
+            </button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
+          <table class="w-full text-xs text-center border-collapse">
+            <thead class="bg-slate-50 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 font-bold">
+              <tr id="table-row-x"></tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+              <tr id="table-row-y" class="bg-white dark:bg-slate-900 font-semibold"></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Appreciation / Verification Banner for Table -->
+        <div id="table-appreciation-box" class="hidden mt-2 px-3 py-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700 text-xs font-extrabold text-emerald-800 dark:text-emerald-200 flex items-center gap-2">
+          <span>🌟</span>
+          <span id="table-appreciation-text"></span>
+        </div>
+
+        <div id="student-table-actions" class="hidden mt-2.5 flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <button onclick="verifyStudentTable()" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition">
+              ✓ <span id="txt-verify-table">அட்டவணையைச் சரிபார்</span>
+            </button>
+            <button onclick="addTableColumn()" class="px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-xs font-bold border border-slate-200 dark:border-slate-700 transition">
+              + <span id="txt-add-col">கட்டம் சேர்</span>
+            </button>
+          </div>
+          <span id="table-feedback-text" class="text-xs font-bold"></span>
+        </div>
+      </div>
+
+      <!-- 4. Steps 2 to 5: Variation, Constant (k), Equation & Graph Solutions (Auto & Manual Practice Mode) -->
+      <div id="analytical-steps-card" class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-3.5 shadow-sm space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-800 pb-2">
+          <div>
+            <h3 id="lbl-steps-card-title" class="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white">
+              படி 2 – 5: மாறுபாடு, விகிதசம மாறிலி (k), சமன்பாடு & தீர்வு
+            </h3>
+            <p id="lbl-steps-card-sub" class="text-[11px] text-slate-500 dark:text-slate-400">
+              தானியங்கி தீர்வு அல்லது மாணவர் பயிற்சி முறையைத் தேர்ந்தெடுக்கவும்
+            </p>
+          </div>
+          <div class="inline-flex rounded-xl bg-slate-100 dark:bg-slate-800 p-1 border border-slate-200 dark:border-slate-700">
+            <button id="btn-sol-auto" onclick="setSolutionMode('auto')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition bg-indigo-600 text-white shadow-sm">
+              தானியங்கி தீர்வு
+            </button>
+            <button id="btn-sol-manual" onclick="setSolutionMode('manual')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-600 dark:text-slate-300">
+              மாணவர் பயிற்சி (Manual)
+            </button>
+          </div>
+        </div>
+
+        <!-- AUTO SOLUTION VIEW -->
+        <div id="solution-auto-view" class="space-y-2 text-xs">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <div class="p-2.5 rounded-xl bg-sky-50/80 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800">
+              <div class="text-[10px] font-bold uppercase text-sky-700 dark:text-sky-300" id="lbl-step2-auto">2. மாறுபாடு (Variation)</div>
+              <div id="auto-var-value" class="font-extrabold text-slate-900 dark:text-white mt-0.5">நேர்மாறுபாடு</div>
+            </div>
+            <div class="p-2.5 rounded-xl bg-amber-50/80 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800">
+              <div class="text-[10px] font-bold uppercase text-amber-700 dark:text-amber-300" id="lbl-step3-auto">3. விகிதசம மாறிலி (k)</div>
+              <div id="auto-k-value" class="font-mono font-extrabold text-slate-900 dark:text-white mt-0.5">k = 3.1</div>
+            </div>
+            <div class="p-2.5 rounded-xl bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800">
+              <div class="text-[10px] font-bold uppercase text-indigo-700 dark:text-indigo-300" id="lbl-step4-auto">4. சமன்பாடு (Equation)</div>
+              <div id="auto-eq-value" class="font-mono font-extrabold text-indigo-700 dark:text-indigo-300 mt-0.5">y = 3.1x</div>
+            </div>
+          </div>
+
+          <div class="p-2.5 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 space-y-1.5">
+            <div class="text-[11px] font-extrabold text-emerald-900 dark:text-emerald-200" id="lbl-step5-auto">
+              5. வரைபடத்திலிருந்து தீர்வு (Solution from Graph):
+            </div>
+            <div id="auto-subquestions-list" class="space-y-1.5"></div>
+          </div>
+        </div>
+
+        <!-- MANUAL STUDENT PRACTICE VIEW -->
+        <div id="solution-manual-view" class="hidden space-y-2.5 text-xs">
+          <!-- Step 2 Manual: Variation Type -->
+          <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="font-extrabold text-slate-800 dark:text-slate-100" id="lbl-man-step2">படி 2: மாறுபாட்டின் வகையைத் தேர்ந்தெடுக்கவும்</span>
+              <span id="status-man-step2" class="text-[11px] font-extrabold"></span>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <button id="btn-man-direct" onclick="checkManualVariation('direct')" class="px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 hover:border-emerald-500 font-bold transition">
+                நேர்மாறுபாடு (Direct)
+              </button>
+              <button id="btn-man-inverse" onclick="checkManualVariation('inverse')" class="px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 hover:border-emerald-500 font-bold transition">
+                எதிர்மாறுபாடு (Inverse)
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 3 Manual: Constant of Variation (k) -->
+          <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="font-extrabold text-slate-800 dark:text-slate-100" id="lbl-man-step3">படி 3: விகிதசம மாறிலி (k) மதிப்பைக் காண்க</span>
+              <span id="status-man-step3" class="text-[11px] font-extrabold"></span>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <span id="hint-k-formula" class="font-mono text-[11px] px-2 py-1 rounded-lg bg-amber-100 dark:bg-amber-900/50 text-amber-900 dark:text-amber-200 font-bold">
+                k = y / x (அல்லது) xy
+              </span>
+              <div class="flex items-center gap-1.5">
+                <span class="font-mono font-extrabold">k =</span>
+                <input id="input-man-k" type="text" value="" placeholder="" onkeydown="if(event.key==='Enter') checkManualK()" class="w-28 px-2.5 py-1 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 font-mono font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+                <button onclick="checkManualK()" class="px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition">
+                  ✓ Check
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4 Manual: Equation -->
+          <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="font-extrabold text-slate-800 dark:text-slate-100" id="lbl-man-step4">படி 4: சமன்பாட்டை உருவாக்குக (Equation)</span>
+              <span id="status-man-step4" class="text-[11px] font-extrabold"></span>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <select id="select-man-eq-form" class="px-2 py-1 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 font-mono font-bold">
+                <option value=""></option>
+                <option value="direct">y = k · x</option>
+                <option value="inverse">x · y = k</option>
+              </select>
+              <input id="input-man-eq-k" type="text" value="" placeholder="" onkeydown="if(event.key==='Enter') checkManualEquation()" class="w-24 px-2.5 py-1 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 font-mono font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+              <button onclick="checkManualEquation()" class="px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition">
+                ✓ Check
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 5 Manual: Sub-question Solutions from Graph -->
+          <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 space-y-2">
+            <div class="font-extrabold text-slate-800 dark:text-slate-100" id="lbl-man-step5">
+              படி 5: வரைபடத்திலிருந்து விடைகளை உள்ளிடவும் (Enter Graph Solutions)
+            </div>
+            <div id="manual-subquestions-container" class="space-y-2"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT PANE: Listed Points Bar + High-Precision 1cm = 10x10mm Graph Sheet Canvas -->
+    <div class="lg:col-span-7 flex flex-col gap-2.5">
+
+      <!-- Listed Points Pane (Drag & Fix One-by-One + Slow Learner Helper + Individual Delete) -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-3 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+          <div>
+            <h3 id="lbl-points-pane" class="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white">
+              குறிக்க வேண்டிய புள்ளிகள் (Drag & Fix Points One-by-One)
+            </h3>
+            <p id="lbl-drag-hint" class="text-[11px] text-indigo-600 dark:text-indigo-400 font-semibold">
+              👆 ஒளிரும் புள்ளியை இழுத்து (Drag) 10×10 மி.மீ கட்டத்தில் பொருத்தவும் — அனைத்துப் புள்ளிகளும் முடிந்த பிறகே வரைபடக் கோடு உருவாகும்!
+            </p>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button id="btn-slow-learner" onclick="toggleSlowLearnerHelper()" class="px-2.5 py-1 rounded-xl text-[11px] font-extrabold bg-amber-500 text-white border border-amber-600 shadow-sm transition">
+              🐢 <span id="txt-slow-learner">மெல்ல கற்கும் மாணவர் உதவி: ON</span>
+            </button>
+            <span id="plotted-counter" class="text-xs font-extrabold px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200">
+              0 / 5
+            </span>
+          </div>
+        </div>
+
+        <!-- Slow Learner Step-by-Step Guide & One-Tap Fix Button -->
+        <div id="slow-learner-banner" class="mb-2 p-2 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800 text-xs flex flex-wrap items-center justify-between gap-2">
+          <span id="slow-learner-step-text" class="font-bold text-amber-950 dark:text-amber-200"></span>
+          <button id="btn-plot-active-helper" onclick="plotCurrentTargetByTap()" class="shrink-0 px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-extrabold shadow-sm transition">
+            🎯 <span id="txt-tap-target">இலக்கில் பொருத்து (Fix Next Point)</span>
+          </button>
+        </div>
+
+        <!-- Draggable Point Chips + Individual Delete Buttons -->
+        <div id="listed-points-container" class="flex flex-wrap gap-2 min-h-[44px] p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-dashed border-slate-300 dark:border-slate-700">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- Graph Action & Slow Animation Toolbar -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-2.5 shadow-sm flex flex-wrap items-center justify-between gap-2">
+        <div class="flex flex-wrap items-center gap-1.5">
+          <button id="btn-auto-animate" onclick="runAutoPlotAnimation()" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-extrabold shadow flex items-center gap-1.5 transition">
+            <span>▶</span> <span id="txt-auto-plot">தானியங்கி வரைபடம் (Slow Animation)</span>
+          </button>
+
+          <button id="btn-pause-animate" onclick="togglePauseAnimation()" class="hidden px-2.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-extrabold shadow transition">
+            ⏸ <span id="txt-pause-plot">இடைநிறுத்து</span>
+          </button>
+
+          <!-- Animation Speed Selector -->
+          <select id="anim-speed-select" onchange="state.animSpeed = parseFloat(this.value)" class="px-2 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[11px] font-bold text-slate-700 dark:text-slate-200 cursor-pointer" title="Animation Speed">
+            <option value="1.5">🐢 Very Slow (மிக மெதுவாக)</option>
+            <option value="1.0" selected>🚶 Slow (மெதுவாக)</option>
+            <option value="0.55">🏃 Normal (சாதாரணம்)</option>
+          </select>
+
+          <button onclick="resetGraphPoints()" class="px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold border border-slate-200 dark:border-slate-700 transition">
+            ↺ <span id="txt-reset">மீட்டமை</span>
+          </button>
+        </div>
+
+        <!-- Click Mode & Uniform 1cm Zoom Controls -->
+        <div class="flex flex-wrap items-center gap-1.5">
+          <div class="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700">
+            <button id="mode-axis-touch" onclick="setGraphClickMode('axis')" class="px-2 py-1 rounded-lg text-[11px] font-bold transition bg-amber-500 text-white shadow-sm">
+              ┼ <span id="txt-axis-touch">அச்சுத் தொடு கோடு</span>
+            </button>
+            <button id="mode-pin-drop" onclick="setGraphClickMode('pin')" class="px-2 py-1 rounded-lg text-[11px] font-bold transition text-slate-600 dark:text-slate-300">
+              📍 <span id="txt-pin-drop">புள்ளி குத்து</span>
+            </button>
+          </div>
+
+          <div class="inline-flex items-center rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden">
+            <button onclick="zoomGrid(0.85)" class="px-2 py-1.5 text-xs font-extrabold hover:bg-slate-200 dark:hover:bg-slate-700" title="Zoom Out (1cm Grid)">−</button>
+            <span id="zoom-pct-label" class="px-1.5 text-[11px] font-mono font-bold text-slate-600 dark:text-slate-300">100%</span>
+            <button onclick="zoomGrid(1.15)" class="px-2 py-1.5 text-xs font-extrabold hover:bg-slate-200 dark:hover:bg-slate-700" title="Zoom In (1cm Grid)">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Axis Touch Intersection Finder Bar -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 px-3.5 py-2 shadow-sm flex flex-wrap items-center justify-between gap-2">
+        <div class="flex flex-wrap items-center gap-2">
+          <span id="lbl-touch-finder" class="text-xs font-bold text-amber-700 dark:text-amber-400">
+            அச்சு வெட்டுப்புள்ளி (Axis Touch Intersection):
+          </span>
+          <div class="flex items-center gap-1">
+            <label class="text-xs font-bold text-slate-500">x =</label>
+            <input id="touch-x-input" type="number" step="any" placeholder="e.g. 6" onchange="projectFromAxis('x', parseFloat(this.value))" class="w-20 px-2 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-bold focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+          </div>
+          <div class="flex items-center gap-1">
+            <label class="text-xs font-bold text-slate-500">y =</label>
+            <input id="touch-y-input" type="number" step="any" placeholder="e.g. 75" onchange="projectFromAxis('y', parseFloat(this.value))" class="w-20 px-2 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-bold focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+          </div>
+          <button onclick="clearIntersectionLines()" class="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200">
+            Clear
+          </button>
+        </div>
+
+        <div class="flex items-center gap-1.5 text-[11px] font-bold text-emerald-700 dark:text-emerald-400">
+          <span>📏 1 cm = 10 × 10 mm</span>
+          <span class="text-slate-300 dark:text-slate-700">|</span>
+          <button onclick="resetPanZoom()" class="underline hover:text-emerald-900">Center Axes</button>
+        </div>
+      </div>
+
+      <!-- Main Graph Sheet Container (1cm = 10mm Crisp Canvas + Floating Scale Table) -->
+      <div id="graph-sheet-wrapper" class="relative flex-1 min-h-[450px] sm:min-h-[520px] rounded-2xl border-2 border-emerald-700/40 dark:border-emerald-500/40 overflow-hidden shadow-md bg-[#f5fbf6] dark:bg-[#09121a] select-none">
+
+        <!-- Live Coordinate & Status Pill (Top-Left) -->
+        <div class="absolute top-2.5 left-3 z-20 pointer-events-none flex flex-wrap items-center gap-2">
+          <div id="live-coord-pill" class="px-2.5 py-1 rounded-xl bg-white/95 dark:bg-slate-900/95 backdrop-blur border border-slate-300 dark:border-slate-700 text-xs font-mono font-bold text-slate-800 dark:text-slate-100 shadow-sm">
+            (x, y) : —
+          </div>
+          <div id="equation-overlay-pill" class="px-2.5 py-1 rounded-xl bg-emerald-600 text-white text-xs font-mono font-extrabold shadow-sm">
+            y = 3.1x
+          </div>
+        </div>
+
+        <!-- Structured Scale Table Overlay on Graph Sheet (Top-Right) -->
+        <div class="hidden sm:block absolute top-2.5 right-3 z-20 pointer-events-none bg-white/95 dark:bg-slate-900/95 backdrop-blur rounded-xl border border-emerald-600/50 dark:border-emerald-500/50 shadow-md overflow-hidden text-[11px]">
+          <div class="bg-emerald-600 text-white font-extrabold px-2.5 py-0.5 text-center tracking-wide" id="overlay-scale-header">
+            அளவுத்திட்டம் (Scale)
+          </div>
+          <table class="border-collapse text-left">
+            <thead>
+              <tr class="bg-emerald-50 dark:bg-emerald-950/80 text-emerald-900 dark:text-emerald-200 font-bold border-b border-emerald-200 dark:border-emerald-800">
+                <th class="px-2 py-0.5 border-r border-emerald-200 dark:border-emerald-800" id="ov-th-axis">அச்சு</th>
+                <th class="px-2 py-0.5 border-r border-emerald-200 dark:border-emerald-800" id="ov-th-cm">செ.மீ</th>
+                <th class="px-2 py-0.5" id="ov-th-units">அலகுகள்</th>
+              </tr>
+            </thead>
+            <tbody class="font-bold text-slate-800 dark:text-slate-200 divide-y divide-emerald-100 dark:divide-emerald-900">
+              <tr>
+                <td class="px-2 py-0.5 border-r border-emerald-200 dark:border-emerald-800">X</td>
+                <td class="px-2 py-0.5 border-r border-emerald-200 dark:border-emerald-800">1 cm</td>
+                <td class="px-2 py-0.5 text-emerald-700 dark:text-emerald-300" id="ov-scale-x">1 செ.மீ</td>
+              </tr>
+              <tr>
+                <td class="px-2 py-0.5 border-r border-emerald-200 dark:border-emerald-800">Y</td>
+                <td class="px-2 py-0.5 border-r border-emerald-200 dark:border-emerald-800">1 cm</td>
+                <td class="px-2 py-0.5 text-emerald-700 dark:text-emerald-300" id="ov-scale-y">1 செ.மீ</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Floating Drag Crosshair Badge -->
+        <div id="drag-crosshair-badge" class="hidden fixed z-50 pointer-events-none px-2.5 py-1 rounded-full bg-indigo-600 text-white font-mono text-xs font-extrabold shadow-lg -translate-x-1/2 -translate-y-full">
+          (0, 0)
+        </div>
+
+        <!-- High-DPI HTML5 Canvas for Crisp 1cm = 10x10mm Graph Sheet -->
+        <canvas id="graph-canvas" class="w-full h-full block cursor-crosshair"></canvas>
+      </div>
+
+      <!-- Bottom Quick Guide Bar -->
+      <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 px-3.5 py-2 text-[11px] text-slate-600 dark:text-slate-400 flex flex-wrap items-center justify-between gap-2">
+        <span id="guide-tip-1">💡 <b>குறிப்பு:</b> அனைத்துப் புள்ளிகளும் குறிக்கப்பட்ட பிறகே வரைபடக் கோடு/வளைவரை உருவாகும். எந்த ஒரு புள்ளியையும் நீக்க (✕ நீக்கு) அழுத்தவும்.</span>
+        <span id="guide-tip-2">🏫 GHS, OTTIMEDU • A. CHRISTURAJ, B.T. ASST. IN MATHEMATICS</span>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    // =========================================================================
+    // 1. ALL 10 SYLLABUS QUESTIONS (TAMIL & ENGLISH MEDIUM)
+    // =========================================================================
+    const QUESTIONS_DATA = [
+      {
+        id: 1,
+        code: { ta: "எ.கா 3.47", en: "Ex 3.47" },
+        fullCode: { ta: "எடுத்துக்காட்டு 3.47", en: "Example 3.47" },
+        title: {
+          ta: "விட்டமும் சுற்றளவும் (நேர்மாறுபாடு)",
+          en: "Diameter & Circumference (Direct Variation)"
+        },
+        body: {
+          ta: "வர்ஷிகா வெவ்வேறு அளவுகளில் 6 வட்டங்களை வரைந்தாள். அட்டவணையில் உள்ளவாறு, ஒவ்வொரு வட்டத்தின் விட்டத்திற்கும் சுற்றளவிற்குமான ஒரு வரைபடம் வரையவும். அதனைப் பயன்படுத்தி விட்டமானது 6 செ.மீ ஆக இருக்கும்போது வட்டத்தின் சுற்றளவைக் காண்க.",
+          en: "Varshika drew 6 circles of different sizes. Draw a graph for the relationship between the diameter and circumference of each circle as shown in the table and use it to find the circumference of a circle when its diameter is 6 cm."
+        },
+        variationType: "direct",
+        k: 3.1,
+        kDisplay: "3.1",
+        equationText: "y = 3.1x",
+        xLabel: { ta: "விட்டம் (செ.மீ)", en: "Diameter (cm)" },
+        yLabel: { ta: "சுற்றளவு (செ.மீ)", en: "Circumference (cm)" },
+        scale: {
+          xUnits: 1,
+          yUnits: 2,
+          xUnitName: { ta: "செ.மீ", en: "cm" },
+          yUnitName: { ta: "செ.மீ", en: "cm" }
+        },
+        defaultCmSpan: { x: 8, y: 11 },
+        table: {
+          x: [1, 2, 3, 4, 5],
+          y: [3.1, 6.2, 9.3, 12.4, 15.5]
+        },
+        subQuestions: [
+          {
+            label: {
+              ta: "(i) விட்டம் x = 6 செ.மீ எனில் சுற்றளவு y (செ.மீ) = ?",
+              en: "(i) Find circumference y (cm) when diameter x = 6 cm"
+            },
+            answer: {
+              ta: "விட்டம் = 6 செ.மீ எனில் சுற்றளவு = 18.6 செ.மீ",
+              en: "When diameter = 6 cm, Circumference = 18.6 cm"
+            },
+            expectedAnswer: 18.6,
+            unit: { ta: "செ.மீ", en: "cm" },
+            queryAxis: "x",
+            queryVal: 6
+          }
+        ]
+      },
+      {
+        id: 2,
+        code: { ta: "எ.கா 3.48", en: "Ex 3.48" },
+        fullCode: { ta: "எடுத்துக்காட்டு 3.48", en: "Example 3.48" },
+        title: {
+          ta: "பேருந்தின் பயணம்: நேரம் - தூரம்",
+          en: "Bus Journey: Time vs Distance"
+        },
+        body: {
+          ta: "ஒரு பேருந்து மணிக்கு 50 கி.மீ / மணி என்ற சீரான வேகத்தில் பயணிக்கிறது. இத்தொடர்புக்கான தூரம் - நேரம் வரைபடம் வரைந்து பின்வருவனவற்றைக் காண்க: (i) விகிதசம மாறிலி (ii) 1½ மணிநேரத்தில் (90 நிமிடங்கள்) பயணிக்கும் தூரம் (iii) 300 கி.மீ தூரத்தை பயணிக்க ஆகும் நேரம்.",
+          en: "A bus is travelling at a uniform speed of 50 km/hr. Draw the distance-time graph and hence find (i) the constant of variation (ii) how far will it travel in 1½ hr (90 min) (iii) the time required to cover a distance of 300 km from the graph."
+        },
+        variationType: "direct",
+        k: 5 / 6,
+        kDisplay: "5/6",
+        equationText: "y = (5/6)x",
+        xLabel: { ta: "பயண நேரம் (நிமிடங்களில்)", en: "Time (minutes)" },
+        yLabel: { ta: "பயண தூரம் (கி.மீ)", en: "Distance (km)" },
+        scale: {
+          xUnits: 30,
+          yUnits: 50,
+          xUnitName: { ta: "நிமிடங்கள்", en: "mins" },
+          yUnitName: { ta: "கி.மீ", en: "km" }
+        },
+        defaultCmSpan: { x: 13, y: 8 },
+        table: {
+          x: [60, 120, 180, 240],
+          y: [50, 100, 150, 200]
+        },
+        subQuestions: [
+          {
+            label: {
+              ta: "(ii) 1½ மணிநேரத்தில் (x = 90 நிமிடம்) பயணிக்கும் தூரம் (கி.மீ)?",
+              en: "(ii) Distance travelled in 1½ hr (x = 90 min) in km?"
+            },
+            answer: {
+              ta: "(ii) 1½ மணிநேரத்தில் பயணிக்கும் தூரம் = 75 கி.மீ",
+              en: "(ii) Distance travelled in 1½ hr = 75 km"
+            },
+            expectedAnswer: 75,
+            unit: { ta: "கி.மீ", en: "km" },
+            queryAxis: "x",
+            queryVal: 90
+          },
+          {
+            label: {
+              ta: "(iii) 300 கி.மீ (y = 300) தூரத்தை பயணிக்க ஆகும் நேரம் (நிமிடங்களில்)?",
+              en: "(iii) Time required to cover 300 km (y = 300) in minutes?"
+            },
+            answer: {
+              ta: "(iii) 300 கி.மீ பயணிக்க ஆகும் நேரம் = 360 நிமிடங்கள் (6 மணி)",
+              en: "(iii) Time required for 300 km = 360 minutes (6 hours)"
+            },
+            expectedAnswer: 360,
+            unit: { ta: "நிமிடங்கள்", en: "mins" },
+            queryAxis: "y",
+            queryVal: 300
+          }
+        ]
+      },
+      {
+        id: 3,
+        code: { ta: "எ.கா 3.49", en: "Ex 3.49" },
+        fullCode: { ta: "எடுத்துக்காட்டு 3.49", en: "Example 3.49" },
+        title: {
+          ta: "வேலையாள்கள் மற்றும் நாள்கள் (எதிர்மாறுபாடு)",
+          en: "Workers & Days (Inverse Variation)"
+        },
+        body: {
+          ta: "ஒரு நிறுவனமானது தொடக்கத்தில் 40 வேலையாள்களுடன் 150 நாள்களில் ஒரு வேலையை முடிக்க தொடங்கியது. (i) மாறுபாட்டின் வகையை அடையாளம் காண்க. (ii) 120 வேலையாள்களை வேலைக்கு அமர்த்தினால் வேலை முடிய எத்தனை நாள்கள் ஆகும்? (iii) வேலையானது 30 நாள்களில் முடிய எத்தனை வேலையாள்கள் தேவை?",
+          en: "A company initially started with 40 workers to complete the work by 150 days. (i) Identify the type of variation. (ii) Find the number of days to complete the work if the company hires 120 workers. (iii) How many workers are needed if the work has to be completed by 30 days?"
+        },
+        variationType: "inverse",
+        k: 6000,
+        kDisplay: "6000",
+        equationText: "xy = 6000",
+        xLabel: { ta: "வேலையாள்களின் எண்ணிக்கை", en: "Number of Workers" },
+        yLabel: { ta: "நாள்களின் எண்ணிக்கை", en: "Number of Days" },
+        scale: {
+          xUnits: 20,
+          yUnits: 20,
+          xUnitName: { ta: "வேலையாள்கள்", en: "workers" },
+          yUnitName: { ta: "நாள்கள்", en: "days" }
+        },
+        defaultCmSpan: { x: 11, y: 11 },
+        table: {
+          x: [40, 50, 60, 75],
+          y: [150, 120, 100, 80]
+        },
+        subQuestions: [
+          {
+            label: {
+              ta: "(ii) x = 120 வேலையாள்கள் எனில் நாள்கள் y = ?",
+              en: "(ii) Days needed when workers x = 120?"
+            },
+            answer: {
+              ta: "(ii) 120 வேலையாள்கள் எனில் = 50 நாள்கள்",
+              en: "(ii) For 120 workers = 50 days"
+            },
+            expectedAnswer: 50,
+            unit: { ta: "நாள்கள்", en: "days" },
+            queryAxis: "x",
+            queryVal: 120
+          },
+          {
+            label: {
+              ta: "(iii) y = 30 நாள்களில் முடிய தேவையான வேலையாள்கள் x = ?",
+              en: "(iii) Workers needed to finish in y = 30 days?"
+            },
+            answer: {
+              ta: "(iii) 30 நாள்களில் முடிய தேவையான வேலையாள்கள் = 200",
+              en: "(iii) Workers needed for 30 days = 200 workers"
+            },
+            expectedAnswer: 200,
+            unit: { ta: "வேலையாள்கள்", en: "workers" },
+            queryAxis: "y",
+            queryVal: 30
+          }
+        ]
+      },
+      {
+        id: 4,
+        code: { ta: "எ.கா 3.50", en: "Ex 3.50" },
+        fullCode: { ta: "எடுத்துக்காட்டு 3.50", en: "Example 3.50" },
+        title: {
+          ta: "மாரத்தான் ஓட்டம்: வேகம் - நேரம்",
+          en: "Marathon Race: Speed vs Time"
+        },
+        body: {
+          ta: "நிஷாந்த், 12 கி.மீ தூரத்திற்கான மாரத்தான் ஓட்டத்தை மணிக்கு 12 கி.மீ வேகத்தில் ஓடி 1 மணி நேரத்தில் அடைந்தார். தொடர்ந்து மற்றவர்கள் 6, 4, 3, 2 கி.மீ/மணி வேகத்தில் ஓடி 2, 3, 4, 6 மணி நேரத்தில் அடைந்தனர். வேகம்-நேரம் வரைபடம் வரைந்து மணிக்கு 2.4 கி.மீ/மணி வேகத்தில் சென்ற கௌசிக் எடுத்துக் கொண்ட நேரத்தைக் காண்க.",
+          en: "Nishanth is the winner in a Marathon race of 12 km distance. He ran at the uniform speed of 12 km/hr and reached the destination in 1 hour. Others ran at 6, 4, 3, 2 km/hr taking 2, 3, 4, 6 hours. Draw the speed-time graph and find the time taken by Kaushik who ran at 2.4 km/hr."
+        },
+        variationType: "inverse",
+        k: 12,
+        kDisplay: "12",
+        equationText: "xy = 12",
+        xLabel: { ta: "வேகம் (கி.மீ/மணி)", en: "Speed (km/hr)" },
+        yLabel: { ta: "நேரம் (மணி)", en: "Time (hours)" },
+        scale: {
+          xUnits: 1,
+          yUnits: 1,
+          xUnitName: { ta: "கி.மீ/மணி", en: "km/hr" },
+          yUnitName: { ta: "மணி", en: "hr" }
+        },
+        defaultCmSpan: { x: 13, y: 8 },
+        table: {
+          x: [12, 6, 4, 3, 2],
+          y: [1, 2, 3, 4, 6]
+        },
+        subQuestions: [
+          {
+            label: {
+              ta: "(i) வேகம் x = 2.4 கி.மீ/மணி எனில் கௌசிக் எடுத்த நேரம் y (மணி) = ?",
+              en: "(i) Time taken by Kaushik at speed x = 2.4 km/hr (in hours)?"
+            },
+            answer: {
+              ta: "மணிக்கு 2.4 கி.மீ வேகத்தில் சென்ற கௌசிக் எடுத்த நேரம் = 5 மணி",
+              en: "Time taken by Kaushik at 2.4 km/hr = 5 hours"
+            },
+            expectedAnswer: 5,
+            unit: { ta: "மணி", en: "hours" },
+            queryAxis: "x",
+            queryVal: 2.4
+          }
+        ]
+      },
+      {
+        id: 5,
+        code: { ta: "பயிற்சி 3.15 (1)", en: "Ex 3.15 (1)" },
+        fullCode: { ta: "பயிற்சி 3.15 - வினா 1", en: "Exercise 3.15 - Question 1" },
+        title: {
+          ta: "துணிக்கடை 50% தள்ளுபடி வரைபடம்",
+          en: "Garment Shop 50% Discount Graph"
+        },
+        body: {
+          ta: "ஒரு துணிக்கடையானது தனது வாடிக்கையாளர்களுக்கு வாங்கும் ஒவ்வொரு பொருளின் மீதும் 50% தள்ளுபடியை அறிவிக்கிறது. குறித்த விலைக்கும் தள்ளுபடிக்குமான வரைபடம் வரைக. மேலும் (i) ஒரு வாடிக்கையாளர் ரூ. 3250 ஐ தள்ளுபடியாக பெற்றால் குறித்த விலையைக் காண்க. (ii) குறித்த விலையானது ரூ. 2500 எனில் தள்ளுபடியைக் காண்க.",
+          en: "A garment shop announces a flat 50% discount on every purchase of items for their customers. Draw the graph for the relation between the Marked Price and the Discount. Hence find (i) the marked price when a customer gets a discount of ₹3250 (ii) the discount when the marked price is ₹2500."
+        },
+        variationType: "direct",
+        k: 0.5,
+        kDisplay: "1/2 (or 0.5)",
+        equationText: "y = (1/2)x",
+        xLabel: { ta: "குறித்த விலை (ரூ)", en: "Marked Price (₹)" },
+        yLabel: { ta: "தள்ளுபடி (ரூ)", en: "Discount (₹)" },
+        scale: {
+          xUnits: 1000,
+          yUnits: 500,
+          xUnitName: { ta: "ரூ", en: "₹" },
+          yUnitName: { ta: "ரூ", en: "₹" }
+        },
+        defaultCmSpan: { x: 8, y: 8 },
+        table: {
+          x: [1000, 2000, 3000, 4000, 5000],
+          y: [500, 1000, 1500, 2000, 2500]
+        },
+        subQuestions: [
+          {
+            label: {
+              ta: "(i) தள்ளுபடி y = ₹3250 எனில் குறித்த விலை x (ரூ) = ?",
+              en: "(i) Marked price when discount y = ₹3250 (in ₹)?"
+            },
+            answer: {
+              ta: "(i) தள்ளுபடி ரூ. 3250 எனில் குறித்த விலை = ரூ. 6500",
+              en: "(i) Marked price for ₹3250 discount = ₹6500"
+            },
+            expectedAnswer: 6500,
+            unit: { ta: "ரூ", en: "₹" },
+            queryAxis: "y",
+            queryVal: 3250
+          },
+          {
+            label: {
+              ta: "(ii) குறித்த விலை x = ₹2500 எனில் தள்ளுபடி y (ரூ) = ?",
+              en: "(ii) Discount when marked price x = ₹2500 (in ₹)?"
+            },
+            answer: {
+              ta: "(ii) குறித்த விலை ரூ. 2500 எனில் தள்ளுபடி = ரூ. 1250",
+              en: "(ii) Discount for ₹2500 marked price = ₹1250"
+            },
+            expectedAnswer: 1250,
+            unit: { ta: "ரூ", en: "₹" },
+            queryAxis: "x",
+            queryVal: 2500
+          }
+        ]
+      },
+      {
+        id: 6,
+        code: { ta: "பயிற்சி 3.15 (2)", en: "Ex 3.15 (2)" },
+        fullCode: { ta: "பயிற்சி 3.15 - வினா 2", en: "Exercise 3.15 - Question 2" },
+        title: {
+          ta: "xy = 24, x, y > 0 வரைபடம்",
+          en: "Graph of xy = 24, x, y > 0"
+        },
+        body: {
+          ta: "xy = 24, x, y > 0 என்ற வரைபடத்தை வரைக. வரைபடத்தைப் பயன்படுத்தி (i) x = 3 எனில் y -ஐக் காண்க. (ii) y = 6 எனில் x -ஐக் காண்க.",
+          en: "Draw the graph of xy = 24, x, y > 0. Using the graph find, (i) y when x = 3 and (ii) x when y = 6."
+        },
+        variationType: "inverse",
+        k: 24,
+        kDisplay: "24",
+        equationText: "xy = 24",
+        xLabel: { ta: "X அச்சு", en: "X-axis" },
+        yLabel: { ta: "Y அச்சு", en: "Y-axis" },
+        scale: {
+          xUnits: 2,
+          yUnits: 2,
+          xUnitName: { ta: "அலகுகள்", en: "units" },
+          yUnitName: { ta: "அலகுகள்", en: "units" }
+        },
+        defaultCmSpan: { x: 13, y: 13 },
+        table: {
+          x: [24, 12, 8, 6, 4, 3, 2, 1],
+          y: [1, 2, 3, 4, 6, 8, 12, 24]
+        },
+        subQuestions: [
+          {
+            label: {
+              ta: "(i) x = 3 எனில் y -ன் மதிப்பு என்ன?",
+              en: "(i) Find y when x = 3"
+            },
+            answer: {
+              ta: "(i) x = 3 எனில் y = 8",
+              en: "(i) When x = 3, y = 8"
+            },
+            expectedAnswer: 8,
+            unit: { ta: "அலகுகள்", en: "units" },
+            queryAxis: "x",
+            queryVal: 3
+          },
+          {
+            label: {
+              ta: "(ii) y = 6 எனில் x -ன் மதிப்பு என்ன?",
+              en: "(ii) Find x when y = 6"
+            },
+            answer: {
+              ta: "(ii) y = 6 எனில் x = 4",
+              en: "(ii) When y = 6, x = 4"
+            },
+            expectedAnswer: 4,
+            unit: { ta: "அலகுகள்", en: "units" },
+            queryAxis: "y",
+            queryVal: 6
+          }
+        ]
+      },
+      {
+        id: 7,
+        code: { ta: "பயிற்சி 3.15 (3)", en: "Ex 3.15 (3)" },
+        fullCode: { ta: "பயிற்சி 3.15 - வினா 3", en: "Exercise 3.15 - Question 3" },
+        title: {
+          ta: "நேரிய சமன்பாடு y = (1/2)x வரைபடம்",
+          en: "Linear Function y = (1/2)x Graph"
+        },
+        body: {
+          ta: "y = (1/2)x என்ற நேரிய சமன்பாட்டின் / சார்பின் வரைபடம் வரைக. விகிதசம மாறிலியை அடையாளம் கண்டு அதனை வரைபடத்துடன் சரிபார்க்க. மேலும் (i) x = 9 எனில் y -ஐக் காண்க. (ii) y = 7.5 எனில் x -ஐக் காண்க.",
+          en: "Graph the following linear function y = (1/2)x. Identify the constant of variation and verify it with the graph. Also (i) find y when x = 9 (ii) find x when y = 7.5."
+        },
+        variationType: "direct",
+        k: 0.5,
+        kDisplay: "1/2 (or 0.5)",
+        equationText: "y = (1/2)x",
+        xLabel: { ta: "X அச்சு", en: "X-axis" },
+        yLabel: { ta: "Y அச்சு", en: "Y-axis" },
+        scale: {
+          xUnits: 2,
+          yUnits: 1,
+          xUnitName: { ta: "அலகுகள்", en: "units" },
+          yUnitName: { ta: "அலகு", en: "unit" }
+        },
+        defaultCmSpan: { x: 9, y: 9 },
+        table: {
+          x: [2, 4, 6, 8, 10],
+          y: [1, 2, 3, 4, 5]
+        },
+        subQuestions: [
+          {
+            label: {
+              ta: "(i) x = 9 எனில் y -ஐக் காண்க",
+              en: "(i) Find y when x = 9"
+            },
+            answer: {
+              ta: "(i) x = 9 எனில் y = 4.5",
+              en: "(i) When x = 9, y = 4.5"
+            },
+            expectedAnswer: 4.5,
+            unit: { ta: "அலகுகள்", en: "units" },
+            queryAxis: "x",
+            queryVal: 9
+          },
+          {
+            label: {
+              ta: "(ii) y = 7.5 எனில் x -ஐக் காண்க",
+              en: "(ii) Find x when y = 7.5"
+            },
+            answer: {
+              ta: "(ii) y = 7.5 எனில் x = 15",
+              en: "(ii) When y = 7.5, x = 15"
+            },
+            expectedAnswer: 15,
+            unit: { ta: "அலகுகள்", en: "units" },
+            queryAxis: "y",
+            queryVal: 7.5
+          }
+        ]
+      },
+      {
+        id: 8,
+        code: { ta: "பயிற்சி 3.15 (4)", en: "Ex 3.15 (4)" },
+        fullCode: { ta: "பயிற்சி 3.15 - வினா 4", en: "Exercise 3.15 - Question 4" },
+        title: {
+          ta: "தொட்டியை நிரப்பும் குழாய்கள் & நேரம்",
+          en: "Pipes & Time to Fill a Tank"
+        },
+        body: {
+          ta: "ஒரு தொட்டியை நிரப்பத் தேவையான குழாய்களின் எண்ணிக்கையும் அவை எடுத்துக் கொள்ளும் நேரமும் அட்டவணையில் கொடுக்கப்பட்டுள்ளது. வரைபடம் வரைந்து: (i) 5 குழாய்களை பயன்படுத்தினால் தொட்டி நிரம்ப எடுத்துக்கொள்ளப்பட்ட நேரத்தைக் காண்க. (ii) 9 நிமிடங்களில் தொட்டி நிரம்பினால் பயன்படுத்தப்பட்ட குழாய்களின் எண்ணிக்கையைக் காண்க.",
+          en: "The following table shows the data about the number of pipes and the time taken to fill the same tank. Draw the graph and find: (i) the time taken to fill the tank when 5 pipes are used (ii) the number of pipes when the time is 9 minutes."
+        },
+        variationType: "inverse",
+        k: 90,
+        kDisplay: "90",
+        equationText: "xy = 90",
+        xLabel: { ta: "குழாய்களின் எண்ணிக்கை", en: "Number of Pipes" },
+        yLabel: { ta: "நேரம் (நிமிடங்களில்)", en: "Time (minutes)" },
+        scale: {
+          xUnits: 1,
+          yUnits: 5,
+          xUnitName: { ta: "குழாய்", en: "pipe" },
+          yUnitName: { ta: "நிமிடங்கள்", en: "mins" }
+        },
+        defaultCmSpan: { x: 11, y: 10 },
+        table: {
+          x: [2, 3, 6, 9],
+          y: [45, 30, 15, 10]
+        },
+        subQuestions: [
+          {
+            label: {
+              ta: "(i) 5 குழாய்கள் (x = 5) பயன்படுத்தினால் ஆகும் நேரம் y (நிமிடங்கள்) = ?",
+              en: "(i) Time taken when 5 pipes (x = 5) are used (in minutes)?"
+            },
+            answer: {
+              ta: "(i) 5 குழாய்களை பயன்படுத்தினால் ஆகும் நேரம் = 18 நிமிடங்கள்",
+              en: "(i) Time taken using 5 pipes = 18 minutes"
+            },
+            expectedAnswer: 18,
+            unit: { ta: "நிமிடங்கள்", en: "mins" },
+            queryAxis: "x",
+            queryVal: 5
+          },
+          {
+            label: {
+              ta: "(ii) 9 நிமிடங்களில் (y = 9) நிரம்ப தேவையான குழாய்கள் x = ?",
+              en: "(ii) Number of pipes needed if time y = 9 minutes?"
+            },
+            answer: {
+              ta: "(ii) 9 நிமிடங்களில் நிரம்ப தேவையான குழாய்கள் = 10 குழாய்கள்",
+              en: "(ii) Number of pipes for 9 minutes = 10 pipes"
+            },
+            expectedAnswer: 10,
+            unit: { ta: "குழாய்கள்", en: "pipes" },
+            queryAxis: "y",
+            queryVal: 9
+          }
+        ]
+      },
+      {
+        id: 9,
+        code: { ta: "பயிற்சி 3.15 (5)", en: "Ex 3.15 (5)" },
+        fullCode: { ta: "பயிற்சி 3.15 - வினா 5", en: "Exercise 3.15 - Question 5" },
+        title: {
+          ta: "போட்டிப் பரிசுத் தொகை பங்கீடு",
+          en: "Competition Prize Money Distribution"
+        },
+        body: {
+          ta: "ஒரு பள்ளியானது குறிப்பிட்ட சில போட்டிகளுக்கு பரிசுத் தொகையினை எல்லா பங்கேற்பாளர்களுக்கும் சமமாக பிரித்து வழங்குவதாக அறிவிக்கிறது. (i) விகிதசம மாறிலியைக் காண்க. (ii) வரைபடம் வரைந்து 12 பங்கேற்பாளர்கள் பங்கெடுத்துக் கொண்டால் ஒவ்வொரு பங்கேற்பாளரும் பெறும் பரிசுத்தொகை எவ்வளவு என்பதைக் காண்க.",
+          en: "A school announces that for a certain competitions, the cash prize will be distributed for all the participants equally. (i) Find the constant of variation. (ii) Graph the above data and hence, find how much will each participant get if the number of participants are 12."
+        },
+        variationType: "inverse",
+        k: 360,
+        kDisplay: "360",
+        equationText: "xy = 360",
+        xLabel: { ta: "பங்கேற்பாளர்களின் எண்ணிக்கை", en: "Number of Participants" },
+        yLabel: { ta: "பரிசுத் தொகை (ரூ)", en: "Prize Amount (₹)" },
+        scale: {
+          xUnits: 1,
+          yUnits: 20,
+          xUnitName: { ta: "பங்கேற்பாளர்", en: "participant" },
+          yUnitName: { ta: "ரூ", en: "₹" }
+        },
+        defaultCmSpan: { x: 13, y: 10 },
+        table: {
+          x: [2, 4, 6, 8, 10],
+          y: [180, 90, 60, 45, 36]
+        },
+        subQuestions: [
+          {
+            label: {
+              ta: "(ii) 12 பங்கேற்பாளர்கள் (x = 12) எனில் ஒவ்வொருவரின் பரிசுத்தொகை y (ரூ) = ?",
+              en: "(ii) Prize per participant if 12 participants (x = 12) in ₹?"
+            },
+            answer: {
+              ta: "(ii) 12 பங்கேற்பாளர்கள் எனில் பரிசு = ரூ. 30",
+              en: "(ii) For 12 participants, Prize = ₹30"
+            },
+            expectedAnswer: 30,
+            unit: { ta: "ரூ", en: "₹" },
+            queryAxis: "x",
+            queryVal: 12
+          }
+        ]
+      },
+      {
+        id: 10,
+        code: { ta: "பயிற்சி 3.15 (6)", en: "Ex 3.15 (6)" },
+        fullCode: { ta: "பயிற்சி 3.15 - வினா 6", en: "Exercise 3.15 - Question 6" },
+        title: {
+          ta: "இருசக்கர வாகனம் நிறுத்துமிட கட்டணம்",
+          en: "Two-Wheeler Parking Charges"
+        },
+        body: {
+          ta: "பேருந்து நிலையம் அருகே உள்ள இருசக்கர வாகனம் நிறுத்துமிடத்தில் பெறப்படும் கட்டணத்தொகை அட்டவணையில் உள்ளது. மாறுபாட்டின் வகையை ஆராய்ந்து வரைபடத்தில் குறிக்கவும். மேலும் (i) நிறுத்தப்படும் நேரம் 6 மணி எனில் கட்டணத் தொகையைக் காண்க. (ii) ரூ. 150 ஐ கட்டணத் தொகையாக செலுத்தி இருந்தால் நிறுத்தப்பட்ட நேரத்தின் அளவைக் காண்க.",
+          en: "A two wheeler parking zone near bus stand charges as given in the table. Check if the amount charged are in direct variation or in inverse variation to the parking time. Graph the data. Also (i) find the amount to be paid when parking time is 6 hr; (ii) find the parking duration when the amount paid is ₹150."
+        },
+        variationType: "direct",
+        k: 15,
+        kDisplay: "15",
+        equationText: "y = 15x",
+        xLabel: { ta: "நேரம் (மணியில்)", en: "Time (hours)" },
+        yLabel: { ta: "கட்டணத் தொகை (ரூ)", en: "Parking Charge (₹)" },
+        scale: {
+          xUnits: 4,
+          yUnits: 30,
+          xUnitName: { ta: "மணி", en: "hrs" },
+          yUnitName: { ta: "ரூ", en: "₹" }
+        },
+        defaultCmSpan: { x: 8, y: 13 },
+        table: {
+          x: [4, 8, 12, 24],
+          y: [60, 120, 180, 360]
+        },
+        subQuestions: [
+          {
+            label: {
+              ta: "(i) நிறுத்தப்படும் நேரம் x = 6 மணி எனில் கட்டணம் y (ரூ) = ?",
+              en: "(i) Amount to be paid when parking time x = 6 hr (in ₹)?"
+            },
+            answer: {
+              ta: "(i) 6 மணி நேரத்திற்கு கட்டணம் = ரூ. 90",
+              en: "(i) Charge for 6 hr = ₹90"
+            },
+            expectedAnswer: 90,
+            unit: { ta: "ரூ", en: "₹" },
+            queryAxis: "x",
+            queryVal: 6
+          },
+          {
+            label: {
+              ta: "(ii) கட்டணம் y = ₹150 எனில் நிறுத்தப்பட்ட நேரம் x (மணி) = ?",
+              en: "(ii) Parking duration when amount paid y = ₹150 (in hours)?"
+            },
+            answer: {
+              ta: "(ii) ரூ. 150 கட்டணத்திற்கு நிறுத்தப்பட்ட நேரம் = 10 மணி",
+              en: "(ii) Parking duration for ₹150 = 10 hours"
+            },
+            expectedAnswer: 10,
+            unit: { ta: "மணி", en: "hours" },
+            queryAxis: "y",
+            queryVal: 150
+          }
+        ]
+      }
+    ];
+
+    // =========================================================================
+    // 2. APPLICATION STATE
+    // =========================================================================
+    let state = {
+      lang: 'ta',
+      theme: 'light',
+      currentQIndex: 0,
+      sandboxMode: false,
+      tableMode: 'auto',      // 'auto' or 'student'
+      solutionMode: 'auto',   // 'auto' or 'manual'
+      quadrantMode: 'Q1',     // 'Q1', 'ALL', 'Q1Q2', 'Q1Q4'
+      graphClickMode: 'axis', // 'axis' or 'pin'
+      scaleXUnits: 1,
+      scaleYUnits: 2,
+      pxPerCm: 50,
+      originOffset: { x: 75, y: 75 },
+      tablePoints: [],
+      showCurve: false,
+      activeIntersection: null,
+      pinnedMarkers: [],
+      customEq: 'a * x^2 + b * x + c',
+      customParams: { a: 1, b: 0, c: -2, k: 2 },
+      animating: false,
+      animPaused: false,
+      animSpeed: 1.0,
+      slowLearnerHelper: true,
+      draggedPointIdx: null,
+      hoverData: null,
+      isPanning: false,
+      panStart: { x: 0, y: 0 },
+      manualProgress: {
+        varDone: false,
+        kDone: false,
+        eqDone: false,
+        subDone: {}
+      }
+    };
+
+    // =========================================================================
+    // 3. BILINGUAL DICTIONARY & APPRECIATION PHRASES
+    // =========================================================================
+    const APPRECIATION_POOL = {
+      ta: [
+        "மிகச் சிறப்பு! அருமையான விடை! 🌟",
+        "சபாஷ்! துல்லியமாகக் கணக்கிட்டுள்ளீர்கள்! 👏",
+        "அருமை! கணிதத்தில் சிறந்து விளங்குகிறீர்கள்! 🏆",
+        "மிகவும் சரியானது! தொடர்ந்து முன்னேறுங்கள்! ✨"
+      ],
+      en: [
+        "Excellent! Spot-on answer! 🌟",
+        "Well done! You nailed that step! 👏",
+        "Fantastic! Keep up the great math work! 🏆",
+        "Superb! That is completely correct! ✨"
+      ]
+    };
+
+    function getRandomPraise() {
+      const list = APPRECIATION_POOL[state.lang];
+      return list[Math.floor(Math.random() * list.length)];
+    }
+
+    const I18N = {
+      ta: {
+        appTitle: "10-ஆம் வகுப்பு கணிதம்: மாறுபாடுகளின் வரைபடங்கள்",
+        appSubtitle: "பயிற்சி 3.15 & எடுத்துக்காட்டுகள் (1 செ.மீ = 10 × 10 மி.மீ வரைபடத் தாள்)",
+        selectQ: "வினாவைத் தேர்ந்தெடுக்கவும் (10 வினாக்கள்):",
+        directVar: "நேர்மாறுபாடு (Direct Variation)",
+        inverseVar: "எதிர்மாறுபாடு (Inverse Variation)",
+        customVar: "சார்பு வரைபடம் (Custom Function)",
+        scaleTableTitle: "அளவுத்திட்டம் அட்டவணை (Scale Table: 1 cm = Units)",
+        thAxis: "அச்சு (Axis)",
+        thCm: "செ.மீ (cm)",
+        thUnits: "அலகுகள் (Units per 1 cm)",
+        tdXAxis: "X - அச்சு",
+        tdYAxis: "Y - அச்சு",
+        tdCmVal: "1 செ.மீ (1 cm)",
+        ovScaleHeader: "அளவுத்திட்டம் (Scale)",
+        ovThAxis: "அச்சு",
+        ovThCm: "செ.மீ",
+        ovThUnits: "அலகுகள்",
+        tableTitle: "படி 1: அட்டவணை (Synchronized Data Table)",
+        tableHintAuto: "தானியங்கி அட்டவணை தயாராக உள்ளது. மதிப்புகளை மாற்றியும் சோதிக்கலாம்.",
+        tableHintStudent: "மாணவர் முறை: x, y கட்டங்களில் மதிப்புகளை உள்ளிடவும் — சரியானவுடன் பாராட்டு கிடைக்கும்!",
+        autoTableBtn: "தானியங்கி",
+        studentTableBtn: "மாணவர் நிரப்புக",
+        verifyTable: "அட்டவணையைச் சரிபார்",
+        addCol: "கட்டம் சேர்",
+        stepsCardTitle: "படி 2 – 5: மாறுபாடு, விகிதசம மாறிலி (k), சமன்பாடு & தீர்வு",
+        stepsCardSub: "தானியங்கி தீர்வு அல்லது மாணவர் பயிற்சி முறையைத் தேர்ந்தெடுக்கவும்",
+        solAutoBtn: "தானியங்கி தீர்வு",
+        solManualBtn: "மாணவர் பயிற்சி (Manual)",
+        pointsPaneTitle: "குறிக்க வேண்டிய புள்ளிகள் (Drag & Fix Points One-by-One)",
+        dragHint: "👆 ஒளிரும் புள்ளியை இழுத்து (Drag) 10×10 மி.மீ கட்டத்தில் பொருத்தவும் — அனைத்துப் புள்ளிகளும் முடிந்த பிறகே வரைபடக் கோடு உருவாகும்!",
+        slowLearnerOn: "மெல்ல கற்கும் மாணவர் உதவி: ON",
+        slowLearnerOff: "மெல்ல கற்கும் மாணவர் உதவி: OFF",
+        tapTargetBtn: "இலக்கில் பொருத்து (Fix Next Point)",
+        autoPlot: "தானியங்கி வரைபடம் (Slow Animation)",
+        pausePlot: "இடைநிறுத்து",
+        resumePlot: "தொடர்க",
+        reset: "மீட்டமை",
+        axisTouch: "அச்சுத் தொடு கோடு",
+        pinDrop: "புள்ளி குத்து",
+        touchFinder: "அச்சு வெட்டுப்புள்ளி:",
+        plottedWord: "குறிக்கப்பட்டது",
+        unplotBtn: "நீக்கு",
+        pointRemovedMsg: "புள்ளி நீக்கப்பட்டது (வரைபடக் கோடு இடைநிறுத்தப்பட்டது):",
+        allPlottedCongrats: "மிகச் சிறப்பு! அனைத்துப் புள்ளிகளும் 10×10 மி.மீ வரைபடத் தாளில் குறிக்கப்பட்டதால் இப்போது வரைபடக் கோடு உருவானது! 🎉",
+        pointSnapSuccess: "சரியான இடம்! புள்ளி பொருத்தப்பட்டது:",
+        pointOffTarget: "இன்னும் சற்று நகர்த்தவும்! இலக்கு புள்ளி:",
+        tableCellCorrect: "சரியான மதிப்பு!",
+        tableValidSuccess: "மிகச் சிறப்பு! அட்டவணையின் அனைத்துப் புள்ளிகளும் சரியாக நிரப்பப்பட்டுள்ளன! 🌟",
+        tableInvalidWarn: "சிவப்பு நிறக் கட்டங்களை மீண்டும் சரிபார்க்கவும்!"
+      },
+      en: {
+        appTitle: "10th Maths: Graphs of Variations",
+        appSubtitle: "Exercise 3.15 & Worked Examples (1 cm = 10 × 10 mm Graph Sheet)",
+        selectQ: "Select Question (10 Syllabus Problems):",
+        directVar: "Direct Variation (நேர்மாறுபாடு)",
+        inverseVar: "Inverse Variation (எதிர்மாறுபாடு)",
+        customVar: "Custom Function Explorer",
+        scaleTableTitle: "Scale Table (Axis | cm | Units per 1 cm)",
+        thAxis: "Axis",
+        thCm: "cm",
+        thUnits: "Units (per 1 cm)",
+        tdXAxis: "X - Axis",
+        tdYAxis: "Y - Axis",
+        tdCmVal: "1 cm",
+        ovScaleHeader: "Scale (அளவுத்திட்டம்)",
+        ovThAxis: "Axis",
+        ovThCm: "cm",
+        ovThUnits: "Units",
+        tableTitle: "Step 1: Synchronized Data Table",
+        tableHintAuto: "Auto-filled table synced with the graph. Edit any value to explore.",
+        tableHintStudent: "Student Mode: Enter x and y values in the boxes — get instant praise for every right entry!",
+        autoTableBtn: "Auto Table",
+        studentTableBtn: "Student Entry",
+        verifyTable: "Check Table",
+        addCol: "Add Column",
+        stepsCardTitle: "Steps 2 – 5: Variation, Constant (k), Equation & Solutions",
+        stepsCardSub: "Switch between Automatic Solution and Student Manual Practice Mode",
+        solAutoBtn: "Automatic Solution",
+        solManualBtn: "Student Manual Mode",
+        pointsPaneTitle: "Listed Points (Drag & Fix Points One-by-One)",
+        dragHint: "👆 Drag the highlighted point onto its 10×10 mm grid intersection — the graph curve forms ONLY after all points are plotted!",
+        slowLearnerOn: "Slow Learner Helper: ON",
+        slowLearnerOff: "Slow Learner Helper: OFF",
+        tapTargetBtn: "Fix at Target (Easy Plot)",
+        autoPlot: "Auto Plot Animation (Slow)",
+        pausePlot: "Pause",
+        resumePlot: "Resume",
+        reset: "Reset",
+        axisTouch: "Axis Touch Line",
+        pinDrop: "Drop Pin",
+        touchFinder: "Axis Intersection Finder:",
+        plottedWord: "Plotted",
+        unplotBtn: "Delete",
+        pointRemovedMsg: "Deleted plotted point (graph curve hidden until all points are plotted):",
+        allPlottedCongrats: "Fantastic! All given points are plotted on the 10×10 mm graph sheet, and the graph curve is now formed! 🎉",
+        pointSnapSuccess: "Spot on! Fixed point at",
+        pointOffTarget: "Almost there! Move closer to target coordinate",
+        tableCellCorrect: "Correct value!",
+        tableValidSuccess: "Superb! Every single point in the table is entered correctly! 🌟",
+        tableInvalidWarn: "Please re-check the highlighted red entries!"
+      }
+    };
+
+    // =========================================================================
+    // 4. INITIALIZATION & RESIZE HANDLING
+    // =========================================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      renderQuestionBoxes();
+      loadQuestion(0);
+      setupCanvasInteractions();
+      window.addEventListener('resize', () => {
+        fitGridToContainer(false);
+        drawGraphSheet();
+      });
+    });
+
+    function showToast(msg, type = 'success') {
+      const banner = document.getElementById('toast-banner');
+      const icon = document.getElementById('toast-icon');
+      const text = document.getElementById('toast-message');
+
+      banner.className = 'fixed bottom-4 right-4 z-50 max-w-md px-4 py-3 rounded-2xl shadow-2xl border text-xs sm:text-sm font-extrabold flex items-center gap-2.5 toast-animate';
+      if (type === 'success') {
+        banner.classList.add('bg-emerald-600', 'text-white', 'border-emerald-400');
+        icon.textContent = '🌟';
+      } else if (type === 'warn') {
+        banner.classList.add('bg-amber-500', 'text-white', 'border-amber-300');
+        icon.textContent = '💡';
+      } else {
+        banner.classList.add('bg-indigo-600', 'text-white', 'border-indigo-400');
+        icon.textContent = '📍';
+      }
+
+      text.textContent = msg;
+      banner.classList.remove('hidden');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => {
+        banner.classList.add('hidden');
+      }, 3800);
+    }
+
+    // =========================================================================
+    // 5. LANGUAGE & THEME SWITCHING
+    // =========================================================================
+    function setLanguage(lang) {
+      state.lang = lang;
+      const btnTa = document.getElementById('btn-lang-ta');
+      const btnEn = document.getElementById('btn-lang-en');
+
+      if (lang === 'ta') {
+        btnTa.className = 'px-2.5 py-1 rounded-lg text-xs font-bold transition bg-emerald-600 text-white shadow-sm';
+        btnEn.className = 'px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-600 dark:text-slate-300 hover:text-slate-900';
+      } else {
+        btnEn.className = 'px-2.5 py-1 rounded-lg text-xs font-bold transition bg-emerald-600 text-white shadow-sm';
+        btnTa.className = 'px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-600 dark:text-slate-300 hover:text-slate-900';
+      }
+
+      updateStaticLabels();
+      renderQuestionBoxes();
+      if (!state.sandboxMode) {
+        renderQuestionDetails();
+        renderAnalyticalSteps();
+      }
+      updateScaleDisplays();
+      renderDataTable();
+      renderListedPoints();
+      drawGraphSheet();
+    }
+
+    function updateStaticLabels() {
+      const t = I18N[state.lang];
+      document.getElementById('app-title').textContent = t.appTitle;
+      document.getElementById('app-subtitle').textContent = t.appSubtitle;
+      document.getElementById('lbl-select-q').textContent = t.selectQ;
+      document.getElementById('lbl-scale-table-title').textContent = t.scaleTableTitle;
+      document.getElementById('th-axis').textContent = t.thAxis;
+      document.getElementById('th-cm').textContent = t.thCm;
+      document.getElementById('th-units').textContent = t.thUnits;
+      document.getElementById('td-xaxis-name').textContent = t.tdXAxis;
+      document.getElementById('td-yaxis-name').textContent = t.tdYAxis;
+      document.getElementById('td-x-cm').textContent = t.tdCmVal;
+      document.getElementById('td-y-cm').textContent = t.tdCmVal;
+      document.getElementById('overlay-scale-header').textContent = t.ovScaleHeader;
+      document.getElementById('ov-th-axis').textContent = t.ovThAxis;
+      document.getElementById('ov-th-cm').textContent = t.ovThCm;
+      document.getElementById('ov-th-units').textContent = t.ovThUnits;
+      document.getElementById('lbl-table-title').textContent = t.tableTitle;
+      document.getElementById('lbl-table-hint').textContent = state.tableMode === 'auto' ? t.tableHintAuto : t.tableHintStudent;
+      document.getElementById('btn-table-auto').textContent = t.autoTableBtn;
+      document.getElementById('btn-table-student').textContent = t.studentTableBtn;
+      document.getElementById('txt-verify-table').textContent = t.verifyTable;
+      document.getElementById('txt-add-col').textContent = t.addCol;
+      document.getElementById('lbl-steps-card-title').textContent = t.stepsCardTitle;
+      document.getElementById('lbl-steps-card-sub').textContent = t.stepsCardSub;
+      document.getElementById('btn-sol-auto').textContent = t.solAutoBtn;
+      document.getElementById('btn-sol-manual').textContent = t.solManualBtn;
+      document.getElementById('lbl-points-pane').textContent = t.pointsPaneTitle;
+      document.getElementById('lbl-drag-hint').textContent = t.dragHint;
+      document.getElementById('txt-slow-learner').textContent = state.slowLearnerHelper ? t.slowLearnerOn : t.slowLearnerOff;
+      document.getElementById('txt-tap-target').textContent = t.tapTargetBtn;
+      document.getElementById('txt-auto-plot').textContent = t.autoPlot;
+      document.getElementById('txt-pause-plot').textContent = state.animPaused ? t.resumePlot : t.pausePlot;
+      document.getElementById('txt-reset').textContent = t.reset;
+      document.getElementById('txt-axis-touch').textContent = t.axisTouch;
+      document.getElementById('txt-pin-drop').textContent = t.pinDrop;
+      document.getElementById('lbl-touch-finder').textContent = t.touchFinder;
+    }
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      if (state.theme === 'light') {
+        state.theme = 'dark';
+        html.classList.add('dark');
+      } else {
+        state.theme = 'light';
+        html.classList.remove('dark');
+      }
+      drawGraphSheet();
+    }
+
+    // =========================================================================
+    // 6. QUESTION SELECTOR & QUESTION DETAILS
+    // =========================================================================
+    function renderQuestionBoxes() {
+      const container = document.getElementById('question-boxes');
+      container.innerHTML = '';
+      QUESTIONS_DATA.forEach((q, idx) => {
+        const isActive = !state.sandboxMode && state.currentQIndex === idx;
+        const btn = document.createElement('button');
+        btn.onclick = () => loadQuestion(idx);
+        btn.className = `px-2 py-1.5 rounded-xl border text-left transition flex flex-col justify-between ${
+          isActive
+            ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm ring-2 ring-emerald-500/30'
+            : 'bg-slate-50 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-emerald-400'
+        }`;
+        const varDot = q.variationType === 'direct'
+          ? '<span class="inline-block w-1.5 h-1.5 rounded-full bg-sky-400"></span>'
+          : '<span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-400"></span>';
+
+        btn.innerHTML = `
+          <div class="flex items-center justify-between w-full gap-1">
+            <span class="text-[11px] font-extrabold truncate">${q.code[state.lang]}</span>
+            ${varDot}
+          </div>
+          <span class="text-[10px] font-mono opacity-85 truncate w-full">${q.equationText}</span>
+        `;
+        container.appendChild(btn);
+      });
+    }
+
+    function loadQuestion(idx) {
+      state.sandboxMode = false;
+      state.currentQIndex = idx;
+      state.showCurve = false;
+      state.activeIntersection = null;
+      state.pinnedMarkers = [];
+      state.animating = false;
+      state.animPaused = false;
+      document.getElementById('btn-pause-animate').classList.add('hidden');
+      document.getElementById('analytical-steps-card').classList.remove('hidden');
+
+      state.manualProgress = { varDone: false, kDone: false, eqDone: false, subDone: {} };
+      document.getElementById('table-appreciation-box').classList.add('hidden');
+
+      const q = QUESTIONS_DATA[idx];
+      state.scaleXUnits = q.scale.xUnits;
+      state.scaleYUnits = q.scale.yUnits;
+
+      state.tablePoints = q.table.x.map((xVal, i) => ({
+        x: xVal,
+        y: q.table.y[i],
+        studentX: state.tableMode === 'auto' ? xVal : '',
+        studentY: state.tableMode === 'auto' ? q.table.y[i] : '',
+        plotted: false,
+        valid: state.tableMode === 'auto',
+        praised: false
+      }));
+
+      updateScaleDisplays();
+      fitGridToContainer(true);
+      renderQuestionBoxes();
+      renderQuestionDetails();
+      renderAnalyticalSteps();
+      renderDataTable();
+      renderListedPoints();
+      drawGraphSheet();
+    }
+
+    function renderQuestionDetails() {
+      const q = QUESTIONS_DATA[state.currentQIndex];
+      const lang = state.lang;
+      const t = I18N[lang];
+
+      document.getElementById('q-code').textContent = q.fullCode[lang];
+      document.getElementById('q-title').textContent = q.title[lang];
+      document.getElementById('q-body').textContent = q.body[lang];
+      document.getElementById('equation-overlay-pill').textContent = q.equationText;
+
+      const varBadge = document.getElementById('current-variation-badge');
+      if (q.variationType === 'direct') {
+        varBadge.textContent = t.directVar;
+        varBadge.className = 'text-xs font-bold px-2.5 py-0.5 rounded-full bg-sky-100 text-sky-800 dark:bg-sky-900/60 dark:text-sky-300';
+      } else {
+        varBadge.textContent = t.inverseVar;
+        varBadge.className = 'text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-300';
+      }
+    }
+
+    // =========================================================================
+    // 7. ANALYTICAL STEPS 2–5 (VARIATION, CONSTANT k, EQUATION, GRAPH ANSWERS)
+    // =========================================================================
+    function setSolutionMode(mode) {
+      state.solutionMode = mode;
+      const btnAuto = document.getElementById('btn-sol-auto');
+      const btnMan = document.getElementById('btn-sol-manual');
+      const viewAuto = document.getElementById('solution-auto-view');
+      const viewMan = document.getElementById('solution-manual-view');
+
+      if (mode === 'auto') {
+        btnAuto.className = 'px-2.5 py-1 rounded-lg text-xs font-bold transition bg-indigo-600 text-white shadow-sm';
+        btnMan.className = 'px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-600 dark:text-slate-300';
+        viewAuto.classList.remove('hidden');
+        viewMan.classList.add('hidden');
+      } else {
+        btnMan.className = 'px-2.5 py-1 rounded-lg text-xs font-bold transition bg-indigo-600 text-white shadow-sm';
+        btnAuto.className = 'px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-600 dark:text-slate-300';
+        viewMan.classList.remove('hidden');
+        viewAuto.classList.add('hidden');
+      }
+      renderAnalyticalSteps();
+    }
+
+    function renderAnalyticalSteps() {
+      if (state.sandboxMode) return;
+      const q = QUESTIONS_DATA[state.currentQIndex];
+      const lang = state.lang;
+      const t = I18N[lang];
+
+      // Auto View values
+      document.getElementById('auto-var-value').textContent = q.variationType === 'direct' ? t.directVar : t.inverseVar;
+      document.getElementById('auto-k-value').textContent = `k = ${q.kDisplay}`;
+      document.getElementById('auto-eq-value').textContent = q.equationText;
+
+      const autoSubList = document.getElementById('auto-subquestions-list');
+      autoSubList.innerHTML = '';
+      q.subQuestions.forEach((sq) => {
+        const btn = document.createElement('button');
+        btn.onclick = () => {
+          projectFromAxis(sq.queryAxis, sq.queryVal);
+          showToast(sq.answer[lang], 'info');
+        };
+        btn.className = 'w-full text-left px-2.5 py-1.5 rounded-lg bg-white dark:bg-slate-900 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 border border-emerald-200 dark:border-emerald-800 text-xs font-bold text-emerald-900 dark:text-emerald-200 flex items-center justify-between gap-2 transition';
+        btn.innerHTML = `
+          <span>✓ ${sq.answer[lang]}</span>
+          <span class="shrink-0 text-[10px] px-2 py-0.5 rounded bg-emerald-600 text-white font-extrabold">Show on Graph →</span>
+        `;
+        autoSubList.appendChild(btn);
+      });
+
+      // Manual View reset/sync
+      const btnDir = document.getElementById('btn-man-direct');
+      const btnInv = document.getElementById('btn-man-inverse');
+      btnDir.className = 'px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 hover:border-emerald-500 font-bold transition';
+      btnInv.className = 'px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 hover:border-emerald-500 font-bold transition';
+      document.getElementById('status-man-step2').textContent = '';
+
+      if (state.manualProgress.varDone) {
+        if (q.variationType === 'direct') {
+          btnDir.className = 'px-3 py-1.5 rounded-xl border-2 border-emerald-600 bg-emerald-600 text-white font-extrabold shadow-sm';
+        } else {
+          btnInv.className = 'px-3 py-1.5 rounded-xl border-2 border-emerald-600 bg-emerald-600 text-white font-extrabold shadow-sm';
+        }
+        document.getElementById('status-man-step2').textContent = '✓ Correct';
+        document.getElementById('status-man-step2').className = 'text-[11px] font-extrabold text-emerald-600';
+      }
+
+      document.getElementById('hint-k-formula').textContent = q.variationType === 'direct'
+        ? 'Direct: k = y / x'
+        : 'Inverse: k = x × y';
+
+      const kInput = document.getElementById('input-man-k');
+      const statusK = document.getElementById('status-man-step3');
+      if (state.manualProgress.kDone) {
+        kInput.value = q.kDisplay;
+        statusK.textContent = `✓ k = ${q.kDisplay}`;
+        statusK.className = 'text-[11px] font-extrabold text-emerald-600';
+      } else {
+        kInput.value = '';
+        statusK.textContent = '';
+      }
+
+      const eqInputK = document.getElementById('input-man-eq-k');
+      const eqFormSelect = document.getElementById('select-man-eq-form');
+      const statusEq = document.getElementById('status-man-step4');
+      if (state.manualProgress.eqDone) {
+        eqFormSelect.value = q.variationType;
+        eqInputK.value = q.kDisplay;
+        statusEq.textContent = `✓ ${q.equationText}`;
+        statusEq.className = 'text-[11px] font-extrabold text-emerald-600';
+      } else {
+        eqFormSelect.value = '';
+        eqInputK.value = '';
+        statusEq.textContent = '';
+      }
+
+      // Manual Sub-questions (completely blank inputs until solved)
+      const manSubContainer = document.getElementById('manual-subquestions-container');
+      manSubContainer.innerHTML = '';
+      q.subQuestions.forEach((sq, sIdx) => {
+        const isSolved = !!state.manualProgress.subDone[sIdx];
+        const row = document.createElement('div');
+        row.className = 'p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 space-y-1.5';
+        row.innerHTML = `
+          <div class="flex items-center justify-between gap-2">
+            <span class="font-bold text-slate-800 dark:text-slate-200">${sq.label[lang]}</span>
+            <button onclick="projectFromAxis('${sq.queryAxis}', ${sq.queryVal})" class="shrink-0 text-[10px] px-2 py-0.5 rounded bg-amber-500 hover:bg-amber-600 text-white font-extrabold">
+              Trace Axis
+            </button>
+          </div>
+          <div class="flex items-center gap-2">
+            <input id="input-man-sub-${sIdx}" type="number" step="any" value="${isSolved ? sq.expectedAnswer : ''}" placeholder=""
+              onkeydown="if(event.key==='Enter') checkManualSubQuestion(${sIdx})"
+              class="w-28 px-2.5 py-1 rounded-lg border ${isSolved ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40' : 'border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800'} font-mono font-bold focus:outline-none" />
+            <span class="text-[11px] font-bold text-slate-500">${sq.unit[lang]}</span>
+            <button onclick="checkManualSubQuestion(${sIdx})" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px]">
+              ✓ Verify
+            </button>
+            <span id="status-man-sub-${sIdx}" class="text-[11px] font-extrabold ${isSolved ? 'text-emerald-600' : ''}">
+              ${isSolved ? '✓ ' + sq.answer[lang] : ''}
+            </span>
+          </div>
+        `;
+        manSubContainer.appendChild(row);
+      });
+    }
+
+    function parseNumericOrFraction(rawStr) {
+      if (!rawStr) return NaN;
+      const s = String(rawStr).trim().replace(/\s+/g, '');
+      if (s.includes('/')) {
+        const parts = s.split('/');
+        if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1]) && parseFloat(parts[1]) !== 0) {
+          return parseFloat(parts[0]) / parseFloat(parts[1]);
+        }
+      }
+      return parseFloat(s);
+    }
+
+    function checkManualVariation(selectedType) {
+      const q = QUESTIONS_DATA[state.currentQIndex];
+      const statusEl = document.getElementById('status-man-step2');
+      if (selectedType === q.variationType) {
+        state.manualProgress.varDone = true;
+        renderAnalyticalSteps();
+        showToast(`${getRandomPraise()} (${selectedType === 'direct' ? I18N[state.lang].directVar : I18N[state.lang].inverseVar})`, 'success');
+      } else {
+        statusEl.textContent = state.lang === 'ta' ? '✗ மீண்டும் முயற்சிக்கவும்!' : '✗ Try again!';
+        statusEl.className = 'text-[11px] font-extrabold text-rose-600';
+        showToast(state.lang === 'ta'
+          ? 'குறிப்பு: x அதிகரிக்கும்போது y-ம் அதிகரித்தால் நேர்மாறுபாடு; y குறைந்தால் எதிர்மாறுபாடு.'
+          : 'Hint: If y increases with x, it is Direct; if y decreases as x increases, it is Inverse.', 'warn');
+      }
+    }
+
+    function checkManualK() {
+      const q = QUESTIONS_DATA[state.currentQIndex];
+      const val = parseNumericOrFraction(document.getElementById('input-man-k').value);
+      const statusEl = document.getElementById('status-man-step3');
+      if (!isNaN(val) && Math.abs(val - q.k) < 0.02) {
+        state.manualProgress.kDone = true;
+        renderAnalyticalSteps();
+        showToast(`${getRandomPraise()} k = ${q.kDisplay}`, 'success');
+      } else {
+        statusEl.textContent = '✗ Incorrect k';
+        statusEl.className = 'text-[11px] font-extrabold text-rose-600';
+        const pt = q.table;
+        showToast(q.variationType === 'direct'
+          ? `Hint: k = y / x = ${pt.y[0]} / ${pt.x[0]}`
+          : `Hint: k = x × y = ${pt.x[0]} × ${pt.y[0]}`, 'warn');
+      }
+    }
+
+    function checkManualEquation() {
+      const q = QUESTIONS_DATA[state.currentQIndex];
+      const chosenForm = document.getElementById('select-man-eq-form').value;
+      const val = parseNumericOrFraction(document.getElementById('input-man-eq-k').value);
+      const statusEl = document.getElementById('status-man-step4');
+      if (chosenForm === q.variationType && !isNaN(val) && Math.abs(val - q.k) < 0.02) {
+        state.manualProgress.eqDone = true;
+        renderAnalyticalSteps();
+        showToast(`${getRandomPraise()} ${q.equationText}`, 'success');
+      } else {
+        statusEl.textContent = '✗ Check form & k';
+        statusEl.className = 'text-[11px] font-extrabold text-rose-600';
+        showToast(state.lang === 'ta'
+          ? 'சரியான சமன்பாடு வடிவம் (y = kx அல்லது xy = k) மற்றும் k மதிப்பை உள்ளிடவும்.'
+          : 'Select the matching equation form (y = kx or xy = k) and enter k.', 'warn');
+      }
+    }
+
+    function checkManualSubQuestion(sIdx) {
+      const q = QUESTIONS_DATA[state.currentQIndex];
+      const sq = q.subQuestions[sIdx];
+      const val = parseFloat(document.getElementById(`input-man-sub-${sIdx}`).value);
+      const statusEl = document.getElementById(`status-man-sub-${sIdx}`);
+      if (!isNaN(val) && Math.abs(val - sq.expectedAnswer) <= Math.max(0.15, Math.abs(sq.expectedAnswer) * 0.02)) {
+        state.manualProgress.subDone[sIdx] = true;
+        projectFromAxis(sq.queryAxis, sq.queryVal);
+        renderAnalyticalSteps();
+        showToast(`${getRandomPraise()} ${sq.answer[state.lang]}`, 'success');
+      } else {
+        statusEl.textContent = '✗ Check graph';
+        statusEl.className = 'text-[11px] font-extrabold text-rose-600';
+        projectFromAxis(sq.queryAxis, sq.queryVal);
+        showToast(state.lang === 'ta'
+          ? 'வரைபடத்தில் உள்ள மஞ்சள் வெட்டுப்புள்ளி கோடுகளைப் பார்த்து விடையை உள்ளிடவும்!'
+          : 'Trace the yellow intersection lines on the graph sheet to read the exact answer!', 'warn');
+      }
+    }
+
+    // =========================================================================
+    // 8. SCALE TABLE & COORDINATE MATH (1 CM = 10 MM EQUAL GRID)
+    // =========================================================================
+    function updateScaleDisplays() {
+      const q = QUESTIONS_DATA[state.currentQIndex];
+      const lang = state.lang;
+      const xUnitLabel = state.sandboxMode ? (lang === 'ta' ? 'அலகு' : 'unit') : q.scale.xUnitName[lang];
+      const yUnitLabel = state.sandboxMode ? (lang === 'ta' ? 'அலகு' : 'unit') : q.scale.yUnitName[lang];
+
+      document.getElementById('input-scale-x').value = state.scaleXUnits;
+      document.getElementById('input-scale-y').value = state.scaleYUnits;
+      document.getElementById('span-scale-x-unit').textContent = xUnitLabel;
+      document.getElementById('span-scale-y-unit').textContent = yUnitLabel;
+
+      document.getElementById('ov-scale-x').textContent = `${state.scaleXUnits} ${xUnitLabel}`;
+      document.getElementById('ov-scale-y').textContent = `${state.scaleYUnits} ${yUnitLabel}`;
+    }
+
+    function onScaleUnitChange(axis, rawVal) {
+      const val = parseFloat(rawVal);
+      if (isNaN(val) || val <= 0) return;
+      if (axis === 'x') state.scaleXUnits = val;
+      if (axis === 'y') state.scaleYUnits = val;
+      updateScaleDisplays();
+      drawGraphSheet();
+    }
+
+    function fitGridToContainer(resetScale = false) {
+      const wrapper = document.getElementById('graph-sheet-wrapper');
+      if (!wrapper) return;
+      const W = wrapper.clientWidth || 720;
+      const H = wrapper.clientHeight || 520;
+
+      if (resetScale) {
+        if (state.sandboxMode) {
+          state.pxPerCm = 46;
+        } else {
+          const q = QUESTIONS_DATA[state.currentQIndex];
+          const neededCmX = q.defaultCmSpan.x + 1.5;
+          const neededCmY = q.defaultCmSpan.y + 1.5;
+          const usableW = state.quadrantMode === 'ALL' || state.quadrantMode === 'Q1Q2' ? (W - 60) / 2 : (W - 95);
+          const usableH = state.quadrantMode === 'ALL' || state.quadrantMode === 'Q1Q4' ? (H - 60) / 2 : (H - 85);
+          const fitPx = Math.floor(Math.min(usableW / neededCmX, usableH / neededCmY));
+          state.pxPerCm = Math.max(36, Math.min(72, fitPx));
+        }
+      }
+
+      if (state.quadrantMode === 'Q1') {
+        state.originOffset = { x: 68, y: 58 };
+      } else if (state.quadrantMode === 'ALL') {
+        state.originOffset = { x: Math.round(W / 2), y: Math.round(H / 2) };
+      } else if (state.quadrantMode === 'Q1Q2') {
+        state.originOffset = { x: Math.round(W / 2), y: 58 };
+      } else if (state.quadrantMode === 'Q1Q4') {
+        state.originOffset = { x: 68, y: Math.round(H / 2) };
+      }
+
+      document.getElementById('zoom-pct-label').textContent = `${Math.round((state.pxPerCm / 50) * 100)}%`;
+    }
+
+    function applyQuadrantMode(mode) {
+      state.quadrantMode = mode;
+      fitGridToContainer(true);
+      drawGraphSheet();
+    }
+
+    function zoomGrid(factor) {
+      state.pxPerCm = Math.max(28, Math.min(115, state.pxPerCm * factor));
+      document.getElementById('zoom-pct-label').textContent = `${Math.round((state.pxPerCm / 50) * 100)}%`;
+      drawGraphSheet();
+    }
+
+    function resetPanZoom() {
+      fitGridToContainer(true);
+      drawGraphSheet();
+    }
+
+    function dataToCanvasPx(x, y, canvasHeight) {
+      const cmX = x / state.scaleXUnits;
+      const cmY = y / state.scaleYUnits;
+      const px = state.originOffset.x + cmX * state.pxPerCm;
+      const py = (canvasHeight - state.originOffset.y) - cmY * state.pxPerCm;
+      return { px, py, cmX, cmY };
+    }
+
+    function canvasPxToData(px, py, canvasHeight) {
+      const cmX = (px - state.originOffset.x) / state.pxPerCm;
+      const cmY = ((canvasHeight - state.originOffset.y) - py) / state.pxPerCm;
+      return {
+        x: cmX * state.scaleXUnits,
+        y: cmY * state.scaleYUnits,
+        cmX,
+        cmY
+      };
+    }
+
+    function roundClean(num) {
+      return Math.round(num * 100) / 100;
+    }
+
+    function evaluateFunctionAtX(xVal) {
+      if (state.sandboxMode) {
+        return evalCustomExpression(state.customEq, xVal, state.customParams);
+      }
+      const q = QUESTIONS_DATA[state.currentQIndex];
+      if (q.variationType === 'direct') {
+        return roundClean(q.k * xVal);
+      } else {
+        if (Math.abs(xVal) < 1e-9) return null;
+        return roundClean(q.k / xVal);
+      }
+    }
+
+    // =========================================================================
+    // 9. SYNCHRONIZED DATA TABLE (AUTO & STUDENT ENTRY WITH APPRECIATION)
+    // =========================================================================
+    function setTableMode(mode) {
+      state.tableMode = mode;
+      const btnAuto = document.getElementById('btn-table-auto');
+      const btnStud = document.getElementById('btn-table-student');
+      const actions = document.getElementById('student-table-actions');
+      const t = I18N[state.lang];
+
+      if (mode === 'auto') {
+        btnAuto.className = 'px-2.5 py-1 rounded-lg text-xs font-bold transition bg-emerald-600 text-white shadow-sm';
+        btnStud.className = 'px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-600 dark:text-slate-300';
+        actions.classList.add('hidden');
+        document.getElementById('lbl-table-hint').textContent = t.tableHintAuto;
+
+        state.tablePoints.forEach((p) => {
+          p.studentX = p.x;
+          p.studentY = p.y;
+          p.valid = true;
+        });
+      } else {
+        btnStud.className = 'px-2.5 py-1 rounded-lg text-xs font-bold transition bg-emerald-600 text-white shadow-sm';
+        btnAuto.className = 'px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-600 dark:text-slate-300';
+        actions.classList.remove('hidden');
+        document.getElementById('lbl-table-hint').textContent = t.tableHintStudent;
+        document.getElementById('table-appreciation-box').classList.add('hidden');
+
+        // Make all student table boxes completely blank with no pre-filled values
+        state.tablePoints.forEach((p) => {
+          p.studentX = '';
+          p.studentY = '';
+          p.valid = false;
+          p.invalid = false;
+          p.plotted = false;
+          p.praised = false;
+        });
+      }
+
+      syncCurveFormationWithPoints();
+      renderDataTable();
+      renderListedPoints();
+      drawGraphSheet();
+    }
+
+    function renderDataTable() {
+      const rowX = document.getElementById('table-row-x');
+      const rowY = document.getElementById('table-row-y');
+      const q = QUESTIONS_DATA[state.currentQIndex];
+      const lang = state.lang;
+
+      const xHeader = state.sandboxMode ? 'x' : q.xLabel[lang];
+      const yHeader = state.sandboxMode ? 'y' : q.yLabel[lang];
+
+      let htmlX = `<th class="px-2.5 py-2 text-left bg-emerald-50 dark:bg-emerald-950/60 text-emerald-900 dark:text-emerald-200 border-r border-slate-200 dark:border-slate-700 min-w-[115px]">${xHeader}</th>`;
+      let htmlY = `<td class="px-2.5 py-2 text-left font-bold bg-slate-50 dark:bg-slate-800/60 text-slate-700 dark:text-slate-200 border-r border-slate-200 dark:border-slate-700">${yHeader}</td>`;
+
+      state.tablePoints.forEach((pt, idx) => {
+        if (state.tableMode === 'auto') {
+          htmlX += `
+            <td class="p-1 border-r border-slate-200 dark:border-slate-700 min-w-[56px]">
+              <input type="number" step="any" value="${pt.x}" onchange="onAutoTableCellEdit(${idx}, 'x', this.value)"
+                class="w-14 text-center py-1 rounded-lg bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 font-mono font-bold focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+            </td>`;
+          htmlY += `
+            <td class="p-1 border-r border-slate-200 dark:border-slate-700">
+              <input type="number" step="any" value="${pt.y}" onchange="onAutoTableCellEdit(${idx}, 'y', this.value)"
+                class="w-14 text-center py-1 rounded-lg bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 font-mono font-bold text-indigo-600 dark:text-indigo-400 focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+            </td>`;
+        } else {
+          const validRing = pt.valid
+            ? 'border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-200'
+            : (pt.invalid ? 'border-rose-500 bg-rose-50 dark:bg-rose-950/40' : 'border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800');
+          htmlX += `
+            <td class="p-1 border-r border-slate-200 dark:border-slate-700 min-w-[60px]">
+              <input type="number" step="any" value="${pt.studentX}" placeholder=""
+                oninput="onStudentTableInput(${idx}, 'x', this.value)"
+                class="w-14 text-center py-1 rounded-lg border ${validRing} font-mono font-bold focus:outline-none" />
+            </td>`;
+          htmlY += `
+            <td class="p-1 border-r border-slate-200 dark:border-slate-700">
+              <input type="number" step="any" value="${pt.studentY}" placeholder=""
+                oninput="onStudentTableInput(${idx}, 'y', this.value)"
+                class="w-14 text-center py-1 rounded-lg border ${validRing} font-mono font-bold focus:outline-none" />
+            </td>`;
+        }
+      });
+
+      rowX.innerHTML = htmlX;
+      rowY.innerHTML = htmlY;
+    }
+
+    function onAutoTableCellEdit(idx, axis, rawVal) {
+      const val = parseFloat(rawVal);
+      if (isNaN(val)) return;
+      const pt = state.tablePoints[idx];
+      if (axis === 'x') {
+        pt.x = val;
+        const computedY = evaluateFunctionAtX(val);
+        if (computedY !== null) pt.y = computedY;
+      } else {
+        pt.y = val;
+      }
+      pt.studentX = pt.x;
+      pt.studentY = pt.y;
+      pt.valid = true;
+      state.activeIntersection = { x: pt.x, y: pt.y, fromAxis: axis };
+      renderDataTable();
+      renderListedPoints();
+      drawGraphSheet();
+    }
+
+    function onStudentTableInput(idx, axis, rawVal) {
+      const pt = state.tablePoints[idx];
+      if (axis === 'x') pt.studentX = rawVal;
+      if (axis === 'y') pt.studentY = rawVal;
+      pt.invalid = false;
+
+      const sx = parseFloat(pt.studentX);
+      const sy = parseFloat(pt.studentY);
+      if (!isNaN(sx) && !isNaN(sy)) {
+        const expectedY = evaluateFunctionAtX(sx);
+        if (expectedY !== null && Math.abs(sy - expectedY) < 0.05) {
+          const wasInvalid = !pt.valid;
+          pt.x = sx;
+          pt.y = roundClean(sy);
+          pt.valid = true;
+          if (wasInvalid && !pt.praised) {
+            pt.praised = true;
+            const praiseMsg = `${getRandomPraise()} (${pt.x}, ${pt.y}) — ${I18N[state.lang].tableCellCorrect}`;
+            showToast(praiseMsg, 'success');
+          }
+          renderDataTable();
+          renderListedPoints();
+          checkAllTableAppreciation();
+        } else {
+          pt.valid = false;
+          renderListedPoints();
+        }
+      } else {
+        pt.valid = false;
+        renderListedPoints();
+      }
+    }
+
+    function checkAllTableAppreciation() {
+      const box = document.getElementById('table-appreciation-box');
+      const txt = document.getElementById('table-appreciation-text');
+      if (state.tablePoints.length > 0 && state.tablePoints.every(p => p.valid)) {
+        box.classList.remove('hidden');
+        txt.textContent = I18N[state.lang].tableValidSuccess;
+      } else {
+        box.classList.add('hidden');
+      }
+    }
+
+    function verifyStudentTable() {
+      let allOk = true;
+      state.tablePoints.forEach(pt => {
+        const sx = parseFloat(pt.studentX);
+        const sy = parseFloat(pt.studentY);
+        const expectedY = !isNaN(sx) ? evaluateFunctionAtX(sx) : null;
+        if (!isNaN(sx) && !isNaN(sy) && expectedY !== null && Math.abs(sy - expectedY) < 0.05) {
+          pt.x = sx;
+          pt.y = roundClean(sy);
+          pt.valid = true;
+          pt.invalid = false;
+        } else {
+          pt.valid = false;
+          pt.invalid = true;
+          allOk = false;
+        }
+      });
+
+      renderDataTable();
+      renderListedPoints();
+      checkAllTableAppreciation();
+
+      const t = I18N[state.lang];
+      if (allOk) {
+        showToast(t.tableValidSuccess, 'success');
+      } else {
+        showToast(t.tableInvalidWarn, 'warn');
+      }
+    }
+
+    function addTableColumn() {
+      const last = state.tablePoints[state.tablePoints.length - 1];
+      const nextX = last ? roundClean(last.x + state.scaleXUnits) : state.scaleXUnits;
+      const nextY = evaluateFunctionAtX(nextX) || 1;
+      state.tablePoints.push({
+        x: nextX,
+        y: nextY,
+        studentX: state.tableMode === 'auto' ? nextX : '',
+        studentY: state.tableMode === 'auto' ? nextY : '',
+        plotted: false,
+        valid: state.tableMode === 'auto',
+        praised: false
+      });
+      syncCurveFormationWithPoints();
+      renderDataTable();
+      renderListedPoints();
+      drawGraphSheet();
+    }
+
+    // =========================================================================
+    // 10. LISTED POINTS PANE, SLOW LEARNER HELPER, DELETE POINT & POST-POINTS CURVE
+    // =========================================================================
+    function areAllGivenPointsPlotted() {
+      const validPoints = state.tablePoints.filter(p => p.valid);
+      return validPoints.length > 0 && validPoints.every(p => p.plotted);
+    }
+
+    function syncCurveFormationWithPoints() {
+      if (state.sandboxMode) {
+        state.showCurve = true;
+      } else {
+        // Strictly create the connecting graph curve ONLY AFTER all points are plotted!
+        state.showCurve = areAllGivenPointsPlotted();
+      }
+    }
+
+    function toggleSlowLearnerHelper() {
+      state.slowLearnerHelper = !state.slowLearnerHelper;
+      const btn = document.getElementById('btn-slow-learner');
+      const banner = document.getElementById('slow-learner-banner');
+      const t = I18N[state.lang];
+
+      if (state.slowLearnerHelper) {
+        btn.className = 'px-2.5 py-1 rounded-xl text-[11px] font-extrabold bg-amber-500 text-white border border-amber-600 shadow-sm transition';
+        document.getElementById('txt-slow-learner').textContent = t.slowLearnerOn;
+        banner.classList.remove('hidden');
+      } else {
+        btn.className = 'px-2.5 py-1 rounded-xl text-[11px] font-extrabold bg-amber-100 text-amber-900 dark:bg-amber-900/60 dark:text-amber-200 border border-amber-300 dark:border-amber-700 hover:bg-amber-200 transition';
+        document.getElementById('txt-slow-learner').textContent = t.slowLearnerOff;
+        banner.classList.add('hidden');
+      }
+      updateSlowLearnerGuide();
+      drawGraphSheet();
+    }
+
+    function updateSlowLearnerGuide() {
+      const banner = document.getElementById('slow-learner-banner');
+      if (!state.slowLearnerHelper) return;
+
+      const validPoints = state.tablePoints.filter(p => p.valid);
+      const nextPt = validPoints.find(p => !p.plotted);
+      const stepEl = document.getElementById('slow-learner-step-text');
+      const tapBtn = document.getElementById('btn-plot-active-helper');
+
+      if (validPoints.length === 0) {
+        stepEl.textContent = state.lang === 'ta'
+          ? "முதலில் அட்டவணையில் புள்ளிகளை நிரப்பவும்."
+          : "First complete the data table values above.";
+        tapBtn.classList.add('hidden');
+        return;
+      }
+
+      if (!nextPt) {
+        stepEl.textContent = state.lang === 'ta'
+          ? "🎉 அனைத்துப் புள்ளிகளும் குறிக்கப்பட்டு வரைபடக் கோடு உருவானது!"
+          : "🎉 All points are plotted and the variation graph is formed!";
+        tapBtn.classList.add('hidden');
+        return;
+      }
+
+      banner.classList.remove('hidden');
+      tapBtn.classList.remove('hidden');
+      stepEl.textContent = state.lang === 'ta'
+        ? `படி: X = ${nextPt.x} மற்றும் Y = ${nextPt.y} சந்திக்கும் புள்ளி (${nextPt.x}, ${nextPt.y})-ஐ இழுக்கவும் அல்லது வரைபடத்தில் அந்த இடத்தைத் தொடவும்.`
+        : `Guide: Follow X = ${nextPt.x} and Y = ${nextPt.y} to their intersection (${nextPt.x}, ${nextPt.y}), drag the chip, or click 'Fix at Target'.`;
+    }
+
+    function plotCurrentTargetByTap() {
+      const validPoints = state.tablePoints.filter(p => p.valid);
+      const nextPt = validPoints.find(p => !p.plotted);
+      if (!nextPt) return;
+      finalizePointPlot(state.tablePoints.indexOf(nextPt), true);
+    }
+
+    function deletePlottedPoint(idx, event) {
+      if (event) event.stopPropagation();
+      const pt = state.tablePoints[idx];
+      if (!pt || !pt.plotted) return;
+
+      pt.plotted = false;
+      syncCurveFormationWithPoints();
+      renderListedPoints();
+      drawGraphSheet();
+      showToast(`${I18N[state.lang].pointRemovedMsg} (${pt.x}, ${pt.y})`, 'warn');
+    }
+
+    function finalizePointPlot(idx, announce = true) {
+      const pt = state.tablePoints[idx];
+      if (!pt) return;
+      pt.plotted = true;
+      // Do not show dashed intersection lines when plotting points manually
+      state.activeIntersection = null;
+      syncCurveFormationWithPoints();
+      renderListedPoints();
+      drawGraphSheet();
+
+      if (announce) {
+        if (!state.sandboxMode && areAllGivenPointsPlotted()) {
+          showToast(I18N[state.lang].allPlottedCongrats, 'success');
+        } else {
+          showToast(`${I18N[state.lang].pointSnapSuccess} (${pt.x}, ${pt.y})`, 'success');
+        }
+      }
+    }
+
+    function renderListedPoints() {
+      const container = document.getElementById('listed-points-container');
+      const counter = document.getElementById('plotted-counter');
+      const t = I18N[state.lang];
+
+      const validPoints = state.tablePoints.filter(p => p.valid);
+      const plottedCount = validPoints.filter(p => p.plotted).length;
+      counter.textContent = `${plottedCount} / ${validPoints.length} ${t.plottedWord}`;
+
+      if (validPoints.length === 0) {
+        container.innerHTML = `<span class="text-xs text-slate-400 italic py-1">Complete the table above to generate points...</span>`;
+        updateSlowLearnerGuide();
+        return;
+      }
+
+      const nextUnplotted = validPoints.find(p => !p.plotted);
+      container.innerHTML = '';
+
+      validPoints.forEach((pt, seqIdx) => {
+        const realIdx = state.tablePoints.indexOf(pt);
+        const isNext = nextUnplotted && pt === nextUnplotted;
+        const chip = document.createElement('div');
+        chip.setAttribute('draggable', 'true');
+        chip.dataset.idx = realIdx;
+
+        if (pt.plotted) {
+          chip.className = 'point-chip px-2.5 py-1.5 rounded-xl bg-emerald-600 text-white font-mono text-xs font-extrabold shadow-sm flex items-center gap-1.5 cursor-pointer transition';
+          chip.innerHTML = `
+            <span>✓</span>
+            <span>(${pt.x}, ${pt.y})</span>
+            <button type="button" onclick="deletePlottedPoint(${realIdx}, event)" title="${t.unplotBtn}"
+              class="ml-1 px-1.5 py-0.5 rounded-md bg-emerald-800/90 hover:bg-rose-600 text-white text-[10px] font-sans font-extrabold transition">
+              ✕ ${t.unplotBtn}
+            </button>
+          `;
+        } else if (isNext) {
+          chip.className = 'point-chip next-point-highlight px-3 py-1.5 rounded-xl bg-indigo-600 text-white border-2 border-indigo-400 font-mono text-xs font-extrabold shadow-md cursor-grab active:cursor-grabbing flex items-center gap-1.5 transition';
+          chip.innerHTML = `<span class="text-[10px] bg-white/20 px-1.5 rounded">#${seqIdx + 1}</span><span>(${pt.x}, ${pt.y})</span>`;
+        } else {
+          chip.className = 'point-chip px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 text-indigo-700 dark:text-indigo-300 border-2 border-indigo-300 dark:border-indigo-700 font-mono text-xs font-extrabold shadow-sm hover:bg-indigo-50 cursor-grab active:cursor-grabbing flex items-center gap-1.5 transition';
+          chip.innerHTML = `<span>✥</span><span>(${pt.x}, ${pt.y})</span>`;
+        }
+
+        // Desktop Drag Events
+        chip.addEventListener('dragstart', (e) => {
+          state.draggedPointIdx = realIdx;
+          e.dataTransfer.setData('text/plain', String(realIdx));
+          e.dataTransfer.effectAllowed = 'move';
+        });
+        chip.addEventListener('dragend', () => {
+          state.draggedPointIdx = null;
+          state.hoverData = null;
+          document.getElementById('drag-crosshair-badge').classList.add('hidden');
+          drawGraphSheet();
+        });
+
+        // Mobile / Tablet Touch Drag Events
+        chip.addEventListener('touchstart', (e) => {
+          state.draggedPointIdx = realIdx;
+          const badge = document.getElementById('drag-crosshair-badge');
+          badge.classList.remove('hidden');
+          updateDragFeedback(e.touches[0].clientX, e.touches[0].clientY);
+        }, { passive: true });
+
+        chip.addEventListener('touchmove', (e) => {
+          if (state.draggedPointIdx === null) return;
+          e.preventDefault();
+          updateDragFeedback(e.touches[0].clientX, e.touches[0].clientY);
+        }, { passive: false });
+
+        chip.addEventListener('touchend', (e) => {
+          if (state.draggedPointIdx === null) return;
+          const touch = e.changedTouches[0];
+          document.getElementById('drag-crosshair-badge').classList.add('hidden');
+          handleDropAtClientCoords(touch.clientX, touch.clientY, state.draggedPointIdx);
+          state.draggedPointIdx = null;
+          state.hoverData = null;
+          drawGraphSheet();
+        });
+
+        chip.addEventListener('click', () => {
+          // Select point without drawing dashed guide lines on the graph sheet
+          drawGraphSheet();
+        });
+
+        container.appendChild(chip);
+      });
+
+      updateSlowLearnerGuide();
+    }
+
+    function updateDragFeedback(clientX, clientY) {
+      const badge = document.getElementById('drag-crosshair-badge');
+      badge.style.left = `${clientX}px`;
+      badge.style.top = `${clientY - 14}px`;
+
+      const canvas = document.getElementById('graph-canvas');
+      const rect = canvas.getBoundingClientRect();
+      const px = clientX - rect.left;
+      const py = clientY - rect.top;
+      const d = canvasPxToData(px, py, rect.height);
+      state.hoverData = { x: roundClean(d.x), y: roundClean(d.y), px, py };
+      badge.textContent = `(${roundClean(d.x)}, ${roundClean(d.y)})`;
+      document.getElementById('live-coord-pill').textContent = `Dragging: (${roundClean(d.x)}, ${roundClean(d.y)})`;
+      drawGraphSheet();
+    }
+
+    function handleDropAtClientCoords(clientX, clientY, idx) {
+      const canvas = document.getElementById('graph-canvas');
+      const rect = canvas.getBoundingClientRect();
+      const px = clientX - rect.left;
+      const py = clientY - rect.top;
+      const pt = state.tablePoints[idx];
+      if (!pt) return;
+
+      const targetPx = dataToCanvasPx(pt.x, pt.y, rect.height);
+      const distPx = Math.hypot(px - targetPx.px, py - targetPx.py);
+      const t = I18N[state.lang];
+
+      const snapRadius = state.slowLearnerHelper
+        ? Math.max(46, state.pxPerCm * 1.15)
+        : Math.max(30, state.pxPerCm * 0.72);
+
+      if (distPx <= snapRadius) {
+        finalizePointPlot(idx, true);
+      } else {
+        // Keep the graph sheet clean of guide lines when off-target
+        state.activeIntersection = null;
+        drawGraphSheet();
+        showToast(`${t.pointOffTarget} (${pt.x}, ${pt.y})`, 'warn');
+      }
+    }
+
+    // =========================================================================
+    // 11. CANVAS MOUSE / TOUCH INTERACTIONS
+    // =========================================================================
+    function setupCanvasInteractions() {
+      const wrapper = document.getElementById('graph-sheet-wrapper');
+      const canvas = document.getElementById('graph-canvas');
+
+      wrapper.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        const badge = document.getElementById('drag-crosshair-badge');
+        badge.classList.remove('hidden');
+        updateDragFeedback(e.clientX, e.clientY);
+      });
+
+      wrapper.addEventListener('dragleave', () => {
+        document.getElementById('drag-crosshair-badge').classList.add('hidden');
+        state.hoverData = null;
+        drawGraphSheet();
+      });
+
+      wrapper.addEventListener('drop', (e) => {
+        e.preventDefault();
+        document.getElementById('drag-crosshair-badge').classList.add('hidden');
+        const idxStr = e.dataTransfer.getData('text/plain');
+        const idx = idxStr !== '' ? parseInt(idxStr, 10) : state.draggedPointIdx;
+        if (idx !== null && !isNaN(idx)) {
+          handleDropAtClientCoords(e.clientX, e.clientY, idx);
+        }
+        state.draggedPointIdx = null;
+        state.hoverData = null;
+        drawGraphSheet();
+      });
+
+      let movedDuringMouseDown = false;
+      canvas.addEventListener('mousedown', (e) => {
+        state.isPanning = true;
+        movedDuringMouseDown = false;
+        state.panStart = { x: e.clientX, y: e.clientY };
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        if (state.isPanning) {
+          const dx = e.clientX - state.panStart.x;
+          const dy = e.clientY - state.panStart.y;
+          if (Math.hypot(dx, dy) > 3) movedDuringMouseDown = true;
+          state.originOffset.x += dx;
+          state.originOffset.y -= dy;
+          state.panStart = { x: e.clientX, y: e.clientY };
+          drawGraphSheet();
+          return;
+        }
+
+        if (e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom) {
+          const px = e.clientX - rect.left;
+          const py = e.clientY - rect.top;
+          const d = canvasPxToData(px, py, rect.height);
+          state.hoverData = { x: roundClean(d.x), y: roundClean(d.y), px, py };
+          document.getElementById('live-coord-pill').textContent = `(x, y) : (${roundClean(d.x)}, ${roundClean(d.y)})`;
+          drawGraphSheet();
+        }
+      });
+
+      window.addEventListener('mouseup', (e) => {
+        if (state.isPanning) {
+          state.isPanning = false;
+          if (!movedDuringMouseDown) {
+            handleCanvasClick(e.clientX, e.clientY);
+          }
+        }
+      });
+
+      canvas.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        zoomGrid(e.deltaY < 0 ? 1.1 : 0.9);
+      }, { passive: false });
+    }
+
+    function handleCanvasClick(clientX, clientY) {
+      const canvas = document.getElementById('graph-canvas');
+      const rect = canvas.getBoundingClientRect();
+      if (clientX < rect.left || clientX > rect.right || clientY < rect.top || clientY > rect.bottom) return;
+
+      const px = clientX - rect.left;
+      const py = clientY - rect.top;
+      const d = canvasPxToData(px, py, rect.height);
+      const cx = roundClean(d.x);
+      const cy = roundClean(d.y);
+
+      // Slow Learner Helper: clicking near the active target ring directly plots that point!
+      if (state.slowLearnerHelper && !state.sandboxMode) {
+        const validPoints = state.tablePoints.filter(p => p.valid);
+        const nextPt = validPoints.find(p => !p.plotted);
+        if (nextPt) {
+          const targetPx = dataToCanvasPx(nextPt.x, nextPt.y, rect.height);
+          const tol = Math.max(48, state.pxPerCm * 1.2);
+          if (Math.hypot(px - targetPx.px, py - targetPx.py) <= tol) {
+            finalizePointPlot(state.tablePoints.indexOf(nextPt), true);
+            return;
+          }
+        }
+      }
+
+      if (state.graphClickMode === 'pin') {
+        state.pinnedMarkers.push({ x: cx, y: cy });
+        drawGraphSheet();
+        showToast(`Pinned marker at (${cx}, ${cy})`, 'info');
+      } else {
+        if (!state.showCurve && !state.sandboxMode) {
+          showToast(state.lang === 'ta'
+            ? 'முதலில் கொடுக்கப்பட்ட அனைத்துப் புள்ளிகளையும் குறித்து வரைபடத்தை உருவாக்கவும்!'
+            : 'Plot all given table points first to form the graph curve!', 'warn');
+          return;
+        }
+        if (Math.abs(d.cmY) <= 0.75) {
+          projectFromAxis('x', cx);
+        } else if (Math.abs(d.cmX) <= 0.75) {
+          projectFromAxis('y', cy);
+        } else {
+          projectFromAxis('x', cx);
+        }
+      }
+    }
+
+    // =========================================================================
+    // 12. SLOW STEP-BY-STEP AUTO PLOT ANIMATION (WITH PAUSE & SPEED CONTROL)
+    // =========================================================================
+    function togglePauseAnimation() {
+      if (!state.animating) return;
+      state.animPaused = !state.animPaused;
+      document.getElementById('txt-pause-plot').textContent = state.animPaused
+        ? I18N[state.lang].resumePlot
+        : I18N[state.lang].pausePlot;
+    }
+
+    async function waitWithPause(ms) {
+      let elapsed = 0;
+      const step = 60;
+      while (elapsed < ms) {
+        if (!state.animating) return false;
+        if (!state.animPaused) {
+          elapsed += step;
+        }
+        await new Promise(res => setTimeout(res, step));
+      }
+      return state.animating;
+    }
+
+    async function runAutoPlotAnimation() {
+      if (state.animating) return;
+      state.animating = true;
+      state.animPaused = false;
+      const pauseBtn = document.getElementById('btn-pause-animate');
+      pauseBtn.classList.remove('hidden');
+      document.getElementById('txt-pause-plot').textContent = I18N[state.lang].pausePlot;
+
+      if (state.tableMode === 'student' && !state.tablePoints.every(p => p.valid)) {
+        setTableMode('auto');
+      }
+
+      state.tablePoints.forEach(p => p.plotted = false);
+      state.showCurve = false;
+      state.activeIntersection = null;
+      renderListedPoints();
+      drawGraphSheet();
+
+      const mult = state.animSpeed || 1.0;
+
+      for (let i = 0; i < state.tablePoints.length; i++) {
+        if (!state.animating) break;
+        const pt = state.tablePoints[i];
+
+        // Step A: Slowly trace X and Y perpendicular lines to show where the point lies
+        state.activeIntersection = { x: pt.x, y: pt.y, fromAxis: 'x' };
+        document.getElementById('live-coord-pill').textContent = `Step ${i + 1}: x = ${pt.x}, y = ${pt.y}`;
+        drawGraphSheet();
+        if (!(await waitWithPause(1150 * mult))) break;
+
+        // Step B: Fix the point on the 10x10 mm sheet
+        pt.plotted = true;
+        renderListedPoints();
+        drawGraphSheet();
+        if (!(await waitWithPause(950 * mult))) break;
+      }
+
+      // Step C: Only after ALL points are plotted, form the connecting line/curve!
+      if (state.animating && areAllGivenPointsPlotted()) {
+        await waitWithPause(600 * mult);
+        state.showCurve = true;
+        drawGraphSheet();
+
+        if (!state.sandboxMode) {
+          const q = QUESTIONS_DATA[state.currentQIndex];
+          if (q.subQuestions && q.subQuestions.length > 0) {
+            await waitWithPause(900 * mult);
+            if (state.animating) {
+              const sq = q.subQuestions[0];
+              projectFromAxis(sq.queryAxis, sq.queryVal);
+            }
+          }
+        }
+        showToast(I18N[state.lang].allPlottedCongrats, 'success');
+      }
+
+      state.animating = false;
+      state.animPaused = false;
+      pauseBtn.classList.add('hidden');
+    }
+
+    function resetGraphPoints() {
+      state.animating = false;
+      state.animPaused = false;
+      document.getElementById('btn-pause-animate').classList.add('hidden');
+      state.tablePoints.forEach(p => p.plotted = false);
+      state.showCurve = false;
+      state.activeIntersection = null;
+      state.pinnedMarkers = [];
+      renderListedPoints();
+      drawGraphSheet();
+    }
+
+    function projectFromAxis(axis, val) {
+      if (isNaN(val)) return;
+
+      let ix = null, iy = null;
+      if (state.sandboxMode) {
+        if (axis === 'x') {
+          ix = val;
+          iy = evaluateFunctionAtX(val);
+        } else {
+          iy = val;
+          let bestX = null, minDiff = Infinity;
+          for (let x = -20; x <= 20; x += 0.05) {
+            const y = evaluateFunctionAtX(x);
+            if (y !== null && Math.abs(y - val) < minDiff) {
+              minDiff = Math.abs(y - val);
+              bestX = roundClean(x);
+            }
+          }
+          ix = bestX;
+        }
+      } else {
+        const q = QUESTIONS_DATA[state.currentQIndex];
+        if (q.variationType === 'direct') {
+          if (axis === 'x') {
+            ix = val;
+            iy = roundClean(q.k * val);
+          } else {
+            iy = val;
+            ix = roundClean(val / q.k);
+          }
+        } else {
+          if (val === 0) return;
+          if (axis === 'x') {
+            ix = val;
+            iy = roundClean(q.k / val);
+          } else {
+            iy = val;
+            ix = roundClean(q.k / val);
+          }
+        }
+      }
+
+      if (ix !== null && iy !== null) {
+        state.activeIntersection = { x: ix, y: iy, fromAxis: axis };
+        document.getElementById('touch-x-input').value = ix;
+        document.getElementById('touch-y-input').value = iy;
+        document.getElementById('live-coord-pill').textContent = `Intersection: (${ix}, ${iy})`;
+        drawGraphSheet();
+      }
+    }
+
+    function clearIntersectionLines() {
+      state.activeIntersection = null;
+      state.pinnedMarkers = [];
+      document.getElementById('touch-x-input').value = '';
+      document.getElementById('touch-y-input').value = '';
+      drawGraphSheet();
+    }
+
+    function setGraphClickMode(mode) {
+      state.graphClickMode = mode;
+      const btnAxis = document.getElementById('mode-axis-touch');
+      const btnPin = document.getElementById('mode-pin-drop');
+      if (mode === 'axis') {
+        btnAxis.className = 'px-2 py-1 rounded-lg text-[11px] font-bold transition bg-amber-500 text-white shadow-sm';
+        btnPin.className = 'px-2 py-1 rounded-lg text-[11px] font-bold transition text-slate-600 dark:text-slate-300';
+      } else {
+        btnPin.className = 'px-2 py-1 rounded-lg text-[11px] font-bold transition bg-indigo-600 text-white shadow-sm';
+        btnAxis.className = 'px-2 py-1 rounded-lg text-[11px] font-bold transition text-slate-600 dark:text-slate-300';
+      }
+    }
+
+    // =========================================================================
+    // 13. CUSTOM FUNCTION SANDBOX MODE
+    // =========================================================================
+    function toggleSandboxMode() {
+      state.sandboxMode = !state.sandboxMode;
+      const pane = document.getElementById('custom-function-pane');
+      const stepsCard = document.getElementById('analytical-steps-card');
+
+      if (state.sandboxMode) {
+        pane.classList.remove('hidden');
+        stepsCard.classList.add('hidden');
+        document.getElementById('current-variation-badge').textContent = I18N[state.lang].customVar;
+        document.getElementById('q-code').textContent = "ƒ(x) Explorer";
+        document.getElementById('q-title').textContent = "Interactive Function & Parameter Sliders";
+        document.getElementById('q-body').textContent = "Type any algebraic or trigonometric function (e.g., a * x^2 + b * x + c, k * x, k / x) and adjust sliders in real time on the 10×10 mm grid.";
+        state.scaleXUnits = 1;
+        state.scaleYUnits = 1;
+        updateScaleDisplays();
+        onCustomEquationChange();
+        renderQuestionBoxes();
+      } else {
+        pane.classList.add('hidden');
+        stepsCard.classList.remove('hidden');
+        loadQuestion(state.currentQIndex);
+      }
+    }
+
+    function applyCustomPreset(eq) {
+      document.getElementById('custom-eq-input').value = eq;
+      onCustomEquationChange();
+    }
+
+    function onCustomEquationChange() {
+      const rawEq = document.getElementById('custom-eq-input').value.trim() || 'x';
+      state.customEq = rawEq;
+      document.getElementById('equation-overlay-pill').textContent = `y = ${rawEq}`;
+
+      const stripped = rawEq.replace(/\b(sin|cos|tan|sqrt|abs|log|exp)\b/g, '');
+      const matches = stripped.match(/\b[a-df-zA-Z]\b/g) || [];
+      const uniqueParams = [...new Set(matches)];
+
+      const sliderBox = document.getElementById('parameter-sliders-container');
+      sliderBox.innerHTML = '';
+      uniqueParams.forEach(p => {
+        if (state.customParams[p] === undefined) state.customParams[p] = 1;
+        const val = state.customParams[p];
+        const div = document.createElement('div');
+        div.className = 'bg-slate-50 dark:bg-slate-800 p-2 rounded-xl border border-slate-200 dark:border-slate-700';
+        div.innerHTML = `
+          <div class="flex justify-between text-xs font-bold mb-1">
+            <span class="font-mono text-indigo-600 dark:text-indigo-400">${p}</span>
+            <span id="param-val-${p}" class="font-mono">${val}</span>
+          </div>
+          <input type="range" min="-10" max="10" step="0.5" value="${val}"
+            oninput="updateCustomParam('${p}', this.value)"
+            class="w-full accent-indigo-600 cursor-pointer" />
+        `;
+        sliderBox.appendChild(div);
+      });
+
+      rebuildCustomTable();
+    }
+
+    function updateCustomParam(p, val) {
+      state.customParams[p] = parseFloat(val);
+      const lbl = document.getElementById(`param-val-${p}`);
+      if (lbl) lbl.textContent = val;
+      rebuildCustomTable();
+    }
+
+    function evalCustomExpression(expr, xVal, params) {
+      try {
+        let jsExpr = expr
+          .replace(/\^/g, '**')
+          .replace(/\bsin\b/g, 'Math.sin')
+          .replace(/\bcos\b/g, 'Math.cos')
+          .replace(/\btan\b/g, 'Math.tan')
+          .replace(/\bsqrt\b/g, 'Math.sqrt')
+          .replace(/\babs\b/g, 'Math.abs');
+
+        const keys = ['x', ...Object.keys(params)];
+        const vals = [xVal, ...Object.values(params)];
+        const fn = new Function(...keys, `return (${jsExpr});`);
+        return roundClean(fn(...vals));
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function rebuildCustomTable() {
+      const xMin = parseFloat(document.getElementById('range-xmin').value);
+      const xMax = parseFloat(document.getElementById('range-xmax').value);
+      const step = Math.max(0.1, parseFloat(document.getElementById('range-xstep').value) || 1);
+
+      const pts = [];
+      let count = 0;
+      for (let x = xMin; x <= xMax + 1e-9 && count < 25; x += step, count++) {
+        const rx = roundClean(x);
+        const ry = evaluateFunctionAtX(rx);
+        if (ry !== null) {
+          pts.push({
+            x: rx,
+            y: ry,
+            studentX: rx,
+            studentY: ry,
+            plotted: true,
+            valid: true,
+            praised: true
+          });
+        }
+      }
+
+      state.tablePoints = pts;
+      state.showCurve = true;
+      if (state.quadrantMode === 'Q1' && xMin < 0) {
+        applyQuadrantMode('ALL');
+      }
+      renderDataTable();
+      renderListedPoints();
+      drawGraphSheet();
+    }
+
+    // =========================================================================
+    // 14. HIGH-PRECISION 1 CM = 10 × 10 MM GRAPH SHEET RENDERER (HTML5 CANVAS)
+    // =========================================================================
+    function drawGraphSheet() {
+      const canvas = document.getElementById('graph-canvas');
+      const wrapper = document.getElementById('graph-sheet-wrapper');
+      if (!canvas || !wrapper) return;
+
+      const dpr = window.devicePixelRatio || 1;
+      const W = wrapper.clientWidth || 720;
+      const H = wrapper.clientHeight || 520;
+
+      if (canvas.width !== Math.round(W * dpr) || canvas.height !== Math.round(H * dpr)) {
+        canvas.width = Math.round(W * dpr);
+        canvas.height = Math.round(H * dpr);
+      }
+
+      const ctx = canvas.getContext('2d');
+      ctx.save();
+      ctx.scale(dpr, dpr);
+
+      const isDark = state.theme === 'dark';
+      const pxPerCm = state.pxPerCm;
+      const originX = state.originOffset.x;
+      const originY = H - state.originOffset.y;
+
+      // 1. Background Fill
+      ctx.fillStyle = isDark ? '#09121a' : '#f4fbf5';
+      ctx.fillRect(0, 0, W, H);
+
+      const minCmX = Math.floor(-originX / pxPerCm) - 1;
+      const maxCmX = Math.ceil((W - originX) / pxPerCm) + 1;
+      const minCmY = Math.floor(-(H - originY) / pxPerCm) - 1;
+      const maxCmY = Math.ceil(originY / pxPerCm) + 1;
+
+      // 2. Draw 1 mm Subdivisions (10 equal parts per 1 cm square)
+      const mmColor = isDark ? 'rgba(52, 211, 153, 0.11)' : 'rgba(22, 163, 74, 0.16)';
+      const halfCmColor = isDark ? 'rgba(52, 211, 153, 0.24)' : 'rgba(22, 163, 74, 0.32)';
+      const cmColor = isDark ? 'rgba(52, 211, 153, 0.48)' : 'rgba(21, 128, 61, 0.58)';
+
+      for (let cm = minCmX; cm <= maxCmX; cm++) {
+        for (let mm = 0; mm < 10; mm++) {
+          const xPos = Math.round(originX + (cm + mm / 10) * pxPerCm) + 0.5;
+          if (xPos < 0 || xPos > W) continue;
+          ctx.beginPath();
+          ctx.moveTo(xPos, 0);
+          ctx.lineTo(xPos, H);
+          if (mm === 0) {
+            ctx.strokeStyle = cmColor;
+            ctx.lineWidth = 1.25;
+          } else if (mm === 5) {
+            ctx.strokeStyle = halfCmColor;
+            ctx.lineWidth = 0.85;
+          } else {
+            ctx.strokeStyle = mmColor;
+            ctx.lineWidth = 0.55;
+          }
+          ctx.stroke();
+        }
+      }
+
+      for (let cm = minCmY; cm <= maxCmY; cm++) {
+        for (let mm = 0; mm < 10; mm++) {
+          const yPos = Math.round(originY - (cm + mm / 10) * pxPerCm) + 0.5;
+          if (yPos < 0 || yPos > H) continue;
+          ctx.beginPath();
+          ctx.moveTo(0, yPos);
+          ctx.lineTo(W, yPos);
+          if (mm === 0) {
+            ctx.strokeStyle = cmColor;
+            ctx.lineWidth = 1.25;
+          } else if (mm === 5) {
+            ctx.strokeStyle = halfCmColor;
+            ctx.lineWidth = 0.85;
+          } else {
+            ctx.strokeStyle = mmColor;
+            ctx.lineWidth = 0.55;
+          }
+          ctx.stroke();
+        }
+      }
+
+      // 3. Draw Bold X-Axis & Y-Axis
+      const axisColor = isDark ? '#e2e8f0' : '#0f172a';
+      ctx.strokeStyle = axisColor;
+      ctx.lineWidth = 2.2;
+
+      if (originY >= 0 && originY <= H) {
+        ctx.beginPath();
+        ctx.moveTo(12, originY);
+        ctx.lineTo(W - 12, originY);
+        ctx.stroke();
+        drawArrowHead(ctx, W - 12, originY, 0, axisColor);
+        drawArrowHead(ctx, 12, originY, Math.PI, axisColor);
+      }
+
+      if (originX >= 0 && originX <= W) {
+        ctx.beginPath();
+        ctx.moveTo(originX, H - 12);
+        ctx.lineTo(originX, 12);
+        ctx.stroke();
+        drawArrowHead(ctx, originX, 12, -Math.PI / 2, axisColor);
+        drawArrowHead(ctx, originX, H - 12, Math.PI / 2, axisColor);
+      }
+
+      // 4. Draw Every 1 cm Tick & Scale Value on Both Axes
+      ctx.fillStyle = axisColor;
+      ctx.font = '700 11px Inter, "Noto Sans Tamil", sans-serif';
+
+      if (originX >= 10 && originX <= W - 10 && originY >= 10 && originY <= H - 10) {
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'top';
+        ctx.fillText('0', originX - 6, originY + 5);
+      }
+
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      for (let cm = minCmX; cm <= maxCmX; cm++) {
+        if (cm === 0) continue;
+        const xPos = originX + cm * pxPerCm;
+        if (xPos < 24 || xPos > W - 26) continue;
+        const val = roundClean(cm * state.scaleXUnits);
+
+        ctx.beginPath();
+        ctx.moveTo(xPos, originY - 4);
+        ctx.lineTo(xPos, originY + 4);
+        ctx.strokeStyle = axisColor;
+        ctx.lineWidth = 1.6;
+        ctx.stroke();
+
+        const labelY = Math.min(H - 18, Math.max(8, originY + 7));
+        ctx.fillText(String(val), xPos, labelY);
+      }
+
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'middle';
+      for (let cm = minCmY; cm <= maxCmY; cm++) {
+        if (cm === 0) continue;
+        const yPos = originY - cm * pxPerCm;
+        if (yPos < 24 || yPos > H - 24) continue;
+        const val = roundClean(cm * state.scaleYUnits);
+
+        ctx.beginPath();
+        ctx.moveTo(originX - 4, yPos);
+        ctx.lineTo(originX + 4, yPos);
+        ctx.strokeStyle = axisColor;
+        ctx.lineWidth = 1.6;
+        ctx.stroke();
+
+        const labelX = Math.max(38, Math.min(W - 10, originX - 7));
+        ctx.fillText(String(val), labelX, yPos);
+      }
+
+      const q = QUESTIONS_DATA[state.currentQIndex];
+      const xTitle = state.sandboxMode ? 'X' : q.xLabel[state.lang];
+      const yTitle = state.sandboxMode ? 'Y' : q.yLabel[state.lang];
+
+      ctx.font = '800 12px Inter, "Noto Sans Tamil", sans-serif';
+      ctx.fillStyle = isDark ? '#34d399' : '#065f46';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(`${xTitle} →`, W - 18, Math.min(H - 22, Math.max(24, originY - 10)));
+
+      ctx.save();
+      ctx.translate(Math.max(16, originX - 42), Math.max(120, originY - 4 * pxPerCm));
+      ctx.rotate(-Math.PI / 2);
+      ctx.textAlign = 'center';
+      ctx.fillText(`${yTitle} →`, 0, 0);
+      ctx.restore();
+
+      // 5. Draw Continuous Curve / Line ONLY WHEN ALL GIVEN POINTS ARE PLOTTED
+      if (state.showCurve) {
+        const minDataX = canvasPxToData(0, H, H).x;
+        const maxDataX = canvasPxToData(W, H, H).x;
+        const curveColor = isDark ? '#38bdf8' : '#dc2626';
+
+        ctx.strokeStyle = curveColor;
+        ctx.lineWidth = 2.8;
+        ctx.beginPath();
+
+        let penDown = false;
+        const steps = 400;
+        const stepX = (maxDataX - minDataX) / steps;
+
+        for (let i = 0; i <= steps; i++) {
+          const dx = minDataX + i * stepX;
+          if (!state.sandboxMode && state.quadrantMode === 'Q1') {
+            if (q.variationType === 'direct' && dx < 0) continue;
+            if (q.variationType === 'inverse' && dx <= 0.05) continue;
+          }
+          const dy = evaluateFunctionAtX(dx);
+          if (dy === null || !isFinite(dy)) {
+            penDown = false;
+            continue;
+          }
+          const pos = dataToCanvasPx(dx, dy, H);
+          if (pos.py < -200 || pos.py > H + 200) {
+            penDown = false;
+            continue;
+          }
+          if (!penDown) {
+            ctx.moveTo(pos.px, pos.py);
+            penDown = true;
+          } else {
+            ctx.lineTo(pos.px, pos.py);
+          }
+        }
+        ctx.stroke();
+      }
+
+      // 6. Keep graph sheet free of dashed target guide lines/circles during manual point plotting
+
+      // 7. Draw Perpendicular Straight Intersection Lines (Only when tracing sub-question answers)
+      if (state.activeIntersection) {
+        const { x: ix, y: iy, fromAxis } = state.activeIntersection;
+        const intPx = dataToCanvasPx(ix, iy, H);
+        const projColor = isDark ? '#fbbf24' : '#d97706';
+
+        ctx.save();
+        ctx.strokeStyle = projColor;
+        ctx.lineWidth = 2.2;
+        ctx.setLineDash([6, 4]);
+
+        ctx.beginPath();
+        ctx.moveTo(intPx.px, originY);
+        ctx.lineTo(intPx.px, intPx.py);
+        ctx.moveTo(originX, intPx.py);
+        ctx.lineTo(intPx.px, intPx.py);
+        ctx.stroke();
+        ctx.restore();
+
+        const midY = (originY + intPx.py) / 2;
+        const midX = (originX + intPx.px) / 2;
+        drawArrowHead(ctx, intPx.px, midY, fromAxis === 'x' ? (intPx.py < originY ? -Math.PI / 2 : Math.PI / 2) : (intPx.py < originY ? Math.PI / 2 : -Math.PI / 2), projColor);
+        drawArrowHead(ctx, midX, intPx.py, fromAxis === 'y' ? (intPx.px > originX ? 0 : Math.PI) : (intPx.px > originX ? Math.PI : 0), projColor);
+
+        ctx.fillStyle = projColor;
+        ctx.beginPath();
+        ctx.arc(intPx.px, intPx.py, 6.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.font = '800 12px Inter, sans-serif';
+        ctx.fillStyle = projColor;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText(`(${ix}, ${iy})`, intPx.px + 9, intPx.py - 6);
+      }
+
+      // 8. Draw Dragging Point Dot Only (No dashed crosshair guide lines while plotting)
+      if (state.draggedPointIdx !== null && state.hoverData) {
+        const { px, py } = state.hoverData;
+        ctx.save();
+        ctx.fillStyle = '#4f46e5';
+        ctx.beginPath();
+        ctx.arc(px, py, 6.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // 9. Draw Fixed / Plotted Table Points
+      const plottedPts = state.tablePoints.filter(p => p.valid && p.plotted);
+      plottedPts.forEach((pt) => {
+        const pos = dataToCanvasPx(pt.x, pt.y, H);
+
+        ctx.fillStyle = isDark ? 'rgba(16, 185, 129, 0.25)' : 'rgba(29, 78, 216, 0.18)';
+        ctx.beginPath();
+        ctx.arc(pos.px, pos.py, 10, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = isDark ? '#10b981' : '#1d4ed8';
+        ctx.beginPath();
+        ctx.arc(pos.px, pos.py, 5.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.font = '800 11.5px Inter, sans-serif';
+        ctx.fillStyle = isDark ? '#f8fafc' : '#0f172a';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(`(${pt.x}, ${pt.y})`, pos.px + 9, pos.py - 6);
+      });
+
+      // 10. Draw Custom Pinned Markers
+      state.pinnedMarkers.forEach((m) => {
+        const pos = dataToCanvasPx(m.x, m.y, H);
+        ctx.fillStyle = '#ec4899';
+        ctx.beginPath();
+        ctx.arc(pos.px, pos.py, 5.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.8;
+        ctx.stroke();
+
+        ctx.font = '700 11px Inter, sans-serif';
+        ctx.fillStyle = '#ec4899';
+        ctx.textAlign = 'left';
+        ctx.fillText(`📌 (${m.x}, ${m.y})`, pos.px + 8, pos.py + 8);
+      });
+
+      ctx.restore();
+    }
+
+    function drawArrowHead(ctx, x, y, angle, color) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(angle);
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(-9, -4.5);
+      ctx.lineTo(-9, 4.5);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+  </script>
+</body>
+</html>

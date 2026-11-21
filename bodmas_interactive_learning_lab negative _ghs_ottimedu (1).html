@@ -1,0 +1,2955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BODMAS Interactive Learning Lab | GHS, OTTIMEDU</title>
+  <style>
+    /* ==========================================================================
+       CSS DESIGN TOKENS & THEME SYSTEM (ZERO EXTERNAL DEPENDENCIES)
+       ========================================================================== */
+    :root {
+      --bg-primary: #f1f5f9;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #e2e8f0;
+      --bg-card-elevated: #f8fafc;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      --border-color: #cbd5e1;
+      --accent-primary: #2563eb;
+      --accent-primary-hover: #1d4ed8;
+      --accent-soft: #dbeafe;
+      --accent-secondary: #7c3aed;
+      --accent-secondary-soft: #ede9fe;
+      --success-color: #059669;
+      --success-soft: #d1fae5;
+      --warning-color: #d97706;
+      --warning-soft: #fef3c7;
+      --danger-color: #dc2626;
+      --danger-soft: #fee2e2;
+      --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08);
+      --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+      --shadow-lg: 0 12px 28px rgba(15, 23, 42, 0.14);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-math: "Cambria Math", "Times New Roman", "Segoe UI", serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: #0b1120;
+      --bg-secondary: #111827;
+      --bg-tertiary: #1f2937;
+      --bg-card-elevated: #172033;
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+      --accent-primary: #3b82f6;
+      --accent-primary-hover: #60a5fa;
+      --accent-soft: rgba(59, 130, 246, 0.18);
+      --accent-secondary: #a78bfa;
+      --accent-secondary-soft: rgba(167, 139, 250, 0.18);
+      --success-color: #10b981;
+      --success-soft: rgba(16, 185, 129, 0.18);
+      --warning-color: #f59e0b;
+      --warning-soft: rgba(245, 158, 11, 0.18);
+      --danger-color: #f87171;
+      --danger-soft: rgba(248, 113, 113, 0.18);
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
+      --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.45);
+      --shadow-lg: 0 14px 32px rgba(0, 0, 0, 0.65);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.5;
+      min-height: 100vh;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    /* ==========================================================================
+       TOP SCHOOL & CREATOR HEADER BANNER
+       ========================================================================== */
+    .school-banner {
+      background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 50%, #4338ca 100%);
+      color: #ffffff;
+      padding: 14px 20px;
+      border-bottom: 3px solid #f59e0b;
+      box-shadow: var(--shadow-md);
+    }
+
+    .school-banner-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .school-identity {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .school-emblem {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.16);
+      border: 1.5px solid rgba(255, 255, 255, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .school-name {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      line-height: 1.2;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+    }
+
+    .creator-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+      background: rgba(15, 23, 42, 0.32);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fde68a;
+      letter-spacing: 0.03em;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .lang-switcher {
+      display: inline-flex;
+      background: rgba(15, 23, 42, 0.34);
+      border: 1px solid rgba(255, 255, 255, 0.32);
+      padding: 3px;
+      border-radius: 12px;
+      gap: 3px;
+    }
+
+    .lang-btn {
+      background: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.85);
+      padding: 5px 10px;
+      border-radius: 9px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .lang-btn:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .lang-btn.active {
+      background: #fde047;
+      color: #0f172a;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+    }
+
+    .stat-pill {
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 6px 14px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .stat-pill span.val {
+      font-size: 1.05rem;
+      color: #fde047;
+    }
+
+    .theme-btn {
+      background: rgba(255, 255, 255, 0.18);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.32);
+      padding: 8px 14px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.15s ease, background 0.2s ease;
+    }
+
+    .theme-btn:hover {
+      background: rgba(255, 255, 255, 0.28);
+      transform: translateY(-1px);
+    }
+
+    /* ==========================================================================
+       MAIN LAYOUT & CONTROL BAR
+       ========================================================================== */
+    .app-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+    }
+
+    .toolbar {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .level-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .level-tab {
+      padding: 9px 15px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border-color);
+      background: var(--bg-card-elevated);
+      color: var(--text-secondary);
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .level-tab:hover {
+      border-color: var(--accent-primary);
+      color: var(--text-primary);
+    }
+
+    .level-tab.active {
+      background: var(--accent-primary);
+      border-color: var(--accent-primary);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+    }
+
+    .mode-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mode-switch {
+      display: inline-flex;
+      background: var(--bg-tertiary);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+    }
+
+    .mode-option {
+      padding: 6px 12px;
+      border-radius: 7px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .mode-option.active {
+      background: var(--bg-secondary);
+      color: var(--accent-primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .action-btn {
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-card-elevated);
+      color: var(--text-primary);
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .action-btn:hover {
+      border-color: var(--accent-primary);
+      background: var(--accent-soft);
+      color: var(--accent-primary);
+    }
+
+    .action-btn.hint-btn {
+      background: var(--warning-soft);
+      border-color: var(--warning-color);
+      color: var(--warning-color);
+    }
+
+    .action-btn.hint-btn:hover {
+      filter: brightness(0.96);
+    }
+
+    /* ==========================================================================
+       SINGLE-COLUMN VERTICAL FLOW: EXPRESSION BOX FIRST, BODMAS TRACKER BELOW
+       ========================================================================== */
+    .workspace-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .main-stage {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .stage-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 18px;
+    }
+
+    .problem-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent-primary);
+      background: var(--accent-soft);
+      padding: 5px 12px;
+      border-radius: 999px;
+    }
+
+    .progress-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+
+    .progress-bar {
+      width: 120px;
+      height: 8px;
+      background: var(--bg-tertiary);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-primary), var(--success-color));
+      width: 0%;
+      transition: width 0.35s ease;
+    }
+
+    /* ==========================================================================
+       VERTICAL SOLUTION TREE (PREVIOUS STEPS)
+       ========================================================================== */
+    .history-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .history-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 16px;
+      background: var(--bg-card-elevated);
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--success-color);
+      border-radius: var(--radius-sm);
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .history-expr {
+      font-family: var(--font-mono);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+
+    .history-expr .solved-highlight {
+      background: var(--success-soft);
+      color: var(--success-color);
+      padding: 2px 7px;
+      border-radius: 6px;
+    }
+
+    .history-tag {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--success-color);
+      background: var(--success-soft);
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    /* ==========================================================================
+       ACTIVE INTERACTIVE EXPRESSION ARENA
+       ========================================================================== */
+    .expression-arena {
+      background: var(--bg-card-elevated);
+      border: 2px dashed var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 28px 18px;
+      text-align: center;
+      position: relative;
+      transition: border-color 0.25s ease;
+    }
+
+    .arena-instruction {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .ltr-pill {
+      display: none;
+      align-items: center;
+      gap: 5px;
+      background: var(--accent-secondary-soft);
+      color: var(--accent-secondary);
+      border: 1px solid var(--accent-secondary);
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      animation: pulseSoft 1.8s infinite;
+    }
+
+    .ltr-pill.visible {
+      display: inline-flex;
+    }
+
+    @keyframes pulseSoft {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+
+    .token-stream {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 74px;
+    }
+
+    .math-token {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      border-radius: 12px;
+      user-select: none;
+      transition: all 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    /* Numbers intentionally slightly smaller than operators & brackets */
+    .token-num {
+      font-size: 1.24rem;
+      font-weight: 700;
+      padding: 6px 11px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1.5px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Brackets noticeably larger & taller than numbers */
+    .token-bracket {
+      background: transparent;
+      color: var(--text-muted);
+      padding: 6px 7px;
+      font-size: 2.05rem;
+      font-weight: 800;
+      line-height: 1;
+      cursor: pointer;
+      border: 1.5px solid transparent;
+    }
+
+    .token-bracket:hover {
+      background: var(--accent-soft);
+      color: var(--accent-primary);
+      border-color: var(--accent-primary);
+    }
+
+    .token-bracket.innermost-bracket {
+      color: var(--accent-primary);
+      background: var(--accent-soft);
+      border-color: rgba(37, 99, 235, 0.35);
+    }
+
+    /* Operators bold, large, prominent clickable targets */
+    .token-op {
+      background: var(--bg-secondary);
+      color: var(--accent-primary);
+      border: 2.5px solid var(--accent-primary);
+      cursor: pointer;
+      font-size: 1.85rem;
+      font-weight: 900;
+      padding: 8px 15px;
+      min-width: 54px;
+      box-shadow: 0 4px 0 var(--accent-primary);
+    }
+
+    .token-op:hover {
+      transform: translateY(-2px);
+      background: var(--accent-primary);
+      color: #ffffff;
+    }
+
+    .token-op:active {
+      transform: translateY(1px);
+      box-shadow: 0 1px 0 var(--accent-primary);
+    }
+
+    .token-op.exp-op {
+      font-size: 1.5rem;
+      padding: 6px 12px;
+      margin-top: -12px;
+    }
+
+    /* Highlight states for target sub-expression & hints */
+    .math-token.target-subexpr {
+      background: var(--success-soft) !important;
+      border-color: var(--success-color) !important;
+      color: var(--success-color) !important;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25) !important;
+      transform: scale(1.06);
+    }
+
+    .math-token.hint-pulse {
+      animation: hintGlow 1.1s infinite alternate;
+    }
+
+    @keyframes hintGlow {
+      from {
+        box-shadow: 0 0 0 2px var(--warning-color);
+        background: var(--warning-soft);
+      }
+      to {
+        box-shadow: 0 0 14px 4px var(--warning-color);
+        background: var(--warning-soft);
+        transform: scale(1.08);
+      }
+    }
+
+    .math-token.shake-error {
+      animation: shakeAnim 0.4s ease;
+      background: var(--danger-soft) !important;
+      border-color: var(--danger-color) !important;
+      color: var(--danger-color) !important;
+    }
+
+    @keyframes shakeAnim {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+
+    /* ==========================================================================
+       STEP SOLVER INPUT DRAWER
+       ========================================================================== */
+    .solver-box {
+      display: none;
+      margin-top: 22px;
+      padding: 18px;
+      background: var(--bg-secondary);
+      border: 2px solid var(--success-color);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      animation: popIn 0.25s ease;
+    }
+
+    .solver-box.active {
+      display: block;
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .solver-prompt {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+    }
+
+    .solver-prompt code {
+      font-family: var(--font-mono);
+      background: var(--success-soft);
+      color: var(--success-color);
+      padding: 3px 10px;
+      border-radius: 8px;
+      font-size: 1.2rem;
+    }
+
+    .solver-input-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .sign-toggle-btn {
+      padding: 10px 16px;
+      min-width: 58px;
+      min-height: 48px;
+      border-radius: 10px;
+      border: 2px solid var(--accent-primary);
+      background: var(--accent-soft);
+      color: var(--accent-primary);
+      font-family: var(--font-mono);
+      font-size: 1.25rem;
+      font-weight: 900;
+      cursor: pointer;
+      touch-action: manipulation;
+      user-select: none;
+      transition: transform 0.12s ease, background 0.15s ease, color 0.15s ease;
+    }
+
+    .sign-toggle-btn:hover,
+    .sign-toggle-btn:active {
+      background: var(--accent-primary);
+      color: #ffffff;
+      transform: scale(0.97);
+    }
+
+    .step-input {
+      width: 155px;
+      min-height: 48px;
+      padding: 10px 14px;
+      font-family: var(--font-mono);
+      font-size: 1.25rem;
+      font-weight: 800;
+      text-align: center;
+      border-radius: 10px;
+      border: 2px solid var(--border-color);
+      background: var(--bg-card-elevated);
+      color: var(--text-primary);
+      outline: none;
+    }
+
+    .step-input:focus {
+      border-color: var(--success-color);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    }
+
+    .submit-step-btn {
+      min-height: 48px;
+      padding: 11px 20px;
+      border-radius: 10px;
+      border: none;
+      background: var(--success-color);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: filter 0.15s ease, transform 0.15s ease;
+    }
+
+    .submit-step-btn:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+
+    .mobile-numpad {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border-color);
+    }
+
+    .numpad-key {
+      min-width: 42px;
+      height: 42px;
+      padding: 0 10px;
+      border-radius: 9px;
+      border: 1.5px solid var(--border-color);
+      background: var(--bg-card-elevated);
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: 1.15rem;
+      font-weight: 800;
+      cursor: pointer;
+      touch-action: manipulation;
+      user-select: none;
+      transition: background 0.12s ease, transform 0.1s ease;
+    }
+
+    .numpad-key:active {
+      transform: scale(0.94);
+      background: var(--accent-soft);
+      border-color: var(--accent-primary);
+    }
+
+    .numpad-key.neg-key {
+      background: var(--warning-soft);
+      border-color: var(--warning-color);
+      color: var(--warning-color);
+      min-width: 52px;
+    }
+
+    .numpad-key.clear-key {
+      background: var(--danger-soft);
+      border-color: var(--danger-color);
+      color: var(--danger-color);
+    }
+
+    .step-input:focus {
+      border-color: var(--success-color);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    }
+
+    .submit-step-btn {
+      padding: 11px 20px;
+      border-radius: 10px;
+      border: none;
+      background: var(--success-color);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: filter 0.15s ease, transform 0.15s ease;
+    }
+
+    .submit-step-btn:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+
+    /* ==========================================================================
+       PEDAGOGICAL FEEDBACK BANNER
+       ========================================================================== */
+    .feedback-banner {
+      margin-top: 18px;
+      padding: 14px 18px;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--border-color);
+      background: var(--bg-card-elevated);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      transition: all 0.25s ease;
+    }
+
+    .feedback-banner.info {
+      border-color: var(--accent-primary);
+      background: var(--accent-soft);
+    }
+
+    .feedback-banner.error {
+      border-color: var(--danger-color);
+      background: var(--danger-soft);
+    }
+
+    .feedback-banner.success {
+      border-color: var(--success-color);
+      background: var(--success-soft);
+    }
+
+    .feedback-banner.warning {
+      border-color: var(--warning-color);
+      background: var(--warning-soft);
+    }
+
+    .feedback-icon {
+      font-size: 1.4rem;
+      line-height: 1.2;
+      flex-shrink: 0;
+    }
+
+    .feedback-title {
+      font-weight: 800;
+      font-size: 0.95rem;
+      margin-bottom: 2px;
+    }
+
+    .feedback-text {
+      font-size: 0.9rem;
+      color: var(--text-primary);
+    }
+
+    /* ==========================================================================
+       CUSTOM EXPRESSION BUILDER PANEL
+       ========================================================================== */
+    .custom-drawer {
+      display: none;
+      margin-top: 16px;
+      padding: 16px;
+      background: var(--bg-card-elevated);
+      border: 1.5px solid var(--accent-primary);
+      border-radius: var(--radius-md);
+    }
+
+    .custom-drawer.open {
+      display: block;
+    }
+
+    .custom-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .custom-input {
+      flex: 1;
+      min-width: 220px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border-color);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    /* ==========================================================================
+       LIVE BODMAS RULE TRACKER (PLACED BELOW EXPRESSION ARENA)
+       ========================================================================== */
+    .tracker-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 20px 22px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .tracker-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .sidebar-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sidebar-subtitle {
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+    }
+
+    .bodmas-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .bodmas-steps {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 540px) {
+      .bodmas-steps {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .bodmas-item {
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--border-color);
+      background: var(--bg-card-elevated);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      opacity: 0.62;
+      transition: all 0.25s ease;
+    }
+
+    .bodmas-item.active-rule {
+      opacity: 1;
+      border-color: var(--accent-primary);
+      background: var(--accent-soft);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.16);
+      transform: translateY(-3px);
+    }
+
+    .bodmas-letter {
+      width: 42px;
+      height: 42px;
+      border-radius: 11px;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-weight: 900;
+      font-size: 1.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .bodmas-item.active-rule .bodmas-letter {
+      background: var(--accent-primary);
+      color: #ffffff;
+    }
+
+    .bodmas-info h4 {
+      font-size: 0.92rem;
+      font-weight: 800;
+      margin-bottom: 2px;
+    }
+
+    .bodmas-info p {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      line-height: 1.35;
+    }
+
+    .ltr-callout {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      background: var(--accent-secondary-soft);
+      border: 1px solid var(--accent-secondary);
+      font-size: 0.84rem;
+      color: var(--text-primary);
+    }
+
+    .ltr-callout strong {
+      color: var(--accent-secondary);
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    /* ==========================================================================
+       CELEBRATORY CONFETTI & FLOWER PETAL SHOWER CANVAS + FLOATING PRAISE
+       ========================================================================== */
+    #celebrationCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 2000;
+    }
+
+    .praise-toast {
+      position: fixed;
+      top: 86px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-18px) scale(0.95);
+      background: linear-gradient(135deg, #059669, #10b981);
+      color: #ffffff;
+      padding: 12px 24px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.98rem;
+      box-shadow: 0 10px 25px rgba(5, 150, 105, 0.42);
+      border: 2px solid #fde047;
+      z-index: 2100;
+      opacity: 0;
+      pointer-events: none;
+      text-align: center;
+      transition: all 0.28s cubic-bezier(0.2, 0.9, 0.3, 1.1);
+    }
+
+    .praise-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0) scale(1);
+    }
+
+    /* ==========================================================================
+       STEP-BY-STEP RECAP MODAL
+       ========================================================================== */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.68);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      max-width: 640px;
+      width: 100%;
+      max-height: 88vh;
+      overflow-y: auto;
+      padding: 24px;
+      box-shadow: var(--shadow-lg);
+      animation: popIn 0.25s ease;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+
+    .tree-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 16px 0;
+    }
+
+    .tree-step {
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--bg-card-elevated);
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .tree-step.final-ans {
+      border: 2px solid var(--success-color);
+      background: var(--success-soft);
+    }
+
+    .tree-math {
+      font-family: var(--font-mono);
+      font-size: 1.15rem;
+      font-weight: 800;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .primary-cta {
+      padding: 11px 22px;
+      border-radius: 12px;
+      border: none;
+      background: var(--accent-primary);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .primary-cta:hover {
+      background: var(--accent-primary-hover);
+    }
+
+    @media (max-width: 600px) {
+      .school-name { font-size: 1.05rem; }
+      .creator-badge { font-size: 0.76rem; }
+      .token-num { font-size: 1.05rem; padding: 5px 8px; }
+      .token-op { font-size: 1.55rem; padding: 6px 11px; min-width: 44px; }
+      .token-bracket { font-size: 1.7rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Celebratory Confetti & Flower Petal Shower Layer -->
+  <canvas id="celebrationCanvas" aria-hidden="true"></canvas>
+  <div id="praiseToast" class="praise-toast" role="status" aria-live="polite"></div>
+
+  <!-- ========================================================================
+       TOP SCHOOL & CREATOR HEADER BANNER
+       ======================================================================== -->
+  <header class="school-banner">
+    <div class="school-banner-inner">
+      <div class="school-identity">
+        <div class="school-emblem" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fde047" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+          </svg>
+        </div>
+        <div>
+          <div class="school-name">GHS,OTTIMEDU</div>
+          <div class="creator-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+              <circle cx="12" cy="8" r="4"/>
+              <path d="M6 20v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
+            </svg>
+            CHRISTURAJ . A - B.T.ASST IN MATHEMATICS
+          </div>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <!-- Bilingual Medium Toggle -->
+        <div class="lang-switcher" role="group" aria-label="Language Medium Selector">
+          <button class="lang-btn" data-lang="en" type="button">English</button>
+          <button class="lang-btn" data-lang="ta" type="button">தமிழ்</button>
+          <button class="lang-btn active" data-lang="both" type="button">EN + தமிழ்</button>
+        </div>
+
+        <div class="stat-pill" title="Student Score">
+          <span id="scoreLabel">Score:</span>
+          <span class="val" id="scoreVal">0</span>
+        </div>
+        <div class="stat-pill" title="Consecutive Correct Steps">
+          <span id="streakLabel">Streak:</span>
+          <span class="val" id="streakVal">0🔥</span>
+        </div>
+        <button class="theme-btn" id="themeToggleBtn" type="button" aria-label="Toggle Dark or Light Mode">
+          <span id="themeIcon">🌙</span>
+          <span id="themeLabel">Dark</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       MAIN APPLICATION WORKSPACE
+       ======================================================================== -->
+  <main class="app-container">
+    <!-- Top Controls Toolbar -->
+    <section class="toolbar" aria-label="Difficulty and Mode Controls">
+      <div class="level-tabs" role="tablist">
+        <button class="level-tab active" data-level="1" id="tabLevel1" type="button">Level 1: Warm-up</button>
+        <button class="level-tab" data-level="2" id="tabLevel2" type="button">Level 2: Integers &amp; Negatives</button>
+        <button class="level-tab" data-level="3" id="tabLevel3" type="button">Level 3: Challenge Mode</button>
+      </div>
+
+      <div class="mode-controls">
+        <div class="mode-switch" title="Choose whether you calculate each step or auto-evaluate after picking the right operator">
+          <button class="mode-option active" id="practiceModeBtn" type="button">Practice Solve</button>
+          <button class="mode-option" id="guidedModeBtn" type="button">Guided Auto-Solve</button>
+        </div>
+
+        <button class="action-btn hint-btn" id="hintBtn" type="button">
+          💡 Hint
+        </button>
+        <button class="action-btn" id="newProblemBtn" type="button">
+          🎲 New Problem
+        </button>
+        <button class="action-btn" id="toggleCustomBtn" type="button">
+          ✏️ Custom
+        </button>
+      </div>
+    </section>
+
+    <!-- Optional Custom Expression Drawer -->
+    <section class="custom-drawer" id="customDrawer">
+      <div id="customDrawerTitle" style="font-weight: 800; font-size: 0.92rem;">Enter Your Own 8th-Grade Math Expression</div>
+      <div id="customDrawerSub" style="font-size: 0.8rem; color: var(--text-secondary);">
+        Supported symbols: numbers, negatives <code>(-4)</code>, brackets <code>( )</code> <code>[ ]</code>, powers <code>^</code> (e.g. <code>4^2</code>), roots <code>√25</code>, <code>×</code> or <code>*</code>, <code>÷</code> or <code>/</code>, <code>+</code>, <code>-</code>
+      </div>
+      <div class="custom-row">
+        <input type="text" id="customExprInput" class="custom-input" placeholder="e.g., 18 + [2 × (3^2 - 4)] ÷ 5" />
+        <button class="primary-cta" id="loadCustomBtn" type="button">Load Expression</button>
+      </div>
+    </section>
+
+    <!-- Vertical Workspace Stack: 1. Expression Box First -> 2. BODMAS Tracker Below -->
+    <div class="workspace-stack">
+      <!-- TOP SECTION: Interactive Expression Builder & Step Solver -->
+      <section class="main-stage">
+        <div class="stage-header">
+          <div class="problem-badge" id="levelTitleBadge">Level 1 • Warm-up Brackets &amp; Powers</div>
+          <div class="progress-wrap">
+            <span id="stepCounterText">Step 1</span>
+            <div class="progress-bar">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vertical Solution History Stack -->
+        <div class="history-stack" id="historyStack" aria-live="polite"></div>
+
+        <!-- Active Expression Interactive Canvas -->
+        <div class="expression-arena" id="expressionArena">
+          <div class="arena-instruction">
+            <span id="arenaInstructionText">👆 Click the exact operator (or root) that should be evaluated <strong>NEXT</strong>:</span>
+            <span class="ltr-pill" id="ltrBadge">➡️ Left-to-Right Rule Active / இடமிருந்து வலம் விதி</span>
+          </div>
+
+          <div class="token-stream" id="tokenStream"></div>
+
+          <!-- Sub-Expression Numeric Solver Box -->
+          <div class="solver-box" id="solverBox">
+            <div class="solver-prompt">
+              <span id="solverPromptLabel">Great choice! Now calculate this highlighted step:</span> <code id="targetSubExprText">4²</code>
+            </div>
+            <div class="solver-input-row">
+              <button type="button" class="sign-toggle-btn" id="toggleSignBtn" title="Toggle Negative / Positive Sign (+/−)" aria-label="Toggle Negative or Positive Sign">+/−</button>
+              <input
+                type="text"
+                inputmode="text"
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="false"
+                id="stepAnswerInput"
+                class="step-input"
+                placeholder="- / ?"
+                aria-label="Step result"
+              />
+              <button type="button" class="submit-step-btn" id="submitStepBtn">Check Step ✓</button>
+            </div>
+            <!-- Touch-Friendly Android / Mobile Quick Keypad (with Minus, Digits & Backspace) -->
+            <div class="mobile-numpad" id="mobileNumpad" aria-label="Touch Numeric Keypad">
+              <button type="button" class="numpad-key neg-key" data-key="-" title="Minus / Negative Sign">−</button>
+              <button type="button" class="numpad-key" data-key="1">1</button>
+              <button type="button" class="numpad-key" data-key="2">2</button>
+              <button type="button" class="numpad-key" data-key="3">3</button>
+              <button type="button" class="numpad-key" data-key="4">4</button>
+              <button type="button" class="numpad-key" data-key="5">5</button>
+              <button type="button" class="numpad-key" data-key="6">6</button>
+              <button type="button" class="numpad-key" data-key="7">7</button>
+              <button type="button" class="numpad-key" data-key="8">8</button>
+              <button type="button" class="numpad-key" data-key="9">9</button>
+              <button type="button" class="numpad-key" data-key="0">0</button>
+              <button type="button" class="numpad-key" data-key=".">.</button>
+              <button type="button" class="numpad-key clear-key" data-key="BACK" aria-label="Backspace">⌫</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Immediate Pedagogical Feedback Banner -->
+        <div class="feedback-banner info" id="feedbackBanner" role="status">
+          <div class="feedback-icon" id="feedbackIcon">🧭</div>
+          <div>
+            <div class="feedback-title" id="feedbackTitle">Ready to Solve!</div>
+            <div class="feedback-text" id="feedbackText">
+              Inspect the brackets and operators carefully. Click the operator that has the highest BODMAS priority right now.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- BOTTOM SECTION: Live BODMAS Rule Checklist (Moved After Expression Box) -->
+      <section class="tracker-card" aria-label="Live BODMAS Tracker">
+        <div class="tracker-header">
+          <div class="sidebar-title">
+            <span id="trackerTitleText">📊 Live BODMAS Rule Tracker (படிநிலை விதி வழிகாட்டி)</span>
+          </div>
+          <div class="sidebar-subtitle" id="trackerSubText">
+            Highlights the active priority rule needed for the current line:
+          </div>
+        </div>
+
+        <div class="bodmas-steps">
+          <div class="bodmas-item" id="rule-B">
+            <div class="bodmas-letter">B</div>
+            <div class="bodmas-info">
+              <h4 id="ruleBTitle">Brackets First</h4>
+              <p id="ruleBDesc">Innermost <code>( )</code>, then <code>{ }</code>, then <code>[ ]</code></p>
+            </div>
+          </div>
+
+          <div class="bodmas-item" id="rule-O">
+            <div class="bodmas-letter">O</div>
+            <div class="bodmas-info">
+              <h4 id="ruleOTitle">Orders (Powers &amp; Roots)</h4>
+              <p id="ruleODesc">Exponents <code>x²</code>, cubes <code>x³</code>, square roots <code>√x</code></p>
+            </div>
+          </div>
+
+          <div class="bodmas-item" id="rule-DM">
+            <div class="bodmas-letter">DM</div>
+            <div class="bodmas-info">
+              <h4 id="ruleDMTitle">Division &amp; Multiplication</h4>
+              <p id="ruleDMDesc">Equal priority! Solve <strong>Left to Right →</strong></p>
+            </div>
+          </div>
+
+          <div class="bodmas-item" id="rule-AS">
+            <div class="bodmas-letter">AS</div>
+            <div class="bodmas-info">
+              <h4 id="ruleASTitle">Addition &amp; Subtraction</h4>
+              <p id="ruleASDesc">Equal priority! Solve <strong>Left to Right →</strong></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="ltr-callout" id="ltrCalloutBox">
+          <strong>8th-Grade Pro Tip / 8-ஆம் வகுப்பு முக்கியக் குறிப்பு:</strong>
+          Division does <em>not</em> always beat Multiplication, and Addition does <em>not</em> always beat Subtraction. When both appear at the same level, always move <strong>Left to Right (இடமிருந்து வலம்)</strong>!
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ========================================================================
+       STEP-BY-STEP RECAP MODAL
+       ======================================================================== -->
+  <div class="modal-backdrop" id="recapModal" role="dialog" aria-modal="true" aria-labelledby="recapTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h2 id="recapTitle" style="font-size: 1.3rem; font-weight: 900;">🎉 Expression Mastered!</h2>
+          <p id="recapSubtitle" style="font-size: 0.85rem; color: var(--text-secondary);">Full Vertical BODMAS Solution Tree</p>
+        </div>
+        <button class="action-btn" id="closeModalBtn" type="button">✕</button>
+      </div>
+
+      <div class="tree-list" id="recapTreeList"></div>
+
+      <div class="modal-footer">
+        <button class="action-btn" id="replaySameBtn" type="button">↻ Replay Problem</button>
+        <button class="primary-cta" id="nextProblemModalBtn" type="button">Next Challenge →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       VANILLA JAVASCRIPT: BILINGUAL ENGINE, WEB AUDIO APPLAUSE, SHOWER & BODMAS AST
+       ======================================================================== -->
+  <script>
+    (function () {
+      "use strict";
+
+      /* ----------------------------------------------------------------------
+         0. BILINGUAL DICTIONARY (ENGLISH / TAMIL / BOTH EN+TA)
+         ---------------------------------------------------------------------- */
+      const I18N = {
+        score: { en: "Score:", ta: "மதிப்பெண்:", both: "Score / மதிப்பெண்:" },
+        streak: { en: "Streak:", ta: "தொடர் வெற்றி:", both: "Streak / தொடர்:" },
+        tab1: { en: "Level 1: Warm-up", ta: "நிலை 1: அடிப்படை", both: "Level 1: Warm-up / அடிப்படை" },
+        tab2: { en: "Level 2: Integers & Negatives", ta: "நிலை 2: முழுக்கள் & குறை எண்கள்", both: "Level 2: Integers / முழுக்கள்" },
+        tab3: { en: "Level 3: Challenge Mode", ta: "நிலை 3: சவால் நிலை", both: "Level 3: Challenge / சவால்" },
+        practiceMode: { en: "Practice Solve", ta: "பயிற்சி முறை", both: "Practice / பயிற்சி" },
+        guidedMode: { en: "Guided Auto-Solve", ta: "வழிகாட்டி முறை", both: "Guided / வழிகாட்டி" },
+        hintBtn: { en: "💡 Hint", ta: "💡 குறிப்பு", both: "💡 Hint / குறிப்பு" },
+        newProbBtn: { en: "🎲 New Problem", ta: "🎲 புதிய கணக்கு", both: "🎲 New / புதிய கணக்கு" },
+        customBtn: { en: "✏️ Custom", ta: "✏️ சொந்த கணக்கு", both: "✏️ Custom / சொந்த கணக்கு" },
+        customTitle: {
+          en: "Enter Your Own 8th-Grade Math Expression",
+          ta: "உங்கள் சொந்த 8-ஆம் வகுப்பு கணிதக் கோவையை உள்ளிடவும்",
+          both: "Enter Your Own Expression / சொந்த கணிதக் கோவையை உள்ளிடவும்"
+        },
+        loadCustom: { en: "Load Expression", ta: "கணக்கை ஏற்று", both: "Load / ஏற்று" },
+        arenaPrompt: {
+          en: "👆 Click the exact operator (or root) that should be evaluated NEXT:",
+          ta: "👆 அடுத்து சுருக்க வேண்டிய சரியான கணிதக் குறியீட்டை (Operator) கிளிக் செய்யவும்:",
+          both: "👆 Click the NEXT operator to evaluate / அடுத்து சுருக்க வேண்டிய குறியீட்டை கிளிக் செய்யவும்:"
+        },
+        ltrActive: {
+          en: "➡️ Left-to-Right Rule Active",
+          ta: "➡️ இடமிருந்து வலம் விதி செயல்பாட்டில் உள்ளது",
+          both: "➡️ Left-to-Right Rule / இடமிருந்து வலம் விதி"
+        },
+        solverPrompt: {
+          en: "Great choice! Now calculate this highlighted step:",
+          ta: "மிகச் சரி! இப்போது வண்ணமிட்ட பகுதியின் மதிப்பைக் கணக்கிடவும்:",
+          both: "Great choice! Calculate this step / இப்பகுதியின் மதிப்பைக் கணக்கிடவும்:"
+        },
+        checkStepBtn: { en: "Check Step ✓", ta: "சரிபார் ✓", both: "Check / சரிபார் ✓" },
+        trackerTitle: {
+          en: "📊 Live BODMAS Rule Tracker",
+          ta: "📊 நேரடி BODMAS விதி வழிகாட்டி",
+          both: "📊 Live BODMAS Rule Tracker (நேரடி விதி வழிகாட்டி)"
+        },
+        trackerSub: {
+          en: "Highlights the active priority rule needed for the current line:",
+          ta: "தற்போதைய படிநிலைக்குப் பொருந்தும் முன்னுரிமை விதியை இது ஒளிரச் செய்யும்:",
+          both: "Highlights the active priority rule / தற்போதைய படிநிலை விதி:"
+        },
+        ruleBTitle: { en: "Brackets First", ta: "அடைப்புக்குறிகள் முதலில் (B)", both: "Brackets First / அடைப்புக்குறிகள்" },
+        ruleBDesc: {
+          en: "Innermost ( ), then { }, then [ ]",
+          ta: "உள்ளே உள்ள ( ), பிறகு { }, பிறகு [ ]",
+          both: "Innermost ( ), then { }, then [ ] / உள்ளடைப்பு முதலில்"
+        },
+        ruleOTitle: { en: "Orders (Powers & Roots)", ta: "அடுக்குகள் & மூலங்கள் (O)", both: "Orders (Powers & Roots) / அடுக்குகள்" },
+        ruleODesc: {
+          en: "Exponents x², cubes x³, square roots √x",
+          ta: "வர்க்கம் x², கனம் x³, வர்க்கமூலம் √x",
+          both: "Exponents x², cubes x³, roots √x / அடுக்கு & மூலம்"
+        },
+        ruleDMTitle: { en: "Division & Multiplication", ta: "வகுத்தல் & பெருக்கல் (DM)", both: "Division & Multiplication / வகுத்தல் & பெருக்கல்" },
+        ruleDMDesc: {
+          en: "Equal priority! Solve Left to Right →",
+          ta: "சம முன்னுரிமை! இடமிருந்து வலமாகச் செய்க →",
+          both: "Equal priority! Left to Right → / இடமிருந்து வலம்"
+        },
+        ruleASTitle: { en: "Addition & Subtraction", ta: "கூட்டல் & கழித்தல் (AS)", both: "Addition & Subtraction / கூட்டல் & கழித்தல்" },
+        ruleASDesc: {
+          en: "Equal priority! Solve Left to Right →",
+          ta: "சம முன்னுரிமை! இடமிருந்து வலமாகச் செய்க →",
+          both: "Equal priority! Left to Right → / இடமிருந்து வலம்"
+        },
+        proTip: {
+          en: "8th-Grade Pro Tip: Division does not always beat Multiplication, and Addition does not always beat Subtraction. When both appear at the same level, always move Left to Right!",
+          ta: "8-ஆம் வகுப்பு முக்கியக் குறிப்பு: வகுத்தலும் பெருக்கலும் சம வலிமை கொண்டவை; கூட்டலும் கழித்தலும் சம வலிமை கொண்டவை. இவை ஒரே நிலையில் வந்தால் எப்போதும் இடமிருந்து வலமாக (Left to Right) கணக்கிட வேண்டும்!",
+          both: "8th-Grade Pro Tip / முக்கியக் குறிப்பு: Division & Multiplication (and Addition & Subtraction) have equal rank — always solve strictly Left to Right (இடமிருந்து வலமாக)!"
+        },
+        recapTitle: {
+          en: "🎉 Expression Mastered!",
+          ta: "🎉 மிகச் சிறப்பு! கணக்கை வெற்றிகரமாக முடித்துவிட்டீர்கள்!",
+          both: "🎉 Expression Mastered! / மிகச் சிறப்பு!"
+        },
+        recapSub: {
+          en: "Full Vertical BODMAS Solution Tree",
+          ta: "முழுமையான படிநிலை BODMAS தீர்வு மரம்",
+          both: "Full Vertical BODMAS Solution Tree / முழுமையான படிநிலை தீர்வு"
+        },
+        replayBtn: { en: "↻ Replay Problem", ta: "↻ மீண்டும் செய்க", both: "↻ Replay / மீண்டும்" },
+        nextModalBtn: { en: "Next Challenge →", ta: "அடுத்த கணக்கு →", both: "Next Challenge / அடுத்த கணக்கு →" }
+      };
+
+      const OPERATOR_PRAISES = [
+        {
+          en: "Spot on! You picked the exact BODMAS operator!",
+          ta: "மிகச் சரி! சரியான BODMAS குறியீட்டைத் தேர்ந்தெடுத்துவிட்டீர்கள்!"
+        },
+        {
+          en: "Awesome thinking! That operator has top priority!",
+          ta: "அருமை! இந்தக் குறியீட்டிற்கே முதல் முன்னுரிமை!"
+        },
+        {
+          en: "Brilliant! Your BODMAS order is sharp!",
+          ta: "அற்புதம்! உங்கள் BODMAS விதி அறிவு மிகத் துல்லியமாக உள்ளது!"
+        },
+        {
+          en: "Superb choice! Keep up the great focus!",
+          ta: "சபாஷ்! மிகச் சரியான தேர்வு, தொடருங்கள்!"
+        }
+      ];
+
+      const STEP_SOLVED_PRAISES = [
+        {
+          en: "Fantastic calculation! 👏",
+          ta: "மிக அருமையான கணக்கீடு! 👏"
+        },
+        {
+          en: "Bravo! Correct step value! 🌟",
+          ta: "சபாஷ்! சரியான விடை! 🌟"
+        },
+        {
+          en: "Outstanding work! Keep going! 🎉",
+          ta: "அற்புதமான செயல்பாடு! தொடருங்கள்! 🎉"
+        },
+        {
+          en: "Well done, Math Champion! 🏆",
+          ta: "மிகச் சிறப்பு, கணித சாதனையாளரே! 🏆"
+        }
+      ];
+
+      /* ----------------------------------------------------------------------
+         1. WEB AUDIO API APPLAUSE / CLAPPING SOUND SYNTHESIZER (ZERO ASSETS)
+         ---------------------------------------------------------------------- */
+      let sharedAudioCtx = null;
+
+      function getAudioContext() {
+        if (!sharedAudioCtx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) {
+            sharedAudioCtx = new AudioCtx();
+          }
+        }
+        if (sharedAudioCtx && sharedAudioCtx.state === "suspended") {
+          sharedAudioCtx.resume().catch(() => {});
+        }
+        return sharedAudioCtx;
+      }
+
+      function playSingleClap(ctx, startTime, panVal, gainLevel) {
+        // Synthesize realistic hand-clap transient using filtered white noise burst
+        const duration = 0.085;
+        const sampleRate = ctx.sampleRate;
+        const bufferSize = Math.floor(sampleRate * duration);
+        const buffer = ctx.createBuffer(1, bufferSize, sampleRate);
+        const data = buffer.getChannelData(0);
+
+        for (let i = 0; i < bufferSize; i++) {
+          const t = i / bufferSize;
+          // Double-impulse envelope typical of real palm-to-palm clap
+          const env = Math.exp(-t * 26) + 0.45 * Math.exp(-Math.max(0, t - 0.14) * 32);
+          data[i] = (Math.random() * 2 - 1) * env;
+        }
+
+        const noise = ctx.createBufferSource();
+        noise.buffer = buffer;
+
+        const bandpass = ctx.createBiquadFilter();
+        bandpass.type = "bandpass";
+        bandpass.frequency.value = 1150 + (Math.random() * 450 - 225);
+        bandpass.Q.value = 1.1;
+
+        const gainNode = ctx.createGain();
+        gainNode.gain.setValueAtTime(gainLevel, startTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+
+        noise.connect(bandpass);
+        if (ctx.createStereoPanner) {
+          const panner = ctx.createStereoPanner();
+          panner.pan.value = panVal;
+          bandpass.connect(panner);
+          panner.connect(gainNode);
+        } else {
+          bandpass.connect(gainNode);
+        }
+        gainNode.connect(ctx.destination);
+
+        noise.start(startTime);
+        noise.stop(startTime + duration);
+      }
+
+      function playApplauseSound(isGrandFinale) {
+        try {
+          const ctx = getAudioContext();
+          if (!ctx) return;
+
+          const now = ctx.currentTime;
+          const totalClaps = isGrandFinale ? 26 : 14;
+          const spreadSeconds = isGrandFinale ? 1.45 : 0.85;
+
+          for (let i = 0; i < totalClaps; i++) {
+            const offset = (i / totalClaps) * spreadSeconds + Math.random() * 0.06;
+            const pan = Math.random() * 1.6 - 0.8;
+            // Swell up then taper smoothly
+            const progress = i / totalClaps;
+            const envelope = Math.sin(progress * Math.PI) * 0.24 + 0.08;
+            playSingleClap(ctx, now + offset, pan, envelope);
+          }
+
+          // Add a warm celebratory chime chord on completion
+          if (isGrandFinale) {
+            const freqs = [523.25, 659.25, 783.99, 1046.5];
+            freqs.forEach((f, idx) => {
+              const osc = ctx.createOscillator();
+              const g = ctx.createGain();
+              osc.type = "triangle";
+              osc.frequency.setValueAtTime(f, now + idx * 0.08);
+              g.gain.setValueAtTime(0.001, now + idx * 0.08);
+              g.gain.exponentialRampToValueAtTime(0.08, now + idx * 0.08 + 0.04);
+              g.gain.exponentialRampToValueAtTime(0.0008, now + idx * 0.08 + 0.75);
+              osc.connect(g);
+              g.connect(ctx.destination);
+              osc.start(now + idx * 0.08);
+              osc.stop(now + idx * 0.08 + 0.8);
+            });
+          }
+        } catch (e) {
+          // Audio playback gracefully ignored if restricted by browser policy
+        }
+      }
+
+      /* ----------------------------------------------------------------------
+         2. CONFETTI & FLOWER PETAL SHOWER ANIMATION
+         ---------------------------------------------------------------------- */
+      const celebrationCanvas = document.getElementById("celebrationCanvas");
+      const cCtx = celebrationCanvas.getContext("2d");
+      let particles = [];
+      let showerAnimId = null;
+
+      function resizeCelebrationCanvas() {
+        celebrationCanvas.width = window.innerWidth;
+        celebrationCanvas.height = window.innerHeight;
+      }
+      window.addEventListener("resize", resizeCelebrationCanvas);
+      resizeCelebrationCanvas();
+
+      function triggerCelebrationShower(isGrandFinale) {
+        const colors = [
+          "#fde047", "#f59e0b", "#10b981", "#3b82f6",
+          "#ec4899", "#8b5cf6", "#f43f5e", "#22d3ee"
+        ];
+        const count = isGrandFinale ? 130 : 65;
+
+        for (let i = 0; i < count; i++) {
+          const isPetal = i % 3 === 0;
+          particles.push({
+            x: Math.random() * celebrationCanvas.width,
+            y: -20 - Math.random() * (celebrationCanvas.height * 0.35),
+            vx: (Math.random() - 0.5) * 4.5,
+            vy: 2.6 + Math.random() * 4.2,
+            size: isPetal ? 8 + Math.random() * 6 : 6 + Math.random() * 6,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            rotation: Math.random() * Math.PI * 2,
+            vRot: (Math.random() - 0.5) * 0.16,
+            wobble: Math.random() * Math.PI * 2,
+            isPetal,
+            alpha: 1
+          });
+        }
+
+        if (!showerAnimId) {
+          animateShower();
+        }
+      }
+
+      function animateShower() {
+        cCtx.clearRect(0, 0, celebrationCanvas.width, celebrationCanvas.height);
+
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.wobble += 0.08;
+          p.x += p.vx + Math.sin(p.wobble) * 1.2;
+          p.y += p.vy;
+          p.rotation += p.vRot;
+
+          if (p.y > celebrationCanvas.height - 80) {
+            p.alpha -= 0.025;
+          }
+
+          if (p.alpha <= 0 || p.y > celebrationCanvas.height + 30) {
+            particles.splice(i, 1);
+            continue;
+          }
+
+          cCtx.save();
+          cCtx.globalAlpha = Math.max(0, p.alpha);
+          cCtx.translate(p.x, p.y);
+          cCtx.rotate(p.rotation);
+          cCtx.fillStyle = p.color;
+
+          if (p.isPetal) {
+            // Draw soft flower petal shape
+            cCtx.beginPath();
+            cCtx.ellipse(0, 0, p.size * 0.85, p.size * 0.45, 0, 0, Math.PI * 2);
+            cCtx.fill();
+          } else {
+            // Draw crisp confetti ribbon
+            cCtx.fillRect(-p.size / 2, -p.size / 3, p.size, p.size * 0.65);
+          }
+          cCtx.restore();
+        }
+
+        if (particles.length > 0) {
+          showerAnimId = requestAnimationFrame(animateShower);
+        } else {
+          showerAnimId = null;
+          cCtx.clearRect(0, 0, celebrationCanvas.width, celebrationCanvas.height);
+        }
+      }
+
+      let toastTimer = null;
+      function showPraiseToast(text) {
+        const toast = document.getElementById("praiseToast");
+        toast.textContent = text;
+        toast.classList.add("show");
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toast.classList.remove("show");
+        }, 2400);
+      }
+
+      /* ----------------------------------------------------------------------
+         3. CURATED 8TH-GRADE PROBLEM BANKS
+         ---------------------------------------------------------------------- */
+      const PROBLEM_BANKS = {
+        1: [
+          "12 + [3 × (4^2 - 6) ÷ 5]",
+          "24 - [2 × (3^2 + 1) ÷ 5]",
+          "[5 × (6 + 2^3)] ÷ 7 + 9",
+          "40 - [18 ÷ (2 + 4) × 3^2]",
+          "(5^2 - 9) ÷ 4 + [3 × (7 - 2)]",
+          "15 + [4 × (12 ÷ 3 + 2^2)]",
+          "[36 ÷ (2^2 + 5) × 4] - 7",
+          "50 - [(3 + 4) × 2^2 + 6]"
+        ],
+        2: [
+          "(-4)^2 + (-18 ÷ 3) × [5 - (-2)]",
+          "-15 + [(-3)^2 × 2 - (-6 ÷ 3)]",
+          "(-24 ÷ 4) × (-2) + [(-3)^2 - 11]",
+          "20 - [(-5) × (4 - 7) + (-2)^3]",
+          "[(-12) ÷ (-3) + (-2)^2] × (-4)",
+          "-8 + [(-6 × 3) ÷ (-2) - 4^2]",
+          "(-5)^2 - [(-14 ÷ 7) × (-6 + 2)]",
+          "[15 - (-3)^2] × (-2) + (-16 ÷ 4)"
+        ],
+        3: [
+          "36 ÷ 6 × 3 + [√25 × (2^3 - 4)]",
+          "48 ÷ [2 × (12 ÷ 4 × 2)] - 3^2",
+          "√64 + [18 ÷ 3 × 2 - (4^2 - 10)]",
+          "[√36 × (15 ÷ 5 × 3)] - 2^4 + 7",
+          "72 ÷ 8 × 3 - [√49 + (3^2 - 5)]",
+          "√81 × 2 + [24 ÷ 6 × (5 - 2^2)]",
+          "[45 ÷ 9 × 4 - √16] ÷ (2^3 ÷ 2)",
+          "100 - [√100 × (16 ÷ 4 × 2) - 3^3]"
+        ]
+      };
+
+      const LEVEL_LABELS = {
+        1: {
+          en: "Level 1 • Warm-up Brackets & Powers",
+          ta: "நிலை 1 • அடைப்புக்குறிகள் & அடுக்குகள் (அடிப்படை)",
+          both: "Level 1 • Warm-up / அடிப்படை அடைப்புக்குறிகள்"
+        },
+        2: {
+          en: "Level 2 • Integers, Negatives & Signs",
+          ta: "நிலை 2 • முழுக்கள், குறை எண்கள் & குறிகள்",
+          both: "Level 2 • Integers & Negatives / முழுக்கள்"
+        },
+        3: {
+          en: "Level 3 • Roots, Nested Brackets & Left-to-Right",
+          ta: "நிலை 3 • வர்க்கமூலம், அடுக்கு & இடமிருந்து வலம் விதி",
+          both: "Level 3 • Challenge Mode / சவால் நிலை"
+        }
+      };
+
+      /* ----------------------------------------------------------------------
+         4. APPLICATION STATE & HELPER FORMATTERS
+         ---------------------------------------------------------------------- */
+      const state = {
+        lang: "both", // 'en' | 'ta' | 'both'
+        level: 1,
+        problemIndex: 0,
+        guidedMode: false,
+        score: 0,
+        streak: 0,
+        initialExpression: "",
+        tokens: [],
+        historySteps: [],
+        totalEstimatedSteps: 1,
+        pendingTarget: null,
+        hintActive: false
+      };
+
+      function t(key) {
+        const entry = I18N[key];
+        if (!entry) return "";
+        return entry[state.lang] || entry.both;
+      }
+
+      function formatPair(pairObj) {
+        if (!pairObj) return "";
+        if (state.lang === "en") return pairObj.en;
+        if (state.lang === "ta") return pairObj.ta;
+        return `${pairObj.en} / ${pairObj.ta}`;
+      }
+
+      function applyLanguageUI() {
+        document.getElementById("scoreLabel").textContent = t("score");
+        document.getElementById("streakLabel").textContent = t("streak");
+        document.getElementById("tabLevel1").textContent = t("tab1");
+        document.getElementById("tabLevel2").textContent = t("tab2");
+        document.getElementById("tabLevel3").textContent = t("tab3");
+        document.getElementById("practiceModeBtn").textContent = t("practiceMode");
+        document.getElementById("guidedModeBtn").textContent = t("guidedMode");
+        document.getElementById("hintBtn").textContent = t("hintBtn");
+        document.getElementById("newProblemBtn").textContent = t("newProbBtn");
+        document.getElementById("toggleCustomBtn").textContent = t("customBtn");
+        document.getElementById("customDrawerTitle").textContent = t("customTitle");
+        document.getElementById("loadCustomBtn").textContent = t("loadCustom");
+        document.getElementById("arenaInstructionText").textContent = t("arenaPrompt");
+        document.getElementById("ltrBadge").textContent = t("ltrActive");
+        document.getElementById("solverPromptLabel").textContent = t("solverPrompt");
+        document.getElementById("submitStepBtn").textContent = t("checkStepBtn");
+        document.getElementById("trackerTitleText").textContent = t("trackerTitle");
+        document.getElementById("trackerSubText").textContent = t("trackerSub");
+        document.getElementById("ruleBTitle").textContent = t("ruleBTitle");
+        document.getElementById("ruleBDesc").textContent = t("ruleBDesc");
+        document.getElementById("ruleOTitle").textContent = t("ruleOTitle");
+        document.getElementById("ruleODesc").textContent = t("ruleODesc");
+        document.getElementById("ruleDMTitle").textContent = t("ruleDMTitle");
+        document.getElementById("ruleDMDesc").textContent = t("ruleDMDesc");
+        document.getElementById("ruleASTitle").textContent = t("ruleASTitle");
+        document.getElementById("ruleASDesc").textContent = t("ruleASDesc");
+        document.getElementById("ltrCalloutBox").textContent = t("proTip");
+        document.getElementById("recapTitle").textContent = t("recapTitle");
+        document.getElementById("recapSubtitle").textContent = t("recapSub");
+        document.getElementById("replaySameBtn").textContent = t("replayBtn");
+        document.getElementById("nextProblemModalBtn").textContent = t("nextModalBtn");
+
+        const lvlObj = LEVEL_LABELS[state.level];
+        if (lvlObj) {
+          els.levelTitleBadge.textContent = lvlObj[state.lang] || lvlObj.both;
+        }
+      }
+
+      /* ----------------------------------------------------------------------
+         5. TOKENIZER & DISPLAY FORMATTER
+         ---------------------------------------------------------------------- */
+      function normalizeInputString(raw) {
+        return raw
+          .replace(/\*/g, "×")
+          .replace(/\//g, "÷")
+          .replace(/−/g, "-")
+          .replace(/\s+/g, " ")
+          .trim();
+      }
+
+      function tokenizeExpression(exprStr) {
+        const str = normalizeInputString(exprStr);
+        const tokens = [];
+        let i = 0;
+
+        const isValueBefore = () => {
+          if (tokens.length === 0) return false;
+          const prev = tokens[tokens.length - 1];
+          return prev.type === "num" || prev.type === "rbr";
+        };
+
+        while (i < str.length) {
+          const ch = str[i];
+          if (ch === " ") {
+            i++;
+            continue;
+          }
+
+          // Opening brackets
+          if (ch === "(" || ch === "[" || ch === "{") {
+            tokens.push({ type: "lbr", ch });
+            i++;
+            continue;
+          }
+
+          // Closing brackets
+          if (ch === ")" || ch === "]" || ch === "}") {
+            tokens.push({ type: "rbr", ch });
+            i++;
+            continue;
+          }
+
+          // Square root prefix operator
+          if (ch === "√") {
+            tokens.push({ type: "unary", op: "√", display: "√" });
+            i++;
+            continue;
+          }
+
+          // Signed negative number literal when '-' is unary (start of expression or after '(' or after binary op)
+          if (ch === "-" && !isValueBefore()) {
+            let j = i + 1;
+            while (j < str.length && str[j] === " ") j++;
+            if (j < str.length && /[0-9.]/.test(str[j])) {
+              let numStr = "-";
+              while (j < str.length && /[0-9.]/.test(str[j])) {
+                numStr += str[j];
+                j++;
+              }
+              const val = parseFloat(numStr);
+              if (!Number.isNaN(val)) {
+                tokens.push({ type: "num", value: val, display: formatNumber(val) });
+                i = j;
+                continue;
+              }
+            }
+          }
+
+          // Unsigned numeric literal
+          if (/[0-9.]/.test(ch)) {
+            let j = i;
+            let numStr = "";
+            while (j < str.length && /[0-9.]/.test(str[j])) {
+              numStr += str[j];
+              j++;
+            }
+            const val = parseFloat(numStr);
+            if (Number.isNaN(val)) throw new Error("Invalid number in expression.");
+            tokens.push({ type: "num", value: val, display: formatNumber(val) });
+            i = j;
+            continue;
+          }
+
+          // Binary operators
+          if (ch === "+" || ch === "-" || ch === "×" || ch === "÷" || ch === "^") {
+            tokens.push({ type: "op", op: ch, display: ch });
+            i++;
+            continue;
+          }
+
+          throw new Error(`Unsupported character "${ch}" in expression.`);
+        }
+
+        return unwrapSingleNumberBrackets(tokens);
+      }
+
+      function formatNumber(n) {
+        const rounded = Math.round(n * 10000) / 10000;
+        return Object.is(rounded, -0) ? "0" : String(rounded);
+      }
+
+      function tokensToPlainString(tokens) {
+        return tokens
+          .map((t, idx) => {
+            if (t.type === "num") {
+              // Wrap negative number in parentheses if preceded by ^ or × or ÷ or - for clarity
+              if (t.value < 0 && idx > 0 && (tokens[idx - 1].type === "op" || tokens[idx - 1].type === "unary")) {
+                return `(${formatNumber(t.value)})`;
+              }
+              return formatNumber(t.value);
+            }
+            if (t.type === "op") {
+              if (t.op === "^") return "^";
+              return ` ${t.display} `;
+            }
+            if (t.type === "unary") return t.display;
+            return t.ch;
+          })
+          .join("")
+          .replace(/\s+/g, " ")
+          .trim();
+      }
+
+      /* ----------------------------------------------------------------------
+         4. BODMAS PRIORITY ANALYZER & STEP EVALUATOR
+         Finds:
+           1. Innermost bracket slice [startIdx, endIdx]
+           2. Highest-precedence operation inside that active scope:
+              - Rule O: '^' (or '√')
+              - Rule DM: '÷' or '×' (strictly left-to-right!)
+              - Rule AS: '+' or '-' (strictly left-to-right!)
+           3. Detects if Left-to-Right tie-breaker is active (e.g., both ÷ and × in same scope)
+           4. Unwraps redundant brackets around a single number like (10) -> 10
+         ---------------------------------------------------------------------- */
+      function unwrapSingleNumberBrackets(tokens) {
+        let changed = true;
+        let current = [...tokens];
+        while (changed) {
+          changed = false;
+          for (let i = 0; i < current.length - 2; i++) {
+            if (
+              current[i].type === "lbr" &&
+              current[i + 1].type === "num" &&
+              current[i + 2].type === "rbr"
+            ) {
+              // Keep parentheses if negative number is base of exponent, e.g., (-4)^2
+              const isNegBaseOfPower =
+                current[i + 1].value < 0 &&
+                i + 3 < current.length &&
+                current[i + 3].type === "op" &&
+                current[i + 3].op === "^";
+              if (!isNegBaseOfPower) {
+                current.splice(i, 3, current[i + 1]);
+                changed = true;
+                break;
+              }
+            }
+          }
+        }
+        return current;
+      }
+
+      function findInnermostBracketRange(tokens) {
+        let deepestStart = -1;
+        let maxDepth = 0;
+        let depth = 0;
+
+        for (let i = 0; i < tokens.length; i++) {
+          if (tokens[i].type === "lbr") {
+            depth++;
+            // Check if this bracket wraps ONLY a negative base before '^', like (-4)^2
+            const isProtectedNegBase =
+              i + 4 < tokens.length &&
+              tokens[i + 1].type === "num" &&
+              tokens[i + 1].value < 0 &&
+              tokens[i + 2].type === "rbr" &&
+              tokens[i + 3].type === "op" &&
+              tokens[i + 3].op === "^";
+
+            if (!isProtectedNegBase && depth > maxDepth) {
+              maxDepth = depth;
+              deepestStart = i;
+            }
+          } else if (tokens[i].type === "rbr") {
+            depth--;
+          }
+        }
+
+        if (deepestStart === -1) {
+          return { hasBrackets: false, start: 0, end: tokens.length - 1 };
+        }
+
+        // Find matching closing bracket
+        let d = 0;
+        for (let j = deepestStart; j < tokens.length; j++) {
+          if (tokens[j].type === "lbr") d++;
+          else if (tokens[j].type === "rbr") {
+            d--;
+            if (d === 0) {
+              return { hasBrackets: true, start: deepestStart, end: j };
+            }
+          }
+        }
+        return { hasBrackets: false, start: 0, end: tokens.length - 1 };
+      }
+
+      function analyzeNextStep(tokens) {
+        if (tokens.length <= 1) return null;
+
+        const scope = findInnermostBracketRange(tokens);
+        const sliceStart = scope.hasBrackets ? scope.start + 1 : 0;
+        const sliceEnd = scope.hasBrackets ? scope.end - 1 : tokens.length - 1;
+
+        // Collect all operators within the active innermost scope
+        const opsInScope = [];
+        for (let i = sliceStart; i <= sliceEnd; i++) {
+          const t = tokens[i];
+          if (t.type === "op" || t.type === "unary") {
+            opsInScope.push({ index: i, token: t });
+          }
+        }
+
+        if (opsInScope.length === 0) return null;
+
+        // Priority 1: Orders (Exponents '^' and Roots '√')
+        const orderOps = opsInScope.filter(
+          (item) => item.token.op === "^" || item.token.op === "√"
+        );
+
+        // Priority 2: Division & Multiplication
+        const dmOps = opsInScope.filter(
+          (item) => item.token.op === "÷" || item.token.op === "×"
+        );
+
+        // Priority 3: Addition & Subtraction
+        const asOps = opsInScope.filter(
+          (item) => item.token.op === "+" || item.token.op === "-"
+        );
+
+        let chosen = null;
+        let activeRule = "O";
+        let isLeftToRightTie = false;
+
+        if (orderOps.length > 0) {
+          chosen = orderOps[0];
+          activeRule = "O";
+        } else if (dmOps.length > 0) {
+          chosen = dmOps[0]; // Leftmost DM operator
+          activeRule = "DM";
+          if (dmOps.length > 1) isLeftToRightTie = true;
+        } else if (asOps.length > 0) {
+          chosen = asOps[0]; // Leftmost AS operator
+          activeRule = "AS";
+          if (asOps.length > 1) isLeftToRightTie = true;
+        }
+
+        // Determine exact token span and computed value for chosen operation
+        const opIdx = chosen.index;
+        const opToken = chosen.token;
+        let spanStart = opIdx;
+        let spanEnd = opIdx;
+        let resultVal = 0;
+        let subExprLabel = "";
+
+        if (opToken.type === "unary" && opToken.op === "√") {
+          spanStart = opIdx;
+          spanEnd = opIdx + 1;
+          const operand = tokens[opIdx + 1].value;
+          resultVal = Math.sqrt(operand);
+          subExprLabel = `√${formatNumber(operand)}`;
+        } else {
+          // Check if left operand is wrapped like (-4)^2
+          let leftNumIdx = opIdx - 1;
+          if (
+            opToken.op === "^" &&
+            opIdx >= 3 &&
+            tokens[opIdx - 1].type === "rbr" &&
+            tokens[opIdx - 2].type === "num" &&
+            tokens[opIdx - 3].type === "lbr"
+          ) {
+            spanStart = opIdx - 3;
+            leftNumIdx = opIdx - 2;
+          } else {
+            spanStart = opIdx - 1;
+            leftNumIdx = opIdx - 1;
+          }
+
+          spanEnd = opIdx + 1;
+          const leftVal = tokens[leftNumIdx].value;
+          const rightVal = tokens[opIdx + 1].value;
+
+          switch (opToken.op) {
+            case "^":
+              resultVal = Math.pow(leftVal, rightVal);
+              break;
+            case "÷":
+              if (rightVal === 0) throw new Error("Division by zero encountered!");
+              resultVal = leftVal / rightVal;
+              break;
+            case "×":
+              resultVal = leftVal * rightVal;
+              break;
+            case "+":
+              resultVal = leftVal + rightVal;
+              break;
+            case "-":
+              resultVal = leftVal - rightVal;
+              break;
+          }
+
+          const leftStr = leftVal < 0 ? `(${formatNumber(leftVal)})` : formatNumber(leftVal);
+          const rightStr = rightVal < 0 ? `(${formatNumber(rightVal)})` : formatNumber(rightVal);
+          subExprLabel =
+            opToken.op === "^"
+              ? `${leftStr}^${rightStr}`
+              : `${leftStr} ${opToken.display} ${rightStr}`;
+        }
+
+        const ruleBadgeText = scope.hasBrackets
+          ? `Brackets (${getRuleName(activeRule)})`
+          : getRuleName(activeRule);
+
+        return {
+          scope,
+          activeRule,
+          isLeftToRightTie,
+          opIndex: opIdx,
+          opToken,
+          spanStart,
+          spanEnd,
+          resultVal: Math.round(resultVal * 10000) / 10000,
+          subExprLabel,
+          ruleBadgeText
+        };
+      }
+
+      function getRuleName(code) {
+        const names = {
+          B: { en: "Brackets First", ta: "அடைப்புக்குறி விதி" },
+          O: { en: "Orders (Powers/Roots)", ta: "அடுக்குகள் & மூலங்கள்" },
+          DM: { en: "Division & Multiplication", ta: "வகுத்தல் & பெருக்கல்" },
+          AS: { en: "Addition & Subtraction", ta: "கூட்டல் & கழித்தல்" }
+        };
+        const pair = names[code];
+        return pair ? formatPair(pair) : "BODMAS";
+      }
+
+      function estimateTotalSteps(tokens) {
+        let copy = [...tokens];
+        let count = 0;
+        while (copy.length > 1 && count < 25) {
+          const step = analyzeNextStep(copy);
+          if (!step) break;
+          copy.splice(step.spanStart, step.spanEnd - step.spanStart + 1, {
+            type: "num",
+            value: step.resultVal,
+            display: formatNumber(step.resultVal)
+          });
+          copy = unwrapSingleNumberBrackets(copy);
+          count++;
+        }
+        return Math.max(1, count);
+      }
+
+      /* ----------------------------------------------------------------------
+         6. BILINGUAL PEDAGOGICAL DIAGNOSTIC ENGINE (WRONG-CLICK EXPLANATIONS)
+         ---------------------------------------------------------------------- */
+      function diagnoseWrongClick(clickedIdx, targetStep, tokens) {
+        const clickedToken = tokens[clickedIdx];
+
+        // Case 1: Clicked outside innermost brackets
+        if (
+          targetStep.scope.hasBrackets &&
+          (clickedIdx < targetStep.scope.start || clickedIdx > targetStep.scope.end)
+        ) {
+          return {
+            title: formatPair({
+              en: "Look Inside the Innermost Brackets First! (B)",
+              ta: "முதலில் உள்ளே உள்ள அடைப்புக்குறியைப் பாருங்கள்! (B)"
+            }),
+            message: formatPair({
+              en: "Remember 'B' in BODMAS: always simplify inside the innermost brackets before touching anything outside.",
+              ta: "BODMAS விதியில் 'B' (Brackets) முதலில் வரும்: வெளியே உள்ள எண்களைத் தொடும் முன் உள்ளடைப்புக்குறியைச் சுருக்கவும்."
+            })
+          };
+        }
+
+        // Case 2: Wrong precedence inside active scope
+        const clickedOp = clickedToken.op;
+        if (targetStep.activeRule === "O" && clickedOp !== "^" && clickedOp !== "√") {
+          return {
+            title: formatPair({
+              en: "Orders (Powers & Roots) Come Before Arithmetic! (O)",
+              ta: "அடுக்குகள் & மூலங்கள் முதலில் வர வேண்டும்! (O)"
+            }),
+            message: formatPair({
+              en: `Evaluate "${targetStep.subExprLabel}" first because Orders have higher priority than ${clickedOp}.`,
+              ta: `"${clickedOp}" செய்வதற்கு முன் "${targetStep.subExprLabel}" என்ற அடுக்கு/மூலத்தை முதலில் கணக்கிடவும்.`
+            })
+          };
+        }
+
+        if (targetStep.activeRule === "DM" && (clickedOp === "+" || clickedOp === "-")) {
+          return {
+            title: formatPair({
+              en: "Division & Multiplication Beat Addition & Subtraction! (DM)",
+              ta: "கூட்டல்/கழித்தலுக்கு முன் வகுத்தல்/பெருக்கல் செய்யவும்! (DM)"
+            }),
+            message: formatPair({
+              en: `Solve "${targetStep.subExprLabel}" before "${clickedOp}" because DM comes before AS.`,
+              ta: `BODMAS விதிப்படி "${clickedOp}" செய்வதற்கு முன் "${targetStep.subExprLabel}"-ஐச் சுருக்க வேண்டும்.`
+            })
+          };
+        }
+
+        // Case 3: Left-to-Right tie-breaker violation
+        if (targetStep.isLeftToRightTie) {
+          if (targetStep.activeRule === "DM" && (clickedOp === "×" || clickedOp === "÷")) {
+            return {
+              title: formatPair({
+                en: "Left-to-Right Rule for Division & Multiplication! ➡️",
+                ta: "வகுத்தல் & பெருக்கலுக்கு இடமிருந்து வலம் விதி! ➡️"
+              }),
+              message: formatPair({
+                en: `Division and Multiplication share equal rank. Solve the leftmost one ("${targetStep.subExprLabel}") first!`,
+                ta: `வகுத்தலும் பெருக்கலும் சம முன்னுரிமை கொண்டவை. இடதுபுறம் முதலில் உள்ள "${targetStep.subExprLabel}"-ஐச் செய்யவும்!`
+              })
+            };
+          }
+          if (targetStep.activeRule === "AS" && (clickedOp === "+" || clickedOp === "-")) {
+            return {
+              title: formatPair({
+                en: "Left-to-Right Rule for Addition & Subtraction! ➡️",
+                ta: "கூட்டல் & கழித்தலுக்கு இடமிருந்து வலம் விதி! ➡️"
+              }),
+              message: formatPair({
+                en: `Addition and Subtraction share equal rank. Work left to right and solve "${targetStep.subExprLabel}" first!`,
+                ta: `கூட்டலும் கழித்தலும் சம முன்னுரிமை கொண்டவை. இடமிருந்து வலமாக "${targetStep.subExprLabel}"-ஐ முதலில் செய்யவும்!`
+              })
+            };
+          }
+        }
+
+        return {
+          title: formatPair({
+            en: "Not Quite! Check BODMAS Order",
+            ta: "சரியில்லை! BODMAS வரிசையைச் சரிபார்க்கவும்"
+          }),
+          message: formatPair({
+            en: "Look closely at the active scope. Follow B → O → DM → AS from left to right.",
+            ta: "B → O → DM → AS என்ற வரிசையில் இடமிருந்து வலமாக எந்தக் குறியீடு முதலில் வரும் எனப் பாருங்கள்."
+          })
+        };
+      }
+
+      /* ----------------------------------------------------------------------
+         7. DOM REFERENCES & UI RENDERING
+         ---------------------------------------------------------------------- */
+      const els = {
+        scoreVal: document.getElementById("scoreVal"),
+        streakVal: document.getElementById("streakVal"),
+        langBtns: document.querySelectorAll(".lang-btn"),
+        themeToggleBtn: document.getElementById("themeToggleBtn"),
+        themeIcon: document.getElementById("themeIcon"),
+        themeLabel: document.getElementById("themeLabel"),
+        levelTabs: document.querySelectorAll(".level-tab"),
+        practiceModeBtn: document.getElementById("practiceModeBtn"),
+        guidedModeBtn: document.getElementById("guidedModeBtn"),
+        hintBtn: document.getElementById("hintBtn"),
+        newProblemBtn: document.getElementById("newProblemBtn"),
+        toggleCustomBtn: document.getElementById("toggleCustomBtn"),
+        customDrawer: document.getElementById("customDrawer"),
+        customExprInput: document.getElementById("customExprInput"),
+        loadCustomBtn: document.getElementById("loadCustomBtn"),
+        levelTitleBadge: document.getElementById("levelTitleBadge"),
+        stepCounterText: document.getElementById("stepCounterText"),
+        progressFill: document.getElementById("progressFill"),
+        historyStack: document.getElementById("historyStack"),
+        tokenStream: document.getElementById("tokenStream"),
+        ltrBadge: document.getElementById("ltrBadge"),
+        solverBox: document.getElementById("solverBox"),
+        targetSubExprText: document.getElementById("targetSubExprText"),
+        toggleSignBtn: document.getElementById("toggleSignBtn"),
+        stepAnswerInput: document.getElementById("stepAnswerInput"),
+        submitStepBtn: document.getElementById("submitStepBtn"),
+        mobileNumpad: document.getElementById("mobileNumpad"),
+        feedbackBanner: document.getElementById("feedbackBanner"),
+        feedbackIcon: document.getElementById("feedbackIcon"),
+        feedbackTitle: document.getElementById("feedbackTitle"),
+        feedbackText: document.getElementById("feedbackText"),
+        ruleB: document.getElementById("rule-B"),
+        ruleO: document.getElementById("rule-O"),
+        ruleDM: document.getElementById("rule-DM"),
+        ruleAS: document.getElementById("rule-AS"),
+        recapModal: document.getElementById("recapModal"),
+        recapTreeList: document.getElementById("recapTreeList"),
+        closeModalBtn: document.getElementById("closeModalBtn"),
+        replaySameBtn: document.getElementById("replaySameBtn"),
+        nextProblemModalBtn: document.getElementById("nextProblemModalBtn")
+      };
+
+      function setFeedback(type, icon, title, text) {
+        els.feedbackBanner.className = `feedback-banner ${type}`;
+        els.feedbackIcon.textContent = icon;
+        els.feedbackTitle.textContent = title;
+        els.feedbackText.textContent = text;
+      }
+
+      function updateScoreBoard() {
+        els.scoreVal.textContent = state.score;
+        els.streakVal.textContent = `${state.streak}🔥`;
+      }
+
+      function updateBodmasSidebar(targetStep) {
+        [els.ruleB, els.ruleO, els.ruleDM, els.ruleAS].forEach((el) =>
+          el.classList.remove("active-rule")
+        );
+        els.ltrBadge.classList.remove("visible");
+
+        if (!targetStep) return;
+
+        if (targetStep.scope.hasBrackets) {
+          els.ruleB.classList.add("active-rule");
+        }
+        if (targetStep.activeRule === "O") els.ruleO.classList.add("active-rule");
+        if (targetStep.activeRule === "DM") els.ruleDM.classList.add("active-rule");
+        if (targetStep.activeRule === "AS") els.ruleAS.classList.add("active-rule");
+
+        if (targetStep.isLeftToRightTie) {
+          els.ltrBadge.classList.add("visible");
+        }
+      }
+
+      function renderHistory() {
+        els.historyStack.innerHTML = "";
+        state.historySteps.forEach((entry, idx) => {
+          const row = document.createElement("div");
+          row.className = "history-row";
+          row.innerHTML = `
+            <div class="history-expr">
+              <span style="color: var(--text-muted); font-size: 0.85rem; margin-right: 8px;">Line ${idx + 1}:</span>
+              ${escapeHtml(entry.expressionBefore)}
+              <span style="margin: 0 8px; color: var(--success-color);">→</span>
+              <span class="solved-highlight">${escapeHtml(entry.evaluatedNote)}</span>
+            </div>
+            <span class="history-tag">${escapeHtml(entry.ruleTag)}</span>
+          `;
+          els.historyStack.appendChild(row);
+        });
+      }
+
+      function renderExpressionArena() {
+        const targetStep = analyzeNextStep(state.tokens);
+        updateBodmasSidebar(targetStep);
+
+        const completedCount = state.historySteps.length;
+        const pct = Math.min(100, Math.round((completedCount / state.totalEstimatedSteps) * 100));
+        els.progressFill.style.width = `${pct}%`;
+        els.stepCounterText.textContent = targetStep
+          ? `Step ${completedCount + 1} of ${state.totalEstimatedSteps}`
+          : "Completed!";
+
+        els.tokenStream.innerHTML = "";
+        els.solverBox.classList.remove("active");
+
+        if (!targetStep) {
+          // Expression fully reduced to single value!
+          const finalVal = state.tokens[0] ? formatNumber(state.tokens[0].value) : "0";
+          const finalChip = document.createElement("div");
+          finalChip.className = "math-token token-num target-subexpr";
+          finalChip.style.fontSize = "2rem";
+          finalChip.style.padding = "12px 26px";
+          finalChip.textContent = `= ${finalVal}`;
+          els.tokenStream.appendChild(finalChip);
+          return;
+        }
+
+        state.tokens.forEach((tok, idx) => {
+          const el = document.createElement("span");
+          el.className = "math-token";
+          el.dataset.index = String(idx);
+
+          if (tok.type === "num") {
+            el.classList.add("token-num");
+            el.textContent = tok.display;
+          } else if (tok.type === "lbr" || tok.type === "rbr") {
+            el.classList.add("token-bracket");
+            if (
+              targetStep.scope.hasBrackets &&
+              (idx === targetStep.scope.start || idx === targetStep.scope.end)
+            ) {
+              el.classList.add("innermost-bracket");
+            }
+            el.textContent = tok.ch;
+            el.title = "Bracket delimiter — click the operator inside!";
+            el.addEventListener("click", () => handleBracketClick(idx, targetStep));
+          } else if (tok.type === "op" || tok.type === "unary") {
+            el.classList.add("token-op");
+            if (tok.op === "^") el.classList.add("exp-op");
+            el.textContent = tok.display;
+            el.title = `Click to evaluate "${tok.display}"`;
+            el.addEventListener("click", () => handleOperatorClick(idx, el, targetStep));
+          }
+
+          // Highlight active sub-expression if user already clicked right operator
+          if (
+            state.pendingTarget &&
+            idx >= state.pendingTarget.spanStart &&
+            idx <= state.pendingTarget.spanEnd
+          ) {
+            el.classList.add("target-subexpr");
+          }
+
+          // Hint pulsing
+          if (state.hintActive && idx === targetStep.opIndex) {
+            el.classList.add("hint-pulse");
+          }
+
+          els.tokenStream.appendChild(el);
+        });
+
+        // Re-open solver box if pendingTarget is active in Practice Mode
+        if (state.pendingTarget && !state.guidedMode) {
+          els.targetSubExprText.textContent = state.pendingTarget.subExprLabel;
+          els.solverBox.classList.add("active");
+          els.stepAnswerInput.value = "";
+          setTimeout(() => els.stepAnswerInput.focus(), 40);
+        }
+      }
+
+      /* ----------------------------------------------------------------------
+         8. INTERACTION HANDLERS (WITH APPRECIATION, APPLAUSE & SHOWER)
+         ---------------------------------------------------------------------- */
+      function handleBracketClick(idx, targetStep) {
+        if (targetStep.scope.hasBrackets && idx >= targetStep.scope.start && idx <= targetStep.scope.end) {
+          setFeedback(
+            "info",
+            "🎯",
+            formatPair({
+              en: "Right Bracket Section!",
+              ta: "சரியான அடைப்புக்குறிப் பகுதி!"
+            }),
+            formatPair({
+              en: "You spotted the innermost brackets! Now click the exact operator (+, -, ×, ÷, ^, or √) inside these brackets.",
+              ta: "உள்ளடைப்புக்குறியைச் சரியாக அடையாளம் கண்டுவிட்டீர்கள்! இப்போது அதற்குள் உள்ள கணிதக் குறியீட்டைக் கிளிக் செய்யவும்."
+            })
+          );
+        } else {
+          state.streak = 0;
+          updateScoreBoard();
+          setFeedback(
+            "error",
+            "⚠️",
+            formatPair({
+              en: "Check Bracket Nesting!",
+              ta: "அடைப்புக்குறி வரிசையைச் சரிபார்க்கவும்!"
+            }),
+            formatPair({
+              en: "Look for the innermost pair of brackets ( ) first before evaluating outer brackets.",
+              ta: "வெளிப்புற அடைப்புக்குறிக்கு முன் உள்ளே உள்ள ( ) அடைப்புக்குறியை முதலில் பார்க்கவும்."
+            })
+          );
+        }
+      }
+
+      function handleOperatorClick(idx, domEl, targetStep) {
+        if (idx === targetStep.opIndex) {
+          // CORRECT OPERATOR SELECTED -> Immediate enthusiastic appreciation!
+          state.hintActive = false;
+          state.pendingTarget = targetStep;
+
+          const praiseObj = OPERATOR_PRAISES[Math.floor(Math.random() * OPERATOR_PRAISES.length)];
+          const praiseLine = formatPair(praiseObj);
+
+          if (state.guidedMode) {
+            applyStepResolution(targetStep, true);
+          } else {
+            showPraiseToast(`🌟 ${praiseLine}`);
+            renderExpressionArena();
+            setFeedback(
+              "success",
+              "🌟",
+              praiseLine,
+              formatPair({
+                en: `Now calculate ${targetStep.subExprLabel} in the box above and click "Check Step ✓".`,
+                ta: `இப்போது மேலே உள்ள பெட்டியில் ${targetStep.subExprLabel}-இன் மதிப்பை உள்ளிட்டு "சரிபார் ✓" என்பதை அழுத்தவும்.`
+              })
+            );
+          }
+        } else {
+          // WRONG OPERATOR SELECTED -> Provide specific diagnostic explanation
+          state.streak = 0;
+          updateScoreBoard();
+          domEl.classList.remove("shake-error");
+          void domEl.offsetWidth;
+          domEl.classList.add("shake-error");
+
+          const diag = diagnoseWrongClick(idx, targetStep, state.tokens);
+          setFeedback("error", "❌", diag.title, diag.message);
+        }
+      }
+
+      function normalizeNumericAnswerString(raw) {
+        // Normalize Unicode minus/dash symbols from Android/iOS soft keyboards to ASCII '-'
+        return String(raw || "")
+          .replace(/[\u2212\u2012\u2013\u2014\uFE63\uFF0D]/g, "-")
+          .replace(/\s+/g, "")
+          .trim();
+      }
+
+      function toggleInputNegativeSign() {
+        const current = normalizeNumericAnswerString(els.stepAnswerInput.value);
+        if (current.startsWith("-")) {
+          els.stepAnswerInput.value = current.slice(1);
+        } else {
+          els.stepAnswerInput.value = "-" + current;
+        }
+        els.stepAnswerInput.focus();
+      }
+
+      function handleStepAnswerSubmit() {
+        if (!state.pendingTarget) return;
+        const normalizedVal = normalizeNumericAnswerString(els.stepAnswerInput.value);
+        if (normalizedVal === "" || normalizedVal === "-" || normalizedVal === "." || normalizedVal === "-.") {
+          setFeedback(
+            "warning",
+            "✏️",
+            formatPair({ en: "Enter a Number", ta: "ஒரு எண்ணை உள்ளிடவும்" }),
+            formatPair({
+              en: "Type the numerical value of the highlighted step first (use +/− for negative answers).",
+              ta: "முதலில் வண்ணமிட்ட பகுதியின் விடையை உள்ளிடவும் (குறை எண்ணுக்கு +/− பொத்தானைப் பயன்படுத்தலாம்)."
+            })
+          );
+          els.stepAnswerInput.focus();
+          return;
+        }
+
+        const userNum = Number(normalizedVal);
+        const expected = state.pendingTarget.resultVal;
+
+        if (Number.isFinite(userNum) && Math.abs(userNum - expected) < 0.001) {
+          applyStepResolution(state.pendingTarget, false);
+        } else {
+          state.streak = 0;
+          updateScoreBoard();
+          els.stepAnswerInput.classList.remove("shake-error");
+          void els.stepAnswerInput.offsetWidth;
+          els.stepAnswerInput.classList.add("shake-error");
+          setFeedback(
+            "error",
+            "🧮",
+            formatPair({
+              en: "Calculation Check Needed!",
+              ta: "கணக்கீட்டை மீண்டும் சரிபார்க்கவும்!"
+            }),
+            formatPair({
+              en: `You selected the right operator, but recheck the arithmetic for ${state.pendingTarget.subExprLabel}.`,
+              ta: `சரியான குறியீட்டைத் தேர்ந்தெடுத்தீர்கள், ஆனால் ${state.pendingTarget.subExprLabel}-இன் மதிப்பை மீண்டும் சரிபார்க்கவும்.`
+            })
+          );
+        }
+      }
+
+      function applyStepResolution(stepInfo, isGuided) {
+        const beforeStr = tokensToPlainString(state.tokens);
+        const resultDisplay = formatNumber(stepInfo.resultVal);
+
+        // Award points & streak
+        state.streak += 1;
+        const basePts = isGuided ? 10 : 25;
+        const multiplier = Math.min(3, 1 + Math.floor(state.streak / 3) * 0.5);
+        state.score += Math.round(basePts * multiplier);
+        updateScoreBoard();
+
+        // Record history entry
+        state.historySteps.push({
+          expressionBefore: beforeStr,
+          evaluatedNote: `${stepInfo.subExprLabel} = ${resultDisplay}`,
+          ruleTag: stepInfo.ruleBadgeText
+        });
+
+        // Replace evaluated span with single number token and unwrap redundant brackets
+        const nextTokens = [...state.tokens];
+        nextTokens.splice(stepInfo.spanStart, stepInfo.spanEnd - stepInfo.spanStart + 1, {
+          type: "num",
+          value: stepInfo.resultVal,
+          display: resultDisplay
+        });
+        state.tokens = unwrapSingleNumberBrackets(nextTokens);
+        state.pendingTarget = null;
+        state.hintActive = false;
+
+        renderHistory();
+        renderExpressionArena();
+
+        const isCompleted = state.tokens.length === 1;
+        const stepPraise = formatPair(
+          STEP_SOLVED_PRAISES[Math.floor(Math.random() * STEP_SOLVED_PRAISES.length)]
+        );
+
+        // Trigger applause sound + flower/confetti shower!
+        playApplauseSound(isCompleted);
+        triggerCelebrationShower(isCompleted);
+        showPraiseToast(
+          isCompleted
+            ? formatPair({
+                en: "🏆 Grand Applause! Problem Solved!",
+                ta: "🏆 பலத்த கைதட்டல்கள்! கணக்கு வெற்றிகரமாக முடிந்தது!"
+              })
+            : stepPraise
+        );
+
+        if (isCompleted) {
+          const finalAns = formatNumber(state.tokens[0].value);
+          setFeedback(
+            "success",
+            "🏆",
+            formatPair({
+              en: `Problem Solved! Final Answer = ${finalAns}`,
+              ta: `மிகச் சிறப்பு! இறுதி விடை = ${finalAns}`
+            }),
+            formatPair({
+              en: "Awesome BODMAS mastery! Review your vertical solution tree or jump to the next challenge.",
+              ta: "அருமையான BODMAS திறமை! முழு தீர்வுப் படிகளைப் பார்த்துவிட்டு அடுத்த கணக்கிற்குச் செல்லலாம்."
+            })
+          );
+          setTimeout(openRecapModal, 750);
+        } else {
+          setFeedback(
+            "success",
+            "👏",
+            `${stepPraise} (${stepInfo.subExprLabel} = ${resultDisplay})`,
+            formatPair({
+              en: "Click the NEXT operator in the simplified expression above.",
+              ta: "மேலே சுருக்கப்பட்ட கோவையில் அடுத்து செய்ய வேண்டிய குறியீட்டைக் கிளிக் செய்யவும்."
+            })
+          );
+        }
+      }
+
+      /* ----------------------------------------------------------------------
+         9. PROBLEM LOADING & RECAP MODAL
+         ---------------------------------------------------------------------- */
+      function loadExpression(exprStr) {
+        try {
+          const parsed = tokenizeExpression(exprStr);
+          if (parsed.length === 0) throw new Error("Empty expression.");
+          const stepsCount = estimateTotalSteps(parsed);
+
+          state.initialExpression = tokensToPlainString(parsed);
+          state.tokens = parsed;
+          state.historySteps = [];
+          state.totalEstimatedSteps = stepsCount;
+          state.pendingTarget = null;
+          state.hintActive = false;
+
+          const lvlObj = LEVEL_LABELS[state.level];
+          els.levelTitleBadge.textContent = lvlObj
+            ? lvlObj[state.lang] || lvlObj.both
+            : formatPair({ en: "Custom BODMAS Challenge", ta: "சொந்த BODMAS சவால்" });
+
+          renderHistory();
+          renderExpressionArena();
+          setFeedback(
+            "info",
+            "🧭",
+            formatPair({
+              en: "New Expression Loaded!",
+              ta: "புதிய கணிதக் கோவை தயாராக உள்ளது!"
+            }),
+            formatPair({
+              en: "Follow B → O → DM → AS. Click the operator that should be evaluated first.",
+              ta: "B → O → DM → AS விதியைப் பின்பற்றி முதலில் சுருக்க வேண்டிய குறியீட்டைக் கிளிக் செய்யவும்."
+            })
+          );
+        } catch (err) {
+          setFeedback(
+            "error",
+            "⚠️",
+            formatPair({ en: "Expression Syntax Issue", ta: "கணிதக் கோவை பிழை" }),
+            err.message || "Could not parse that expression. Check brackets and operators."
+          );
+        }
+      }
+
+      function loadNextLevelProblem() {
+        const bank = PROBLEM_BANKS[state.level];
+        const expr = bank[state.problemIndex % bank.length];
+        state.problemIndex++;
+        loadExpression(expr);
+      }
+
+      function openRecapModal() {
+        els.recapTreeList.innerHTML = "";
+
+        state.historySteps.forEach((step, idx) => {
+          const div = document.createElement("div");
+          div.className = "tree-step";
+          div.innerHTML = `
+            <div>
+              <div style="font-size: 0.76rem; font-weight: 800; color: var(--text-muted);">STEP ${idx + 1} • ${escapeHtml(step.ruleTag)}</div>
+              <div class="tree-math">${escapeHtml(step.expressionBefore)}</div>
+            </div>
+            <span class="history-tag">${escapeHtml(step.evaluatedNote)}</span>
+          `;
+          els.recapTreeList.appendChild(div);
+        });
+
+        const finalVal = state.tokens[0] ? formatNumber(state.tokens[0].value) : "0";
+        const finalDiv = document.createElement("div");
+        finalDiv.className = "tree-step final-ans";
+        finalDiv.innerHTML = `
+          <div>
+            <div style="font-size: 0.76rem; font-weight: 800; color: var(--success-color);">FINAL SIMPLIFIED VALUE</div>
+            <div class="tree-math" style="color: var(--success-color); font-size: 1.35rem;">= ${escapeHtml(finalVal)}</div>
+          </div>
+          <span class="history-tag">100% Verified ✓</span>
+        `;
+        els.recapTreeList.appendChild(finalDiv);
+
+        els.recapModal.classList.add("open");
+      }
+
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      /* ----------------------------------------------------------------------
+         10. EVENT LISTENERS & INITIALIZATION
+         ---------------------------------------------------------------------- */
+      els.langBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          els.langBtns.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          state.lang = btn.dataset.lang;
+          applyLanguageUI();
+          renderExpressionArena();
+        });
+      });
+
+      els.themeToggleBtn.addEventListener("click", () => {
+        const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+        if (isDark) {
+          document.documentElement.removeAttribute("data-theme");
+          els.themeIcon.textContent = "🌙";
+          els.themeLabel.textContent = "Dark";
+        } else {
+          document.documentElement.setAttribute("data-theme", "dark");
+          els.themeIcon.textContent = "☀️";
+          els.themeLabel.textContent = "Light";
+        }
+      });
+
+      els.levelTabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          els.levelTabs.forEach((t) => t.classList.remove("active"));
+          tab.classList.add("active");
+          state.level = parseInt(tab.dataset.level, 10);
+          state.problemIndex = 0;
+          loadNextLevelProblem();
+        });
+      });
+
+      els.practiceModeBtn.addEventListener("click", () => {
+        state.guidedMode = false;
+        els.practiceModeBtn.classList.add("active");
+        els.guidedModeBtn.classList.remove("active");
+        renderExpressionArena();
+      });
+
+      els.guidedModeBtn.addEventListener("click", () => {
+        state.guidedMode = true;
+        els.guidedModeBtn.classList.add("active");
+        els.practiceModeBtn.classList.remove("active");
+        if (state.pendingTarget) {
+          applyStepResolution(state.pendingTarget, true);
+        } else {
+          renderExpressionArena();
+        }
+      });
+
+      els.hintBtn.addEventListener("click", () => {
+        const targetStep = analyzeNextStep(state.tokens);
+        if (!targetStep) return;
+        state.hintActive = true;
+        renderExpressionArena();
+        const scopeHint = targetStep.scope.hasBrackets
+          ? formatPair({
+              en: "Focus inside the highlighted innermost brackets first.",
+              ta: "முதலில் ஒளிரும் உள்ளடைப்புக்குறிக்குள் கவனம் செலுத்துங்கள்."
+            })
+          : formatPair({
+              en: "No brackets remain—apply O → DM → AS from left to right.",
+              ta: "அடைப்புக்குறிகள் இல்லை—இடமிருந்து வலமாக O → DM → AS விதியைப் பயன்படுத்துங்கள்."
+            });
+        setFeedback(
+          "warning",
+          "💡",
+          formatPair({
+            en: `Hint: Apply ${targetStep.ruleBadgeText}`,
+            ta: `குறிப்பு: ${targetStep.ruleBadgeText} விதியைப் பயன்படுத்தவும்`
+          }),
+          `${scopeHint} ${formatPair({
+            en: "Click the glowing operator!",
+            ta: "ஒளிரும் கணிதக் குறியீட்டைக் கிளிக் செய்யவும்!"
+          })}`
+        );
+      });
+
+      els.newProblemBtn.addEventListener("click", loadNextLevelProblem);
+
+      els.toggleCustomBtn.addEventListener("click", () => {
+        els.customDrawer.classList.toggle("open");
+      });
+
+      els.loadCustomBtn.addEventListener("click", () => {
+        const val = els.customExprInput.value;
+        if (val.trim()) {
+          loadExpression(val);
+          els.customDrawer.classList.remove("open");
+        }
+      });
+
+      els.customExprInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") els.loadCustomBtn.click();
+      });
+
+      els.toggleSignBtn.addEventListener("click", toggleInputNegativeSign);
+
+      els.stepAnswerInput.addEventListener("input", () => {
+        // Allow intermediate negative/decimal typing states on Android ('-', '-.', '-12', '3.5')
+        const cleaned = normalizeNumericAnswerString(els.stepAnswerInput.value)
+          .replace(/[^0-9.-]/g, "")
+          .replace(/(?!^)-/g, "")
+          .replace(/(\..*)\./g, "$1");
+        if (els.stepAnswerInput.value !== cleaned) {
+          els.stepAnswerInput.value = cleaned;
+        }
+      });
+
+      els.mobileNumpad.addEventListener("click", (e) => {
+        const btn = e.target.closest(".numpad-key");
+        if (!btn) return;
+        const key = btn.dataset.key;
+        let current = normalizeNumericAnswerString(els.stepAnswerInput.value);
+
+        if (key === "BACK") {
+          els.stepAnswerInput.value = current.slice(0, -1);
+        } else if (key === "-") {
+          toggleInputNegativeSign();
+          return;
+        } else if (key === ".") {
+          if (!current.includes(".")) {
+            els.stepAnswerInput.value = (current === "" || current === "-" ? current + "0." : current + ".");
+          }
+        } else {
+          els.stepAnswerInput.value = current + key;
+        }
+        els.stepAnswerInput.focus();
+      });
+
+      els.submitStepBtn.addEventListener("click", handleStepAnswerSubmit);
+      els.stepAnswerInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") handleStepAnswerSubmit();
+      });
+
+      els.closeModalBtn.addEventListener("click", () => {
+        els.recapModal.classList.remove("open");
+      });
+
+      els.replaySameBtn.addEventListener("click", () => {
+        els.recapModal.classList.remove("open");
+        loadExpression(state.initialExpression);
+      });
+
+      els.nextProblemModalBtn.addEventListener("click", () => {
+        els.recapModal.classList.remove("open");
+        loadNextLevelProblem();
+      });
+
+      // Initialize Bilingual UI and load initial problem
+      applyLanguageUI();
+      loadNextLevelProblem();
+    })();
+  </script>
+</body>
+</html>

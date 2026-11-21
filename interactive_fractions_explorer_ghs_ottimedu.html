@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Fractions Explorer | GHS, OTTIMEDU</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Noto Sans Tamil for crisp bilingual typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Noto+Sans+Tamil:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans Tamil', sans-serif;
+            background-color: #f0f4f8;
+            color: #1e293b;
+        }
+
+        /* Language visibility modes */
+        body.lang-en .ta-text { display: none !important; }
+        body.lang-ta .en-text { display: none !important; }
+        
+        /* In Bilingual mode, show both nicely */
+        body.lang-both .ta-inline::before { content: " / "; opacity: 0.7; }
+        body.lang-both .ta-block { display: block; font-size: 0.92em; margin-top: 2px; }
+
+        /* Fraction Typography */
+        .frac {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            font-weight: 700;
+            line-height: 1.1;
+            margin: 0 3px;
+        }
+        .frac-num {
+            border-bottom: 2.5px solid currentColor;
+            padding: 0 5px 2px 5px;
+            text-align: center;
+            min-width: 1.4em;
+        }
+        .frac-den {
+            padding: 2px 5px 0 5px;
+            text-align: center;
+            min-width: 1.4em;
+        }
+
+        /* Custom Number Input Styling */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            opacity: 1;
+        }
+
+        /* Smooth SVG & UI Animations */
+        .svg-piece {
+            transition: fill 0.45s ease, opacity 0.45s ease, transform 0.45s ease, stroke-width 0.3s ease;
+        }
+        .pulse-highlight {
+            animation: pulseGlow 1.5s infinite alternate;
+        }
+        @keyframes pulseGlow {
+            from { filter: drop-shadow(0 0 2px rgba(245, 158, 11, 0.4)); }
+            to { filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.9)); }
+        }
+        .step-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .step-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        }
+    </style>
+</head>
+<body class="lang-both min-h-screen flex flex-col">
+
+    <!-- Top School & Creator Header Banner -->
+    <header class="bg-gradient-to-r from-indigo-900 via-blue-800 to-indigo-900 text-white shadow-lg border-b-4 border-amber-400">
+        <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <!-- School & App Title -->
+                <div>
+                    <div class="inline-flex items-center gap-2 bg-amber-400/20 border border-amber-300/40 text-amber-200 px-3 py-1 rounded-full text-xs sm:text-sm font-bold tracking-wide mb-1.5">
+                        <span>🏫 GHS, OTTIMEDU</span>
+                    </div>
+                    <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-white">
+                        <span class="en-text">Interactive Fractions Explorer</span>
+                        <span class="ta-text ta-inline">பின்னங்களின் செயல்பாடுகள் (Interactive Simulator)</span>
+                    </h1>
+                    <p class="text-xs sm:text-sm text-blue-200 mt-1 font-medium">
+                        <span class="en-text">Visual & Step-by-Step Guide to Addition, Subtraction, Multiplication & Division</span>
+                        <span class="ta-text ta-block">பின்னங்களின் கூட்டல், கழித்தல், பெருக்கல் மற்றும் வகுத்தல் காட்சி விளக்கம்</span>
+                    </p>
+                </div>
+
+                <!-- Right Side: Creator Badge & Language Toggle -->
+                <div class="flex flex-col sm:flex-row lg:flex-col items-start sm:items-center lg:items-end justify-between gap-3">
+                    <!-- Creator Attribution -->
+                    <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-3.5 py-2 text-left lg:text-right">
+                        <div class="text-xs uppercase tracking-wider text-amber-300 font-bold">
+                            <span class="en-text">Created By</span> <span class="ta-text ta-inline">உருவாக்கம்</span>
+                        </div>
+                        <div class="text-sm sm:text-base font-extrabold text-white">
+                            CHRISTURAJ.A, <span class="text-blue-200 font-semibold text-xs sm:text-sm">B.T. ASST. IN MATHEMATICS</span>
+                        </div>
+                        <div class="text-xs text-blue-100 font-medium">
+                            கிறிஸ்துராஜ்.அ, பட்டதாரி ஆசிரியர் (கணிதம்)
+                        </div>
+                    </div>
+
+                    <!-- Language Switcher -->
+                    <div class="inline-flex rounded-xl bg-indigo-950/80 p-1 border border-indigo-400/30 shadow-inner" role="group" aria-label="Language Switcher">
+                        <button type="button" onclick="setLanguage('both')" id="btn-lang-both" class="lang-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition bg-amber-400 text-slate-900 shadow">
+                            Both / இருமொழி
+                        </button>
+                        <button type="button" onclick="setLanguage('en')" id="btn-lang-en" class="lang-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition text-blue-100 hover:text-white">
+                            English
+                        </button>
+                        <button type="button" onclick="setLanguage('ta')" id="btn-lang-ta" class="lang-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition text-blue-100 hover:text-white">
+                            தமிழ்
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Interactive Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-5 space-y-5">
+
+        <!-- Control Bar: Fraction 1, Operator, Fraction 2, Random & Check Answer -->
+        <section class="bg-white rounded-2xl shadow-md border border-slate-200 p-4 sm:p-6">
+            <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 items-center">
+                
+                <!-- Fraction Builder Controls (7 cols on xl) -->
+                <div class="xl:col-span-7 flex flex-wrap items-center justify-center sm:justify-start gap-3 sm:gap-4">
+                    
+                    <!-- Fraction 1 Input with Android-friendly +/- Sign Toggle -->
+                    <div class="bg-blue-50 border-2 border-blue-300 rounded-2xl p-3 flex flex-col items-center shadow-sm">
+                        <span class="text-xs font-extrabold uppercase tracking-wide text-blue-800 mb-1.5">
+                            <span class="en-text">Fraction 1</span> <span class="ta-text ta-inline">பின்னம் 1</span>
+                        </span>
+                        <div class="flex items-center gap-1.5">
+                            <button type="button" id="sign1-btn" onclick="toggleFractionSign(1)" aria-label="Toggle Sign Fraction 1"
+                                class="w-10 h-11 rounded-xl text-xl font-extrabold flex items-center justify-center transition bg-blue-200 hover:bg-blue-300 text-blue-950 border border-blue-400 shadow-sm active:scale-95">
+                                +
+                            </button>
+                            <div class="flex flex-col items-center">
+                                <input type="text" inputmode="text" id="num1" value="2" aria-label="Numerator 1"
+                                    class="w-16 sm:w-18 h-11 text-center text-xl font-extrabold text-blue-900 bg-white border-2 border-blue-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600">
+                                <div class="w-16 sm:w-18 h-1 bg-blue-900 rounded-full my-1.5"></div>
+                                <input type="text" inputmode="text" id="den1" value="3" aria-label="Denominator 1"
+                                    class="w-16 sm:w-18 h-11 text-center text-xl font-extrabold text-blue-900 bg-white border-2 border-blue-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Operator Selector -->
+                    <div class="flex flex-col items-center">
+                        <span class="text-xs font-extrabold uppercase tracking-wide text-slate-600 mb-1.5">
+                            <span class="en-text">Operation</span> <span class="ta-text ta-inline">செயலி</span>
+                        </span>
+                        <div class="grid grid-cols-2 gap-1.5 bg-slate-100 p-1.5 rounded-2xl border border-slate-300">
+                            <button type="button" onclick="setOperator('+')" data-op="+" class="op-btn w-11 h-11 sm:w-12 sm:h-12 rounded-xl text-2xl font-extrabold flex items-center justify-center transition bg-indigo-600 text-white shadow-md">+</button>
+                            <button type="button" onclick="setOperator('-')" data-op="-" class="op-btn w-11 h-11 sm:w-12 sm:h-12 rounded-xl text-2xl font-extrabold flex items-center justify-center transition bg-white text-slate-700 hover:bg-indigo-50 border border-slate-200">−</button>
+                            <button type="button" onclick="setOperator('*')" data-op="*" class="op-btn w-11 h-11 sm:w-12 sm:h-12 rounded-xl text-2xl font-extrabold flex items-center justify-center transition bg-white text-slate-700 hover:bg-indigo-50 border border-slate-200">×</button>
+                            <button type="button" onclick="setOperator('/')" data-op="/" class="op-btn w-11 h-11 sm:w-12 sm:h-12 rounded-xl text-2xl font-extrabold flex items-center justify-center transition bg-white text-slate-700 hover:bg-indigo-50 border border-slate-200">÷</button>
+                        </div>
+                    </div>
+
+                    <!-- Fraction 2 Input with Android-friendly +/- Sign Toggle -->
+                    <div class="bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-3 flex flex-col items-center shadow-sm">
+                        <span class="text-xs font-extrabold uppercase tracking-wide text-emerald-800 mb-1.5">
+                            <span class="en-text">Fraction 2</span> <span class="ta-text ta-inline">பின்னம் 2</span>
+                        </span>
+                        <div class="flex items-center gap-1.5">
+                            <button type="button" id="sign2-btn" onclick="toggleFractionSign(2)" aria-label="Toggle Sign Fraction 2"
+                                class="w-10 h-11 rounded-xl text-xl font-extrabold flex items-center justify-center transition bg-emerald-200 hover:bg-emerald-300 text-emerald-950 border border-emerald-400 shadow-sm active:scale-95">
+                                +
+                            </button>
+                            <div class="flex flex-col items-center">
+                                <input type="text" inputmode="text" id="num2" value="1" aria-label="Numerator 2"
+                                    class="w-16 sm:w-18 h-11 text-center text-xl font-extrabold text-emerald-900 bg-white border-2 border-emerald-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                                <div class="w-16 sm:w-18 h-1 bg-emerald-900 rounded-full my-1.5"></div>
+                                <input type="text" inputmode="text" id="den2" value="4" aria-label="Denominator 2"
+                                    class="w-16 sm:w-18 h-11 text-center text-xl font-extrabold text-emerald-900 bg-white border-2 border-emerald-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Random Problem & Range Hint -->
+                    <div class="flex flex-col items-center sm:items-start gap-2 ml-auto sm:ml-1">
+                        <button type="button" onclick="generateRandomProblem()"
+                            class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 font-extrabold px-4 py-2.5 rounded-xl shadow-md transition cursor-pointer">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                            </svg>
+                            <span>
+                                <span class="en-text">Random Problem</span>
+                                <span class="ta-text ta-block text-xs">புதிய கணக்கு</span>
+                            </span>
+                        </button>
+                        <div class="text-xs text-slate-500 font-semibold">
+                            <span class="en-text">Range: −12 to +12 (Tap +/− for sign)</span>
+                            <span class="ta-text ta-block">வரம்பு: −12 முதல் +12 வரை (+/− பொத்தானை அழுத்தவும்)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Student Practice Check Box (5 cols on xl) -->
+                <div class="xl:col-span-5 bg-slate-50 border-2 border-dashed border-indigo-300 rounded-2xl p-3.5 sm:p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <h2 class="text-sm font-extrabold text-indigo-950 flex items-center gap-1.5">
+                            <span>✍️</span>
+                            <span>
+                                <span class="en-text">Student Practice: Check Your Answer</span>
+                                <span class="ta-text ta-block text-xs text-indigo-800">மாணவர் பயிற்சி: உங்கள் விடையைச் சரிபார்க்கவும்</span>
+                            </span>
+                        </h2>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2.5">
+                        <div class="flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-xl border border-slate-300">
+                            <span class="text-lg font-extrabold text-slate-700">=</span>
+                            <button type="button" id="ans-sign-btn" onclick="toggleAnswerSign()" aria-label="Toggle Answer Sign"
+                                class="w-9 h-9 rounded-lg text-lg font-extrabold flex items-center justify-center transition bg-slate-200 hover:bg-slate-300 text-slate-900 border border-slate-300 active:scale-95">
+                                +
+                            </button>
+                            <div class="flex flex-col items-center">
+                                <input type="text" inputmode="text" id="ans-num" placeholder="?" aria-label="Your Answer Numerator"
+                                    class="w-14 h-9 text-center text-base font-bold text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:border-indigo-500">
+                                <div class="w-14 h-0.5 bg-slate-800 my-1"></div>
+                                <input type="text" inputmode="text" id="ans-den" placeholder="1" aria-label="Your Answer Denominator"
+                                    class="w-14 h-9 text-center text-base font-bold text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:border-indigo-500">
+                            </div>
+                        </div>
+
+                        <button type="button" onclick="checkStudentAnswer()"
+                            class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold px-3.5 py-2.5 rounded-xl shadow transition text-sm">
+                            <span class="en-text">Check Answer</span>
+                            <span class="ta-text ta-block text-xs">விடையைச் சரிபார்</span>
+                        </button>
+
+                        <button type="button" onclick="revealAnswer()"
+                            class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold px-3 py-2.5 rounded-xl transition text-xs sm:text-sm">
+                            <span class="en-text">Show Answer</span>
+                            <span class="ta-text ta-block text-xs">விடை காட்டு</span>
+                        </button>
+                    </div>
+
+                    <!-- Feedback Message Box -->
+                    <div id="practice-feedback" class="mt-2.5 text-xs sm:text-sm font-bold rounded-xl px-3 py-2 hidden"></div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Main Workspace Grid: Visual Model (Left/Top) + Step-by-Step Breakdown (Right/Bottom) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            <!-- Left 7 Columns: Interactive Visual Workspace -->
+            <section class="lg:col-span-7 bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden flex flex-col">
+                <!-- Visual Header Bar -->
+                <div class="bg-slate-800 text-white px-4 py-3 sm:px-6 flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                        <h2 id="visual-title" class="text-base sm:text-lg font-extrabold text-amber-300">
+                            Visual Fraction Model
+                        </h2>
+                        <p id="visual-subtitle" class="text-xs text-slate-300">
+                            Interactive representation
+                        </p>
+                    </div>
+
+                    <!-- Dynamic Interactive Action Button inside Visual Workspace -->
+                    <div id="visual-controls" class="flex flex-wrap items-center gap-2">
+                        <!-- Populated dynamically based on operation (+, -, *, /) -->
+                    </div>
+                </div>
+
+                <!-- Interactive SVG Canvas Area -->
+                <div class="p-4 sm:p-6 bg-slate-50/70 flex-grow flex flex-col items-center justify-center min-h-[360px] overflow-x-auto">
+                    <div id="svg-container" class="w-full flex justify-center">
+                        <!-- Dynamic SVG Rendered Here -->
+                    </div>
+                </div>
+
+                <!-- Color Legend Footer -->
+                <div id="visual-legend" class="bg-white border-t border-slate-200 px-4 py-3 flex flex-wrap items-center justify-center gap-4 text-xs sm:text-sm font-semibold text-slate-700">
+                    <!-- Populated dynamically -->
+                </div>
+            </section>
+
+            <!-- Right 5 Columns: Step-by-Step Breakdown Panel -->
+            <section class="lg:col-span-5 bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-indigo-900 text-white px-4 py-3 sm:px-6 flex items-center justify-between">
+                    <h2 class="text-base sm:text-lg font-extrabold flex items-center gap-2">
+                        <span>📝</span>
+                        <span>
+                            <span class="en-text">Step-by-Step Solution</span>
+                            <span class="ta-text ta-inline text-amber-300">படிப்படியான தீர்வு</span>
+                        </span>
+                    </h2>
+                </div>
+
+                <div id="steps-container" class="p-4 sm:p-5 space-y-3.5 max-h-[680px] overflow-y-auto">
+                    <!-- Dynamic Step Cards Rendered Here -->
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-center py-4 px-4 text-xs border-t border-slate-800 mt-8">
+        <p class="font-semibold text-slate-200">
+            GHS, OTTIMEDU • Interactive Mathematics Learning Tool
+        </p>
+        <p class="mt-1">
+            Designed & Developed by <span class="text-amber-400 font-bold">CHRISTURAJ.A, B.T. ASST. IN MATHEMATICS</span> (கிறிஸ்துராஜ்.அ, பட்டதாரி ஆசிரியர் - கணிதம்)
+        </p>
+    </footer>
+
+    <!-- Application Logic -->
+    <script>
+        // ==========================================
+        // 1. STATE MANAGEMENT
+        // ==========================================
+        const state = {
+            n1: 2,
+            d1: 3,
+            n2: 1,
+            d2: 4,
+            op: '+',
+            lang: 'both', // 'both', 'en', 'ta'
+            splitLCD: true,
+            combineAnimated: false,
+            kcfActive: false
+        };
+
+        // ==========================================
+        // 2. MATH HELPER FUNCTIONS (SIGNED SUPPORT)
+        // ==========================================
+        function gcd(a, b) {
+            a = Math.abs(a);
+            b = Math.abs(b);
+            while (b !== 0) {
+                let t = b;
+                b = a % b;
+                a = t;
+            }
+            return a || 1;
+        }
+
+        function lcm(a, b) {
+            return Math.abs(a * b) / gcd(a, b);
+        }
+
+        function formatFracHTML(n, d, colorClass = "text-slate-900") {
+            if (d === 1) {
+                return `<span class="font-extrabold ${colorClass} px-1">${n}</span>`;
+            }
+            return `
+                <span class="frac ${colorClass}">
+                    <span class="frac-num">${n}</span>
+                    <span class="frac-den">${d}</span>
+                </span>
+            `;
+        }
+
+        function formatMixedHTML(n, d) {
+            if (n === 0) return `<span class="font-extrabold text-indigo-700">0</span>`;
+            const g = gcd(n, d);
+            let sn = n / g;
+            let sd = d / g;
+            if (sd < 0) { sn = -sn; sd = -sd; }
+            if (sd === 1) return `<span class="font-extrabold text-indigo-700">${sn}</span>`;
+            if (Math.abs(sn) > sd) {
+                const sign = sn < 0 ? '−' : '';
+                const absN = Math.abs(sn);
+                const whole = Math.floor(absN / sd);
+                const rem = absN % sd;
+                if (rem === 0) return `<span class="font-extrabold text-indigo-700">${sign}${whole}</span>`;
+                return `<span class="inline-flex items-center font-extrabold text-indigo-700">${sign}${whole}${formatFracHTML(rem, sd, 'text-indigo-700')}</span>`;
+            }
+            return formatFracHTML(sn, sd, 'text-indigo-700');
+        }
+
+        // ==========================================
+        // 3. UI, ANDROID INPUTS & LANGUAGE CONTROLS
+        // ==========================================
+        function setLanguage(lang) {
+            state.lang = lang;
+            document.body.className = `lang-${lang} min-h-screen flex flex-col`;
+
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('bg-amber-400', 'text-slate-900', 'shadow');
+                btn.classList.add('text-blue-100');
+            });
+            const activeBtn = document.getElementById(`btn-lang-${lang}`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-amber-400', 'text-slate-900', 'shadow');
+                activeBtn.classList.remove('text-blue-100');
+            }
+        }
+
+        function setOperator(op) {
+            state.op = op;
+            state.combineAnimated = false;
+            state.kcfActive = false;
+
+            document.querySelectorAll('.op-btn').forEach(btn => {
+                if (btn.dataset.op === op) {
+                    btn.classList.remove('bg-white', 'text-slate-700', 'border', 'border-slate-200');
+                    btn.classList.add('bg-indigo-600', 'text-white', 'shadow-md');
+                } else {
+                    btn.classList.add('bg-white', 'text-slate-700', 'border', 'border-slate-200');
+                    btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-md');
+                }
+            });
+
+            clearFeedback();
+            updateAll();
+        }
+
+        // Parse signed text safely on Android & Desktop (accepts ASCII '-' and Unicode '−')
+        function parseSignedInt(rawStr, fallback) {
+            if (typeof rawStr !== 'string') return fallback;
+            let cleaned = rawStr.trim().replace(/−/g, '-').replace(/[^0-9-]/g, '');
+            if (cleaned === '' || cleaned === '-') return null; // Intermediate typing state
+            let num = parseInt(cleaned, 10);
+            if (isNaN(num)) return fallback;
+            if (num < -12) num = -12;
+            if (num > 12) num = 12;
+            if (num === 0) num = 1; // Keep non-zero denominator/numerator for fraction structure
+            return num;
+        }
+
+        function syncSignButtons() {
+            const btn1 = document.getElementById('sign1-btn');
+            const isNeg1 = state.n1 < 0;
+            btn1.textContent = isNeg1 ? '−' : '+';
+            btn1.className = isNeg1
+                ? 'w-10 h-11 rounded-xl text-xl font-extrabold flex items-center justify-center transition bg-rose-500 hover:bg-rose-600 text-white border border-rose-700 shadow-sm active:scale-95'
+                : 'w-10 h-11 rounded-xl text-xl font-extrabold flex items-center justify-center transition bg-blue-200 hover:bg-blue-300 text-blue-950 border border-blue-400 shadow-sm active:scale-95';
+
+            const btn2 = document.getElementById('sign2-btn');
+            const isNeg2 = state.n2 < 0;
+            btn2.textContent = isNeg2 ? '−' : '+';
+            btn2.className = isNeg2
+                ? 'w-10 h-11 rounded-xl text-xl font-extrabold flex items-center justify-center transition bg-rose-500 hover:bg-rose-600 text-white border border-rose-700 shadow-sm active:scale-95'
+                : 'w-10 h-11 rounded-xl text-xl font-extrabold flex items-center justify-center transition bg-emerald-200 hover:bg-emerald-300 text-emerald-950 border border-emerald-400 shadow-sm active:scale-95';
+        }
+
+        function toggleFractionSign(which) {
+            if (which === 1) {
+                state.n1 = -state.n1;
+                document.getElementById('num1').value = state.n1;
+            } else {
+                state.n2 = -state.n2;
+                document.getElementById('num2').value = state.n2;
+            }
+            syncSignButtons();
+            state.combineAnimated = false;
+            clearFeedback();
+            updateAll();
+        }
+
+        function handleInputChange(e) {
+            const n1El = document.getElementById('num1');
+            const d1El = document.getElementById('den1');
+            const n2El = document.getElementById('num2');
+            const d2El = document.getElementById('den2');
+
+            // Allow user to type '-' on mobile before typing digits
+            if (e && e.type === 'input') {
+                const rawVal = e.target.value.trim();
+                if (rawVal === '-' || rawVal === '−' || rawVal === '') {
+                    if (e.target.id === 'num1' && (rawVal === '-' || rawVal === '−')) {
+                        document.getElementById('sign1-btn').textContent = '−';
+                    }
+                    if (e.target.id === 'num2' && (rawVal === '-' || rawVal === '−')) {
+                        document.getElementById('sign2-btn').textContent = '−';
+                    }
+                    return;
+                }
+            }
+
+            let rawN1 = parseSignedInt(n1El.value, state.n1);
+            let rawD1 = parseSignedInt(d1El.value, state.d1);
+            let rawN2 = parseSignedInt(n2El.value, state.n2);
+            let rawD2 = parseSignedInt(d2El.value, state.d2);
+
+            if (rawN1 === null) rawN1 = state.n1;
+            if (rawD1 === null) rawD1 = state.d1;
+            if (rawN2 === null) rawN2 = state.n2;
+            if (rawD2 === null) rawD2 = state.d2;
+
+            // Normalize negative denominators so the sign stays cleanly on the numerator
+            if (rawD1 < 0) {
+                rawN1 = -rawN1;
+                rawD1 = Math.abs(rawD1);
+            }
+            if (rawD2 < 0) {
+                rawN2 = -rawN2;
+                rawD2 = Math.abs(rawD2);
+            }
+
+            state.n1 = rawN1;
+            state.d1 = rawD1;
+            state.n2 = rawN2;
+            state.d2 = rawD2;
+
+            n1El.value = state.n1;
+            d1El.value = state.d1;
+            n2El.value = state.n2;
+            d2El.value = state.d2;
+
+            syncSignButtons();
+            state.combineAnimated = false;
+            clearFeedback();
+            updateAll();
+        }
+
+        function generateRandomProblem() {
+            const ops = ['+', '-', '*', '/'];
+            const randomOp = ops[Math.floor(Math.random() * ops.length)];
+            
+            const friendlyDens = [2, 3, 4, 5, 6, 8, 9, 10, 12];
+            let d1 = friendlyDens[Math.floor(Math.random() * friendlyDens.length)];
+            let d2 = friendlyDens[Math.floor(Math.random() * friendlyDens.length)];
+            
+            let n1 = Math.floor(Math.random() * Math.min(12, d1 + 2)) + 1;
+            let n2 = Math.floor(Math.random() * Math.min(12, d2 + 2)) + 1;
+
+            // Randomly make ~45% of fractions negative so students practice signed fractions
+            if (Math.random() < 0.45) n1 = -n1;
+            if (Math.random() < 0.45) n2 = -n2;
+
+            document.getElementById('num1').value = n1;
+            document.getElementById('den1').value = d1;
+            document.getElementById('num2').value = n2;
+            document.getElementById('den2').value = d2;
+
+            state.n1 = n1;
+            state.d1 = d1;
+            state.n2 = n2;
+            state.d2 = d2;
+            syncSignButtons();
+            setOperator(randomOp);
+        }
+
+        // ==========================================
+        // 4. STUDENT PRACTICE CHECKER (SIGNED & ANDROID-FRIENDLY)
+        // ==========================================
+        function getExactResult() {
+            const { n1, d1, n2, d2, op } = state;
+            let rawN, rawD;
+            if (op === '+') {
+                rawN = n1 * d2 + n2 * d1;
+                rawD = d1 * d2;
+            } else if (op === '-') {
+                rawN = n1 * d2 - n2 * d1;
+                rawD = d1 * d2;
+            } else if (op === '*') {
+                rawN = n1 * n2;
+                rawD = d1 * d2;
+            } else {
+                rawN = n1 * d2;
+                rawD = d1 * n2;
+            }
+            if (rawN === 0) return { n: 0, d: 1 };
+            const g = gcd(rawN, rawD);
+            let sn = rawN / g;
+            let sd = rawD / g;
+            if (sd < 0) { sn = -sn; sd = -sd; }
+            return { n: sn, d: sd };
+        }
+
+        function syncAnswerSignBtn(isNeg) {
+            const btn = document.getElementById('ans-sign-btn');
+            btn.textContent = isNeg ? '−' : '+';
+            btn.className = isNeg
+                ? 'w-9 h-9 rounded-lg text-lg font-extrabold flex items-center justify-center transition bg-rose-500 text-white border border-rose-700 active:scale-95'
+                : 'w-9 h-9 rounded-lg text-lg font-extrabold flex items-center justify-center transition bg-slate-200 hover:bg-slate-300 text-slate-900 border border-slate-300 active:scale-95';
+        }
+
+        function toggleAnswerSign() {
+            const numEl = document.getElementById('ans-num');
+            const raw = numEl.value.trim().replace(/−/g, '-');
+            if (raw === '' || raw === '?') {
+                numEl.value = '-';
+                syncAnswerSignBtn(true);
+                return;
+            }
+            if (raw.startsWith('-')) {
+                numEl.value = raw.slice(1);
+                syncAnswerSignBtn(false);
+            } else {
+                numEl.value = '-' + raw;
+                syncAnswerSignBtn(true);
+            }
+        }
+
+        function clearFeedback() {
+            const fb = document.getElementById('practice-feedback');
+            fb.classList.add('hidden');
+            document.getElementById('ans-num').value = '';
+            document.getElementById('ans-den').value = '';
+            syncAnswerSignBtn(false);
+        }
+
+        function checkStudentAnswer() {
+            const rawNumStr = document.getElementById('ans-num').value.trim().replace(/−/g, '-');
+            const rawDenStr = document.getElementById('ans-den').value.trim().replace(/−/g, '-');
+            const userN = parseInt(rawNumStr, 10);
+            const userD = rawDenStr === '' ? 1 : parseInt(rawDenStr, 10);
+            const fb = document.getElementById('practice-feedback');
+
+            if (isNaN(userN) || isNaN(userD) || userD === 0) {
+                fb.className = "mt-2.5 text-xs sm:text-sm font-bold rounded-xl px-3 py-2 bg-amber-100 text-amber-900 border border-amber-300";
+                fb.innerHTML = `
+                    <span class="en-text">⚠️ Please enter valid numbers for numerator and denominator.</span>
+                    <span class="ta-text ta-block">⚠️ தொகுதி மற்றும் பகுதிக்கு சரியான எண்களை உள்ளிடவும்.</span>
+                `;
+                fb.classList.remove('hidden');
+                return;
+            }
+
+            const exact = getExactResult();
+            const isEquivalent = (userN * exact.d === exact.n * userD);
+            const normUserD = userD < 0 ? -userD : userD;
+            const normUserN = userD < 0 ? -userN : userN;
+            const isLowestTerms = (normUserN === exact.n && normUserD === exact.d);
+
+            if (isLowestTerms) {
+                fb.className = "mt-2.5 text-xs sm:text-sm font-bold rounded-xl px-3 py-2 bg-emerald-100 text-emerald-900 border border-emerald-400";
+                fb.innerHTML = `
+                    <span class="en-text">🎉 Excellent! ${exact.n}/${exact.d} is completely correct and in lowest terms!</span>
+                    <span class="ta-text ta-block">🎉 மிகச் சிறப்பு! ${exact.n}/${exact.d} என்பது மிகச்சரியான எளிய வடிவ விடை!</span>
+                `;
+            } else if (isEquivalent) {
+                fb.className = "mt-2.5 text-xs sm:text-sm font-bold rounded-xl px-3 py-2 bg-blue-100 text-blue-900 border border-blue-300";
+                fb.innerHTML = `
+                    <span class="en-text">👍 Equivalent value! Now simplify it to lowest terms (${exact.n}/${exact.d}).</span>
+                    <span class="ta-text ta-block">👍 சமமான மதிப்பு! இதை எளிய வடிவத்திற்குச் சுருக்கவும் (${exact.n}/${exact.d}).</span>
+                `;
+            } else {
+                fb.className = "mt-2.5 text-xs sm:text-sm font-bold rounded-xl px-3 py-2 bg-rose-100 text-rose-900 border border-rose-300";
+                fb.innerHTML = `
+                    <span class="en-text">❌ Not quite right. Check the sign (+ / −) and step-by-step guide below!</span>
+                    <span class="ta-text ta-block">❌ தவறான விடை. குறி (+ / −) மற்றும் கீழே உள்ள படிநிலைகளைச் சரிபார்க்கவும்!</span>
+                `;
+            }
+            fb.classList.remove('hidden');
+        }
+
+        function revealAnswer() {
+            const exact = getExactResult();
+            document.getElementById('ans-num').value = exact.n;
+            document.getElementById('ans-den').value = exact.d;
+            syncAnswerSignBtn(exact.n < 0);
+            const fb = document.getElementById('practice-feedback');
+            fb.className = "mt-2.5 text-xs sm:text-sm font-bold rounded-xl px-3 py-2 bg-indigo-100 text-indigo-900 border border-indigo-300";
+            fb.innerHTML = `
+                <span class="en-text">💡 Simplified Answer: ${exact.n}/${exact.d}</span>
+                <span class="ta-text ta-block">💡 எளிய வடிவ விடை: ${exact.n}/${exact.d}</span>
+            `;
+            fb.classList.remove('hidden');
+        }
+
+        // ==========================================
+        // 5. VISUAL WORKSPACE RENDERERS (SVG - SIGNED SUPPORT)
+        // ==========================================
+        function toggleSplitLCD() {
+            state.splitLCD = !state.splitLCD;
+            renderVisual();
+        }
+
+        function toggleCombineAnim() {
+            state.combineAnimated = !state.combineAnimated;
+            renderVisual();
+        }
+
+        function toggleKCF() {
+            state.kcfActive = !state.kcfActive;
+            renderVisual();
+            renderSteps();
+        }
+
+        function renderVisual() {
+            const { n1, d1, n2, d2, op } = state;
+            const titleEl = document.getElementById('visual-title');
+            const subEl = document.getElementById('visual-subtitle');
+            const controlsEl = document.getElementById('visual-controls');
+            const svgContainer = document.getElementById('svg-container');
+            const legendEl = document.getElementById('visual-legend');
+
+            if (op === '+' || op === '-') {
+                const isAdd = (op === '+');
+                titleEl.innerHTML = isAdd
+                    ? `<span class="en-text">Signed Fraction Bars: Addition</span> <span class="ta-text ta-inline">குறியிட்ட பின்னப் பட்டைகள்: கூட்டல்</span>`
+                    : `<span class="en-text">Signed Fraction Bars: Subtraction</span> <span class="ta-text ta-inline">குறியிட்ட பின்னப் பட்டைகள்: கழித்தல்</span>`;
+                
+                subEl.innerHTML = isAdd
+                    ? `<span class="en-text">Positive (+) = Blue/Green, Negative (−) = Red Debt; Opposite pairs cancel to zero!</span> <span class="ta-text ta-inline">மிகை (+) = நீலம்/பச்சை, குறை (−) = சிவப்பு; எதிர்க் குறிகள் பூஜ்ஜியமாகும்!</span>`
+                    : `<span class="en-text">Subtracting a fraction adds its opposite: a − b = a + (−b)</span> <span class="ta-text ta-inline">ஒரு பின்னத்தைக் கழிப்பது அதன் எதிரெண்ணைக் கூட்டுவதற்குச் சமம்</span>`;
+
+                controlsEl.innerHTML = `
+                    <button type="button" onclick="toggleSplitLCD()" class="px-3 py-1.5 rounded-lg text-xs font-bold transition ${state.splitLCD ? 'bg-amber-400 text-slate-900' : 'bg-slate-700 text-white hover:bg-slate-600'}">
+                        <span class="en-text">${state.splitLCD ? '✓ Split by LCD' : 'Show LCD Splits'}</span>
+                        <span class="ta-text ta-block">${state.splitLCD ? '✓ மீ.சி.ம பிரிப்பு' : 'மீ.சி.ம பிரிப்பு காட்டு'}</span>
+                    </button>
+                    <button type="button" onclick="toggleCombineAnim()" class="px-3 py-1.5 rounded-lg text-xs font-bold transition ${state.combineAnimated ? 'bg-emerald-400 text-slate-900' : 'bg-indigo-500 text-white hover:bg-indigo-400'}">
+                        <span class="en-text">${state.combineAnimated ? 'Reset Bars' : '▶ Combine / Cancel Pairs'}</span>
+                        <span class="ta-text ta-block">${state.combineAnimated ? 'மீட்டமை' : '▶ இணை / பூஜ்ஜியமாக்கு'}</span>
+                    </button>
+                `;
+
+                svgContainer.innerHTML = buildAddSubSVG(n1, d1, n2, d2, isAdd);
+
+                legendEl.innerHTML = `
+                    <span class="inline-flex items-center gap-1.5"><span class="w-4 h-4 rounded bg-blue-500 inline-block"></span> <span class="en-text">Positive (+) Unit</span><span class="ta-text">மிகை (+) பாகம்</span></span>
+                    <span class="inline-flex items-center gap-1.5"><span class="w-4 h-4 rounded bg-rose-500 inline-block"></span> <span class="en-text">Negative (−) Debt Unit</span><span class="ta-text">குறை (−) பாகம்</span></span>
+                    <span class="inline-flex items-center gap-1.5"><span class="w-4 h-4 rounded border-2 border-dashed border-slate-500 bg-slate-200 inline-block"></span> <span class="en-text">Zero-Pair Cancelled (+ & −)</span><span class="ta-text">பூஜ்ஜிய இணை நீக்கம்</span></span>
+                `;
+
+            } else if (op === '*') {
+                const prodSign = (n1 * n2) >= 0 ? '+' : '−';
+                titleEl.innerHTML = `<span class="en-text">Signed Area Model: Multiplication</span> <span class="ta-text ta-inline">குறியிட்ட பரப்பளவு மாதிரி: பெருக்கல்</span>`;
+                subEl.innerHTML = `<span class="en-text">Sign Rule: (${n1 >= 0 ? '+' : '−'}) × (${n2 >= 0 ? '+' : '−'}) = (${prodSign})</span> <span class="ta-text ta-inline">குறி விதி: (${n1 >= 0 ? '+' : '−'}) × (${n2 >= 0 ? '+' : '−'}) = (${prodSign})</span>`;
+                controlsEl.innerHTML = `
+                    <span class="px-3 py-1 rounded-lg text-xs font-extrabold ${prodSign === '+' ? 'bg-blue-500/30 border border-blue-300 text-blue-100' : 'bg-rose-500/30 border border-rose-300 text-rose-100'}">
+                        Product Sign: ${prodSign} (${n1 * n2}/${d1 * d2})
+                    </span>
+                `;
+
+                svgContainer.innerHTML = buildMultiplySVG(n1, d1, n2, d2);
+
+                legendEl.innerHTML = `
+                    <span class="inline-flex items-center gap-1.5"><span class="w-4 h-4 rounded bg-blue-400/60 border border-blue-600 inline-block"></span> <span class="en-text">Rows: ${n1}/${d1}</span><span class="ta-text">நிரைகள்: ${n1}/${d1}</span></span>
+                    <span class="inline-flex items-center gap-1.5"><span class="w-4 h-4 rounded bg-emerald-400/60 border border-emerald-600 inline-block"></span> <span class="en-text">Columns: ${n2}/${d2}</span><span class="ta-text">நிரல்கள்: ${n2}/${d2}</span></span>
+                    <span class="inline-flex items-center gap-1.5"><span class="w-4 h-4 rounded ${prodSign === '+' ? 'bg-indigo-600' : 'bg-rose-600'} inline-block"></span> <span class="en-text">${prodSign === '+' ? 'Positive (+)' : 'Negative (−)'} Overlap: ${n1 * n2}/${d1 * d2}</span><span class="ta-text">${prodSign === '+' ? 'மிகை (+)' : 'குறை (−)'} விடை</span></span>
+                `;
+
+            } else if (op === '/') {
+                const quotSign = (n1 * n2) >= 0 ? '+' : '−';
+                titleEl.innerHTML = `<span class="en-text">Signed Division & Keep-Change-Flip</span> <span class="ta-text ta-inline">குறியிட்ட வகுத்தல் & வைத்திரு-மாற்று-தலைகீழாக்கு</span>`;
+                subEl.innerHTML = `<span class="en-text">Sign Rule: (${n1 >= 0 ? '+' : '−'}) ÷ (${n2 >= 0 ? '+' : '−'}) = (${quotSign})</span> <span class="ta-text ta-inline">குறி விதி: (${n1 >= 0 ? '+' : '−'}) ÷ (${n2 >= 0 ? '+' : '−'}) = (${quotSign})</span>`;
+                
+                controlsEl.innerHTML = `
+                    <button type="button" onclick="toggleKCF()" class="px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-extrabold transition shadow cursor-pointer ${state.kcfActive ? 'bg-emerald-400 text-slate-950' : 'bg-amber-400 text-slate-950 hover:bg-amber-300'}">
+                        <span class="en-text">${state.kcfActive ? '↺ Show Measurement Bar' : '🔄 Keep, Change, Flip!'}</span>
+                        <span class="ta-text ta-block">${state.kcfActive ? '↺ அளவீட்டுப் பட்டை காட்டு' : '🔄 வைத்திரு, மாற்று, தலைகீழாக்கு!'}</span>
+                    </button>
+                `;
+
+                svgContainer.innerHTML = buildDivideSVG(n1, d1, n2, d2);
+
+                legendEl.innerHTML = `
+                    <span class="inline-flex items-center gap-1.5"><span class="w-4 h-4 rounded ${n1 >= 0 ? 'bg-blue-500' : 'bg-rose-500'} inline-block"></span> <span class="en-text">Dividend (${n1}/${d1})</span><span class="ta-text">வகுபடும் எண்</span></span>
+                    <span class="inline-flex items-center gap-1.5"><span class="w-4 h-4 rounded bg-amber-500 inline-block"></span> <span class="en-text">Divisor Magnitude (|${n2}/${d2}|)</span><span class="ta-text">வகுக்கும் எண் அளவு</span></span>
+                `;
+            }
+        }
+
+        // ------------------------------------------
+        // SVG Builder: Signed Addition & Subtraction
+        // ------------------------------------------
+        function buildAddSubSVG(n1, d1, n2, d2, isAdd) {
+            const commonD = lcm(d1, d2);
+            const eqN1 = n1 * (commonD / d1);
+            const eqN2 = n2 * (commonD / d2);
+            // Effective second term after converting subtraction to addition of opposite
+            const effN2 = isAdd ? eqN2 : -eqN2;
+            const resN = eqN1 + effN2;
+
+            const abs1 = Math.abs(eqN1);
+            const abs2 = Math.abs(effN2);
+            const absRes = Math.abs(resN);
+
+            const maxUnits = Math.max(abs1, abs2, absRes, commonD);
+            const maxWholes = Math.max(1, Math.ceil(maxUnits / commonD));
+
+            const svgW = 640;
+            const leftPad = 24;
+            const rightPad = 24;
+            const totalBarAreaW = svgW - leftPad - rightPad;
+            const wholeGap = 14;
+            const singleWholeW = (totalBarAreaW - (maxWholes - 1) * wholeGap) / maxWholes;
+            const barH = 42;
+
+            let svg = `<svg viewBox="0 0 ${svgW} 325" class="w-full max-w-2xl h-auto select-none">`;
+
+            function drawSignedBar(yPos, titleTxt, origN, origD, signedEqN, posColor, negColor) {
+                const isNeg = signedEqN < 0;
+                const activeDen = state.splitLCD ? commonD : origD;
+                const activeAbsNum = state.splitLCD ? Math.abs(signedEqN) : Math.abs(origN);
+                const numWholes = Math.max(1, Math.ceil(activeAbsNum / activeDen));
+                const fill = isNeg ? negColor : posColor;
+
+                let out = `
+                    <text x="${leftPad}" y="${yPos - 9}" font-size="13" font-weight="800" fill="${isNeg ? '#be123c' : '#1e293b'}">
+                        ${titleTxt} (${origN}/${origD}${state.splitLCD && origD !== commonD ? ` = ${signedEqN}/${commonD}` : ''}) ${isNeg ? '[Negative / குறை]' : '[Positive / மிகை]'}
+                    </text>
+                `;
+
+                for (let w = 0; w < numWholes; w++) {
+                    const bx = leftPad + w * (singleWholeW + wholeGap);
+                    const subW = singleWholeW / activeDen;
+
+                    for (let i = 0; i < activeDen; i++) {
+                        const globalIdx = w * activeDen + i;
+                        const isShaded = globalIdx < activeAbsNum;
+                        out += `<rect x="${bx + i * subW}" y="${yPos}" width="${subW}" height="${barH}" fill="${isShaded ? fill : '#ffffff'}" stroke="#64748b" stroke-width="1" class="svg-piece"/>`;
+                        if (isShaded && subW > 14) {
+                            out += `<text x="${bx + (i + 0.5) * subW}" y="${yPos + 26}" text-anchor="middle" font-size="12" font-weight="800" fill="#ffffff">${isNeg ? '−' : '+'}</text>`;
+                        }
+                    }
+
+                    if (state.splitLCD && origD !== commonD) {
+                        const origSubW = singleWholeW / origD;
+                        for (let k = 1; k < origD; k++) {
+                            out += `<line x1="${bx + k * origSubW}" y1="${yPos}" x2="${bx + k * origSubW}" y2="${yPos + barH}" stroke="#0f172a" stroke-width="1.5" stroke-dasharray="4,3"/>`;
+                        }
+                    }
+                    out += `<rect x="${bx}" y="${yPos}" width="${singleWholeW}" height="${barH}" fill="none" stroke="#0f172a" stroke-width="2.5" rx="4"/>`;
+                }
+                return out;
+            }
+
+            // Row 1: Fraction 1
+            svg += drawSignedBar(32, "Fraction 1", n1, d1, eqN1, "#3b82f6", "#f43f5e");
+
+            // Row 2: Fraction 2 (or its additive inverse when subtracting)
+            const row2Label = isAdd
+                ? "Add Fraction 2 (+)"
+                : `Subtract (${n2}/${d2}) = Add Opposite (${-n2}/${d2})`;
+            svg += drawSignedBar(118, row2Label, isAdd ? n2 : -n2, d2, effN2, "#10b981", "#e11d48");
+
+            // Divider
+            svg += `<line x1="${leftPad}" y1="184" x2="${svgW - rightPad}" y2="184" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="6,4"/>`;
+
+            // Row 3: Net Result + Zero-Pair Cancellation Visualization
+            const resY = 216;
+            const sameSign = (eqN1 >= 0 && effN2 >= 0) || (eqN1 < 0 && effN2 < 0);
+            const cancelledPairs = sameSign ? 0 : Math.min(abs1, abs2);
+            const resIsNeg = resN < 0;
+
+            const statusNote = cancelledPairs > 0
+                ? `Result / விடை = ${resN}/${commonD} (${cancelledPairs} zero-pair${cancelledPairs > 1 ? 's' : ''} cancelled)`
+                : `Result / விடை = ${resN}/${commonD}`;
+
+            svg += `<text x="${leftPad}" y="${resY - 9}" font-size="13.5" font-weight="800" fill="${resIsNeg ? '#be123c' : '#1e1b4b'}">${statusNote}</text>`;
+
+            const totalDrawnUnits = state.combineAnimated ? (absRes + cancelledPairs) : absRes;
+            const resWholes = Math.max(1, Math.ceil(totalDrawnUnits / commonD));
+
+            for (let w = 0; w < resWholes; w++) {
+                const bx = leftPad + w * (singleWholeW + wholeGap);
+                const subW = singleWholeW / commonD;
+
+                for (let i = 0; i < commonD; i++) {
+                    const globalIdx = w * commonD + i;
+                    let cellFill = '#ffffff';
+                    let symbol = '';
+                    let opacity = 1;
+
+                    if (globalIdx < absRes) {
+                        cellFill = resIsNeg ? '#e11d48' : '#2563eb';
+                        symbol = resIsNeg ? '−' : '+';
+                    } else if (state.combineAnimated && globalIdx < absRes + cancelledPairs) {
+                        cellFill = '#cbd5e1';
+                        symbol = '0';
+                        opacity = 0.75;
+                    }
+
+                    svg += `<rect x="${bx + i * subW}" y="${resY}" width="${subW}" height="${barH}" fill="${cellFill}" fill-opacity="${opacity}" stroke="#64748b" stroke-width="1" class="svg-piece"/>`;
+                    if (symbol && subW > 14) {
+                        svg += `<text x="${bx + (i + 0.5) * subW}" y="${resY + 26}" text-anchor="middle" font-size="12" font-weight="800" fill="${symbol === '0' ? '#334155' : '#ffffff'}">${symbol}</text>`;
+                    }
+                }
+                svg += `<rect x="${bx}" y="${resY}" width="${singleWholeW}" height="${barH}" fill="none" stroke="#1e1b4b" stroke-width="2.5" rx="4"/>`;
+            }
+
+            // Bottom educational sign-rule pill
+            svg += `
+                <rect x="${leftPad}" y="274" width="${totalBarAreaW}" height="34" rx="8" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+                <text x="${svgW / 2}" y="295" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">
+                    ${cancelledPairs > 0
+                        ? `Each (+1/${commonD}) and (−1/${commonD}) cancel out to 0! Remaining = ${resN}/${commonD}`
+                        : `Same signs combine together: (${eqN1}/${commonD}) + (${effN2}/${commonD}) = ${resN}/${commonD}`}
+                </text>
+            `;
+
+            svg += `</svg>`;
+            return svg;
+        }
+
+        // ------------------------------------------
+        // SVG Builder: Signed Multiplication Area Model
+        // ------------------------------------------
+        function buildMultiplySVG(n1, d1, n2, d2) {
+            const absN1 = Math.abs(n1);
+            const absN2 = Math.abs(n2);
+            const unitsY = Math.max(1, Math.ceil(absN1 / d1));
+            const unitsX = Math.max(1, Math.ceil(absN2 / d2));
+
+            const totalRows = unitsY * d1;
+            const totalCols = unitsX * d2;
+
+            const svgW = 560;
+            const svgH = 425;
+            const startX = 95;
+            const startY = 65;
+            const maxGridW = 390;
+            const maxGridH = 285;
+
+            const unitSize = Math.min(maxGridW / unitsX, maxGridH / unitsY);
+            const gridW = unitSize * unitsX;
+            const gridH = unitSize * unitsY;
+
+            const cellW = gridW / totalCols;
+            const cellH = gridH / totalRows;
+
+            const isPositiveProd = (n1 * n2) >= 0;
+            const overlapFill = isPositiveProd ? '#4f46e5' : '#e11d48'; // Indigo for +, Crimson for -
+            const overlapStroke = isPositiveProd ? '#1e1b4b' : '#881337';
+
+            let svg = `<svg viewBox="0 0 ${svgW} ${svgH}" class="w-full max-w-xl h-auto select-none">`;
+
+            // Top Label (Fraction 2 - Columns)
+            svg += `
+                <text x="${startX + gridW / 2}" y="25" text-anchor="middle" font-size="14" font-weight="800" fill="${n2 < 0 ? '#be123c' : '#065f46'}">
+                    Fraction 2 (Columns / நிரல்கள்): ${n2}/${d2} ${n2 < 0 ? '(−)' : '(+)'}
+                </text>
+                <line x1="${startX}" y1="38" x2="${startX + absN2 * cellW}" y2="38" stroke="${n2 < 0 ? '#f43f5e' : '#10b981'}" stroke-width="4" stroke-linecap="round"/>
+            `;
+
+            // Left Label (Fraction 1 - Rows)
+            svg += `
+                <text x="15" y="${startY + gridH / 2}" font-size="13" font-weight="800" fill="${n1 < 0 ? '#be123c' : '#1e40af'}" transform="rotate(-90, 22, ${startY + gridH / 2})" text-anchor="middle">
+                    Rows / நிரைகள்: ${n1}/${d1} ${n1 < 0 ? '(−)' : '(+)'}
+                </text>
+                <line x1="${startX - 12}" y1="${startY}" x2="${startX - 12}" y2="${startY + absN1 * cellH}" stroke="${n1 < 0 ? '#f43f5e' : '#3b82f6'}" stroke-width="4" stroke-linecap="round"/>
+            `;
+
+            // Draw Grid Cells
+            for (let r = 0; r < totalRows; r++) {
+                for (let c = 0; c < totalCols; c++) {
+                    const inRow = r < absN1;
+                    const inCol = c < absN2;
+                    let fill = '#ffffff';
+                    if (inRow && inCol) {
+                        fill = overlapFill;
+                    } else if (inRow) {
+                        fill = n1 < 0 ? '#fda4af' : '#93c5fd';
+                    } else if (inCol) {
+                        fill = n2 < 0 ? '#fed7aa' : '#6ee7b7';
+                    }
+
+                    svg += `<rect x="${startX + c * cellW}" y="${startY + r * cellH}" width="${cellW}" height="${cellH}" fill="${fill}" stroke="#64748b" stroke-width="1" class="svg-piece"/>`;
+                }
+            }
+
+            // Bold borders around each 1x1 Unit Square
+            for (let uy = 0; uy < unitsY; uy++) {
+                for (let ux = 0; ux < unitsX; ux++) {
+                    svg += `<rect x="${startX + ux * unitSize}" y="${startY + uy * unitSize}" width="${unitSize}" height="${unitSize}" fill="none" stroke="#0f172a" stroke-width="2.5"/>`;
+                }
+            }
+
+            // Highlight border around overlapping region
+            if (absN1 > 0 && absN2 > 0) {
+                svg += `<rect x="${startX}" y="${startY}" width="${absN2 * cellW}" height="${absN1 * cellH}" fill="none" stroke="${overlapStroke}" stroke-width="3.5" class="pulse-highlight"/>`;
+            }
+
+            // Bottom Sign Rule & Area Formula
+            const s1 = n1 >= 0 ? '+' : '−';
+            const s2 = n2 >= 0 ? '+' : '−';
+            const sRes = isPositiveProd ? '+' : '−';
+            svg += `
+                <text x="${startX + gridW / 2}" y="${startY + gridH + 26}" text-anchor="middle" font-size="13.5" font-weight="800" fill="${isPositiveProd ? '#1e1b4b' : '#be123c'}">
+                    Sign Rule: (${s1}) × (${s2}) = (${sRes})  |  Product = (${n1} × ${n2}) / (${d1} × ${d2}) = ${n1 * n2}/${d1 * d2}
+                </text>
+            `;
+
+            svg += `</svg>`;
+            return svg;
+        }
+
+        // ------------------------------------------
+        // SVG Builder: Signed Division & Keep-Change-Flip
+        // ------------------------------------------
+        function buildDivideSVG(n1, d1, n2, d2) {
+            const isPosQuot = (n1 * n2) >= 0;
+            const s1 = n1 >= 0 ? '+' : '−';
+            const s2 = n2 >= 0 ? '+' : '−';
+            const sRes = isPosQuot ? '+' : '−';
+
+            // Normalized reciprocal: keep negative sign in numerator for clarity
+            const flipN = n2 < 0 ? -d2 : d2;
+            const flipD = Math.abs(n2);
+
+            if (state.kcfActive) {
+                const svgW = 620;
+                const svgH = 295;
+                return `
+                    <svg viewBox="0 0 ${svgW} ${svgH}" class="w-full max-w-2xl h-auto select-none">
+                        <rect x="20" y="15" width="580" height="265" rx="16" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+                        
+                        <text x="310" y="46" text-anchor="middle" font-size="15.5" font-weight="800" fill="#1e1b4b">
+                            Keep – Change – Flip Rule (வைத்திரு – மாற்று – தலைகீழாக்கு)
+                        </text>
+
+                        <!-- Column 1: KEEP -->
+                        <rect x="45" y="70" width="150" height="135" rx="14" fill="#eff6ff" stroke="#3b82f6" stroke-width="2.5"/>
+                        <text x="120" y="95" text-anchor="middle" font-size="13" font-weight="800" fill="#1d4ed8">1. KEEP / வைத்திரு</text>
+                        <text x="120" y="138" text-anchor="middle" font-size="24" font-weight="800" fill="#1e3a8a">${n1}</text>
+                        <line x1="95" y1="148" x2="145" y2="148" stroke="#1e3a8a" stroke-width="3"/>
+                        <text x="120" y="176" text-anchor="middle" font-size="24" font-weight="800" fill="#1e3a8a">${d1}</text>
+
+                        <!-- Column 2: CHANGE -->
+                        <rect x="235" y="70" width="150" height="135" rx="14" fill="#fef3c7" stroke="#f59e0b" stroke-width="2.5"/>
+                        <text x="310" y="95" text-anchor="middle" font-size="13" font-weight="800" fill="#b45309">2. CHANGE / மாற்று</text>
+                        <text x="310" y="134" text-anchor="middle" font-size="15" font-weight="700" fill="#92400e">÷  ➔  ×</text>
+                        <text x="310" y="172" text-anchor="middle" font-size="32" font-weight="800" fill="#b45309">×</text>
+
+                        <!-- Column 3: FLIP -->
+                        <rect x="425" y="70" width="150" height="135" rx="14" fill="#ecfdf5" stroke="#10b981" stroke-width="2.5"/>
+                        <text x="500" y="95" text-anchor="middle" font-size="13" font-weight="800" fill="#047857">3. FLIP / தலைகீழாக்கு</text>
+                        <text x="500" y="138" text-anchor="middle" font-size="24" font-weight="800" fill="#065f46">${flipN}</text>
+                        <line x1="475" y1="148" x2="525" y2="148" stroke="#065f46" stroke-width="3"/>
+                        <text x="500" y="176" text-anchor="middle" font-size="24" font-weight="800" fill="#065f46">${flipD}</text>
+
+                        <!-- Resulting Multiplication Equation -->
+                        <text x="310" y="236" text-anchor="middle" font-size="15.5" font-weight="800" fill="#0f172a">
+                            = (${n1} × ${flipN}) / (${d1} × ${flipD}) = ${n1 * flipN} / ${d1 * flipD}
+                        </text>
+                        <text x="310" y="258" text-anchor="middle" font-size="12.5" font-weight="700" fill="${isPosQuot ? '#047857' : '#be123c'}">
+                            Sign Rule: (${s1}) ÷ (${s2}) = (${sRes})
+                        </text>
+                    </svg>
+                `;
+            }
+
+            // Measurement Bar Model using common denominator & absolute magnitudes + sign badge
+            const commonD = lcm(d1, d2);
+            const eqN1 = n1 * (commonD / d1);
+            const eqN2 = n2 * (commonD / d2);
+            const absEqN1 = Math.abs(eqN1);
+            const absEqN2 = Math.abs(eqN2);
+
+            const maxUnits = Math.max(absEqN1, absEqN2, commonD);
+            const totalWholes = Math.ceil(maxUnits / commonD);
+            const totalSubdivisions = totalWholes * commonD;
+
+            const svgW = 640;
+            const leftPad = 24;
+            const barW = svgW - 48;
+            const subW = barW / totalSubdivisions;
+            const barH = 46;
+
+            const fullFits = Math.floor(absEqN1 / absEqN2);
+            const remainder = absEqN1 % absEqN2;
+
+            let svg = `<svg viewBox="0 0 ${svgW} 285" class="w-full max-w-2xl h-auto select-none">`;
+
+            // Bar 1: Dividend
+            svg += `<text x="${leftPad}" y="26" font-size="13" font-weight="800" fill="${n1 < 0 ? '#be123c' : '#1e3a8a'}">Dividend (வகுபடும் எண்): ${n1}/${d1} = ${eqN1}/${commonD} ${n1 < 0 ? '[Negative / குறை]' : '[Positive / மிகை]'}</text>`;
+            for (let i = 0; i < totalSubdivisions; i++) {
+                const fill = i < absEqN1 ? (n1 < 0 ? '#f43f5e' : '#3b82f6') : '#ffffff';
+                svg += `<rect x="${leftPad + i * subW}" y="36" width="${subW}" height="${barH}" fill="${fill}" stroke="#64748b" stroke-width="1"/>`;
+            }
+            for (let w = 0; w < totalWholes; w++) {
+                svg += `<rect x="${leftPad + w * commonD * subW}" y="36" width="${commonD * subW}" height="${barH}" fill="none" stroke="#0f172a" stroke-width="2.5"/>`;
+            }
+
+            // Bar 2: Divisor steps
+            const y2 = 132;
+            svg += `<text x="${leftPad}" y="${y2 - 10}" font-size="13" font-weight="800" fill="#b45309">Divisor Size (வகுக்கும் எண் அளவு): |${n2}/${d2}| = ${absEqN2}/${commonD}</text>`;
+            
+            const chunkColors = ['#f59e0b', '#10b981', '#8b5cf6', '#ec4899', '#06b6d4', '#f97316'];
+            const numChunks = Math.ceil(absEqN1 / absEqN2);
+
+            for (let c = 0; c < numChunks; c++) {
+                const startIdx = c * absEqN2;
+                const chunkLen = Math.min(absEqN2, absEqN1 - startIdx);
+                const isPartial = (startIdx + absEqN2 > absEqN1);
+                const color = chunkColors[c % chunkColors.length];
+
+                svg += `<rect x="${leftPad + startIdx * subW}" y="${y2}" width="${chunkLen * subW}" height="${barH}" fill="${color}" fill-opacity="${isPartial ? '0.55' : '0.9'}" stroke="#0f172a" stroke-width="2"/>`;
+                
+                if (isPartial && (startIdx + absEqN2) <= totalSubdivisions) {
+                    svg += `<rect x="${leftPad + startIdx * subW}" y="${y2}" width="${absEqN2 * subW}" height="${barH}" fill="none" stroke="#b45309" stroke-width="2" stroke-dasharray="4,3"/>`;
+                }
+
+                const labelX = leftPad + (startIdx + chunkLen / 2) * subW;
+                const labelTxt = isPartial ? `${remainder}/${absEqN2}` : `#${c + 1}`;
+                if (chunkLen * subW > 22) {
+                    svg += `<text x="${labelX}" y="${y2 + 28}" text-anchor="middle" font-size="12" font-weight="800" fill="#ffffff">${labelTxt}</text>`;
+                }
+            }
+
+            const signedSignedMag = isPosQuot ? `${absEqN1}/${absEqN2}` : `−${absEqN1}/${absEqN2}`;
+            svg += `
+                <rect x="${leftPad}" y="202" width="${barW}" height="62" rx="12" fill="${isPosQuot ? '#eef2ff' : '#fff1f2'}" stroke="${isPosQuot ? '#6366f1' : '#f43f5e'}" stroke-width="1.5"/>
+                <text x="${svgW / 2}" y="226" text-anchor="middle" font-size="13" font-weight="800" fill="#0f172a">
+                    Sign Rule: (${s1}) ÷ (${s2}) = (${sRes})  |  Magnitude Fit = ${absEqN1}/${absEqN2}  ➔  Quotient = ${signedSignedMag}
+                </text>
+                <text x="${svgW / 2}" y="248" text-anchor="middle" font-size="12" font-weight="700" fill="${isPosQuot ? '#3730a3' : '#be123c'}">
+                    குறி விதி: (${s1}) ÷ (${s2}) = (${sRes}) | ஈவு = ${signedSignedMag}
+                </text>
+            `;
+
+            svg += `</svg>`;
+            return svg;
+        }
+
+        // ==========================================
+        // 6. STEP-BY-STEP EXPLANATION BUILDER (SIGNED SUPPORT)
+        // ==========================================
+        function renderSteps() {
+            const { n1, d1, n2, d2, op } = state;
+            const container = document.getElementById('steps-container');
+            let steps = [];
+
+            const opSymbol = op === '*' ? '×' : (op === '/' ? '÷' : (op === '-' ? '−' : '+'));
+
+            // Step 0: Problem Statement
+            steps.push({
+                badge: '0',
+                color: 'bg-slate-700',
+                enTitle: 'Given Problem',
+                taTitle: 'கொடுக்கப்பட்ட கணக்கு',
+                content: `
+                    <div class="text-lg sm:text-xl font-extrabold flex items-center gap-2 py-1">
+                        ${formatFracHTML(n1, d1, n1 < 0 ? 'text-rose-700' : 'text-blue-700')}
+                        <span>${opSymbol}</span>
+                        ${formatFracHTML(n2, d2, n2 < 0 ? 'text-rose-700' : 'text-emerald-700')}
+                    </div>
+                `
+            });
+
+            if (op === '+' || op === '-') {
+                const isAdd = (op === '+');
+                const commonD = lcm(d1, d2);
+                const m1 = commonD / d1;
+                const m2 = commonD / d2;
+                const eqN1 = n1 * m1;
+                const eqN2 = n2 * m2;
+
+                steps.push({
+                    badge: '1',
+                    color: 'bg-blue-600',
+                    enTitle: 'Find Least Common Denominator (LCD)',
+                    taTitle: 'மீச்சிறு பொது மடங்கு (மீ.சி.ம) காண்க',
+                    content: `
+                        <p class="text-sm text-slate-700">
+                            <span class="en-text">The denominators are <b>${d1}</b> and <b>${d2}</b>. Their LCM is <b>${commonD}</b>.</span>
+                            <span class="ta-text ta-block text-slate-600">பகுதிகள் <b>${d1}</b> மற்றும் <b>${d2}</b> ஆகியவற்றின் மீ.சி.ம = <b>${commonD}</b>.</span>
+                        </p>
+                    `
+                });
+
+                steps.push({
+                    badge: '2',
+                    color: 'bg-indigo-600',
+                    enTitle: 'Convert to Equivalent Fractions (Keep Signs)',
+                    taTitle: 'சமானப் பின்னங்களாக மாற்றுக (குறிகளைத் தக்கவைக்க)',
+                    content: `
+                        <div class="space-y-1.5 text-sm font-semibold">
+                            <div class="flex items-center flex-wrap gap-1">
+                                ${formatFracHTML(n1, d1, 'text-blue-700')} = ${formatFracHTML(`${n1} × ${m1}`, `${d1} × ${m1}`, 'text-blue-700')} = ${formatFracHTML(eqN1, commonD, 'text-blue-800')}
+                            </div>
+                            <div class="flex items-center flex-wrap gap-1">
+                                ${formatFracHTML(n2, d2, 'text-emerald-700')} = ${formatFracHTML(`${n2} × ${m2}`, `${d2} × ${m2}`, 'text-emerald-700')} = ${formatFracHTML(eqN2, commonD, 'text-emerald-800')}
+                            </div>
+                        </div>
+                    `
+                });
+
+                const rawResN = isAdd ? (eqN1 + eqN2) : (eqN1 - eqN2);
+                const signNoteEn = !isAdd && eqN2 < 0
+                    ? `Subtracting a negative (${eqN2}/${commonD}) becomes adding positive (+${Math.abs(eqN2)}/${commonD}).`
+                    : `Combine the signed numerators over the common denominator ${commonD}.`;
+                const signNoteTa = !isAdd && eqN2 < 0
+                    ? `குறை எண்ணைக் கழிப்பது மிகை எண்ணைக் கூட்டுவதற்குச் சமம்: −(${eqN2}) = +${Math.abs(eqN2)}.`
+                    : `பொதுப் பகுதி ${commonD}-ன் மேல் குறியிட்ட தொகுதிகளைக் கணக்கிடுக.`;
+
+                steps.push({
+                    badge: '3',
+                    color: 'bg-amber-600',
+                    enTitle: isAdd ? 'Add Signed Numerators' : 'Subtract Signed Numerators',
+                    taTitle: isAdd ? 'குறியிட்ட தொகுதிகளைக் கூட்டுக' : 'குறியிட்ட தொகுதிகளைக் கழிக்க',
+                    content: `
+                        <p class="text-xs text-slate-600 mb-1.5">
+                            <span class="en-text">${signNoteEn}</span>
+                            <span class="ta-text ta-block">${signNoteTa}</span>
+                        </p>
+                        <div class="text-base font-bold flex items-center flex-wrap gap-1.5">
+                            ${formatFracHTML(eqN1, commonD, 'text-blue-800')}
+                            <span>${opSymbol}</span>
+                            ${formatFracHTML(eqN2 < 0 ? `(${eqN2})` : eqN2, commonD, 'text-emerald-800')}
+                            <span>=</span>
+                            ${formatFracHTML(`${eqN1} ${opSymbol} ${eqN2 < 0 ? `(${eqN2})` : eqN2}`, commonD, 'text-slate-900')}
+                            <span>=</span>
+                            ${formatFracHTML(rawResN, commonD, 'text-indigo-800')}
+                        </div>
+                    `
+                });
+
+                addSimplificationStep(steps, '4', rawResN, commonD);
+
+            } else if (op === '*') {
+                const s1 = n1 >= 0 ? '+' : '−';
+                const s2 = n2 >= 0 ? '+' : '−';
+                const sProd = (n1 * n2) >= 0 ? '+' : '−';
+
+                steps.push({
+                    badge: '1',
+                    color: 'bg-rose-600',
+                    enTitle: `Determine Product Sign: (${s1}) × (${s2}) = (${sProd})`,
+                    taTitle: `பெருக்கல் குறி விதி: (${s1}) × (${s2}) = (${sProd})`,
+                    content: `
+                        <p class="text-xs sm:text-sm text-slate-700">
+                            <span class="en-text">${sProd === '+' ? 'Same signs multiply to give a <b>Positive (+)</b> result.' : 'Different signs multiply to give a <b>Negative (−)</b> result.'}</span>
+                            <span class="ta-text ta-block">${sProd === '+' ? 'ஒரே குறிகளைப் பெருக்கினால் <b>மிகை (+)</b> விடை கிடைக்கும்.' : 'வெவ்வேறு குறிகளைப் பெருக்கினால் <b>குறை (−)</b> விடை கிடைக்கும்.'}</span>
+                        </p>
+                    `
+                });
+
+                const g1 = gcd(n1, d2);
+                const g2 = gcd(n2, d1);
+                if (g1 > 1 || g2 > 1) {
+                    steps.push({
+                        badge: '2',
+                        color: 'bg-teal-600',
+                        enTitle: 'Cross-Cancel Common Factors',
+                        taTitle: 'குறுக்குச் சுருக்கல்',
+                        content: `
+                            <div class="text-base font-bold flex items-center gap-1.5">
+                                ${formatFracHTML(n1 / g1, d1 / g2, 'text-blue-700')} × ${formatFracHTML(n2 / g2, d2 / g1, 'text-emerald-700')}
+                            </div>
+                        `
+                    });
+                }
+
+                const rawN = n1 * n2;
+                const rawD = d1 * d2;
+                steps.push({
+                    badge: (g1 > 1 || g2 > 1) ? '3' : '2',
+                    color: 'bg-amber-600',
+                    enTitle: 'Multiply Numerators & Denominators',
+                    taTitle: 'தொகுதிகளையும் பகுதிகளையும் பெருக்குக',
+                    content: `
+                        <div class="text-base font-bold flex items-center flex-wrap gap-1.5">
+                            ${formatFracHTML(`${n1} × ${n2}`, `${d1} × ${d2}`, 'text-slate-900')}
+                            <span>=</span>
+                            ${formatFracHTML(rawN, rawD, 'text-indigo-800')}
+                        </div>
+                    `
+                });
+
+                addSimplificationStep(steps, (g1 > 1 || g2 > 1) ? '4' : '3', rawN, rawD);
+
+            } else if (op === '/') {
+                const s1 = n1 >= 0 ? '+' : '−';
+                const s2 = n2 >= 0 ? '+' : '−';
+                const sQuot = (n1 * n2) >= 0 ? '+' : '−';
+                const flipN = n2 < 0 ? -d2 : d2;
+                const flipD = Math.abs(n2);
+
+                steps.push({
+                    badge: '1',
+                    color: 'bg-amber-600',
+                    enTitle: 'Keep, Change, Flip (Multiply by Reciprocal)',
+                    taTitle: 'வைத்திரு, மாற்று, தலைகீழாக்கு (தலைகீழியால் பெருக்குக)',
+                    content: `
+                        <p class="text-xs sm:text-sm text-slate-700 mb-1.5">
+                            <span class="en-text">Keep <b>${n1}/${d1}</b>, change <b>÷</b> to <b>×</b>, and flip <b>${n2}/${d2}</b> to its reciprocal <b>${flipN}/${flipD}</b>:</span>
+                            <span class="ta-text ta-block">முதல் பின்னத்தை வைத்து, <b>÷</b> ஐ <b>×</b> ஆக மாற்றி, <b>${n2}/${d2}</b> இன் தலைகீழி <b>${flipN}/${flipD}</b> ஆல் பெருக்குக:</span>
+                        </p>
+                        <div class="text-base font-bold flex items-center gap-1.5">
+                            ${formatFracHTML(n1, d1, 'text-blue-700')} × ${formatFracHTML(flipN, flipD, 'text-emerald-700')}
+                        </div>
+                    `
+                });
+
+                const rawN = n1 * flipN;
+                const rawD = d1 * flipD;
+                steps.push({
+                    badge: '2',
+                    color: 'bg-indigo-600',
+                    enTitle: `Multiply Across (Sign: (${s1}) ÷ (${s2}) = (${sQuot}))`,
+                    taTitle: `தொகுதி, பகுதிகளைப் பெருக்குக (குறி: (${s1}) ÷ (${s2}) = (${sQuot}))`,
+                    content: `
+                        <div class="text-base font-bold flex items-center flex-wrap gap-1.5">
+                            ${formatFracHTML(`${n1} × ${flipN}`, `${d1} × ${flipD}`, 'text-slate-900')}
+                            <span>=</span>
+                            ${formatFracHTML(rawN, rawD, 'text-indigo-800')}
+                        </div>
+                    `
+                });
+
+                addSimplificationStep(steps, '3', rawN, rawD);
+            }
+
+            container.innerHTML = steps.map(s => `
+                <div class="step-card bg-slate-50 border border-slate-200 rounded-xl p-3.5">
+                    <div class="flex items-start gap-3">
+                        <span class="${s.color} text-white font-extrabold w-7 h-7 rounded-full flex items-center justify-center text-xs shrink-0 mt-0.5 shadow-sm">
+                            ${s.badge}
+                        </span>
+                        <div class="flex-grow">
+                            <h3 class="text-sm font-extrabold text-slate-900">
+                                <span class="en-text">${s.enTitle}</span>
+                                <span class="ta-text ta-block text-xs text-indigo-800">${s.taTitle}</span>
+                            </h3>
+                            <div class="mt-2">
+                                ${s.content}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addSimplificationStep(steps, stepNum, rawN, rawD) {
+            if (rawD < 0) { rawN = -rawN; rawD = -rawD; }
+            if (rawN === 0) {
+                steps.push({
+                    badge: stepNum,
+                    color: 'bg-emerald-600',
+                    enTitle: 'Final Simplified Answer',
+                    taTitle: 'இறுதி எளிய வடிவ விடை',
+                    content: `<div class="text-xl font-extrabold text-emerald-700">0</div>`
+                });
+                return;
+            }
+
+            const g = gcd(rawN, rawD);
+            const simpN = rawN / g;
+            const simpD = rawD / g;
+            const isImproper = Math.abs(simpN) > simpD && simpD > 1;
+
+            let html = '';
+            if (g > 1) {
+                html += `
+                    <p class="text-xs sm:text-sm text-slate-700 mb-1.5">
+                        <span class="en-text">Divide numerator & denominator by GCD (<b>${g}</b>):</span>
+                        <span class="ta-text ta-block">தொகுதி மற்றும் பகுதியை மீ.பொ.வ (<b>${g}</b>) ஆல் வகுத்துச் சுருக்குக:</span>
+                    </p>
+                    <div class="text-base font-bold flex items-center flex-wrap gap-1.5 mb-2">
+                        ${formatFracHTML(`${rawN} ÷ ${g}`, `${rawD} ÷ ${g}`, 'text-slate-800')}
+                        <span>=</span>
+                        ${formatFracHTML(simpN, simpD, simpN < 0 ? 'text-rose-700' : 'text-emerald-700')}
+                    </div>
+                `;
+            } else {
+                html += `
+                    <p class="text-xs sm:text-sm text-slate-700 mb-1.5">
+                        <span class="en-text">Already in lowest terms (GCD = 1):</span>
+                        <span class="ta-text ta-block">ஏற்கனவே எளிய வடிவத்தில் உள்ளது (மீ.பொ.வ = 1):</span>
+                    </p>
+                    <div class="text-lg font-extrabold flex items-center gap-1.5 mb-2">
+                        ${formatFracHTML(simpN, simpD, simpN < 0 ? 'text-rose-700' : 'text-emerald-700')}
+                    </div>
+                `;
+            }
+
+            if (isImproper) {
+                html += `
+                    <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-2.5 mt-1">
+                        <span class="text-xs font-bold text-emerald-900 block mb-1">
+                            <span class="en-text">Mixed Number Form:</span>
+                            <span class="ta-text ta-inline">கலப்பு பின்ன வடிவம்:</span>
+                        </span>
+                        <div class="text-lg font-extrabold">
+                            ${formatMixedHTML(simpN, simpD)}
+                        </div>
+                    </div>
+                `;
+            }
+
+            steps.push({
+                badge: stepNum,
+                color: 'bg-emerald-600',
+                enTitle: 'Simplify to Lowest Terms',
+                taTitle: 'எளிய வடிவத்திற்குச் சுருக்குக (இறுதி விடை)',
+                content: html
+            });
+        }
+
+        // ==========================================
+        // 7. INITIALIZATION & EVENT LISTENERS
+        // ==========================================
+        function updateAll() {
+            renderVisual();
+            renderSteps();
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            ['num1', 'den1', 'num2', 'den2'].forEach(id => {
+                const el = document.getElementById(id);
+                el.addEventListener('input', handleInputChange);
+                el.addEventListener('change', handleInputChange);
+                el.addEventListener('blur', handleInputChange);
+            });
+
+            document.getElementById('ans-num').addEventListener('input', (e) => {
+                const val = e.target.value.trim().replace(/−/g, '-');
+                syncAnswerSignBtn(val.startsWith('-'));
+            });
+
+            ['ans-num', 'ans-den'].forEach(id => {
+                document.getElementById(id).addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') checkStudentAnswer();
+                });
+            });
+
+            syncSignButtons();
+            updateAll();
+        });
+    </script>
+</body>
+</html>
