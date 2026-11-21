@@ -1,0 +1,1764 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>கணிதக் காட்சிப்படுத்தல்கள் | Math Simulations — GHS, Ottimedu</title>
+    <style>
+        :root {
+            --navy-950: #0b1f3a;
+            --navy-900: #142d4e;
+            --navy-800: #1d406e;
+            --teal-700: #0f766e;
+            --teal-600: #0d9488;
+            --teal-50: #f0fdfa;
+            --gold-600: #d97706;
+            --gold-500: #f59e0b;
+            --gold-100: #fef3c7;
+            --gold-50: #fffbeb;
+            --bg: #f3f6fa;
+            --surface: #ffffff;
+            --surface-soft: #f8fafc;
+            --ink-900: #0f172a;
+            --ink-700: #334155;
+            --ink-500: #64748b;
+            --border: #e2e8f0;
+            --border-strong: #cbd5e1;
+            --radius-xl: 20px;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --shadow-xs: 0 1px 3px rgba(15, 23, 42, 0.05);
+            --shadow-sm: 0 4px 14px rgba(15, 23, 42, 0.055);
+            --shadow-md: 0 10px 26px -6px rgba(20, 45, 78, 0.10), 0 4px 10px -2px rgba(15, 23, 42, 0.04);
+            --shadow-lg: 0 18px 36px -8px rgba(20, 45, 78, 0.14), 0 6px 14px -4px rgba(15, 23, 42, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Noto Sans Tamil', 'Mukta Malar', 'Latha', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg);
+            background-image:
+                linear-gradient(to right, rgba(148, 163, 184, 0.07) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(148, 163, 184, 0.07) 1px, transparent 1px);
+            background-size: 36px 36px;
+            color: var(--ink-900);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.55;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ================= CLEAN WHITE EDITORIAL HERO ================= */
+        .hero {
+            position: relative;
+            background: #ffffff;
+            color: var(--ink-900);
+            overflow: hidden;
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.045);
+        }
+
+        /* Crisp institutional top accent stripe */
+        .hero-top-stripe {
+            height: 5px;
+            width: 100%;
+            background: linear-gradient(90deg, var(--navy-900) 0%, var(--navy-800) 45%, var(--teal-600) 78%, var(--gold-500) 100%);
+        }
+
+        /* Subtle watermark math vector line art on white */
+        .hero-bg-art {
+            position: absolute;
+            inset: 5px 0 0 0;
+            width: 100%;
+            height: calc(100% - 5px);
+            pointer-events: none;
+            opacity: 0.45;
+        }
+
+        .hero-inner {
+            position: relative;
+            z-index: 2;
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 1.35rem 1.5rem 2rem;
+        }
+
+        /* Highlighted Institutional School Bar */
+        .school-banner {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding-bottom: 1.2rem;
+            margin-bottom: 1.45rem;
+            border-bottom: 1.5px solid #edf2f7;
+        }
+
+        .school-identity {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+        }
+
+        .school-emblem {
+            width: 48px;
+            height: 48px;
+            border-radius: 13px;
+            background: linear-gradient(145deg, var(--navy-900), var(--navy-800));
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 6px 14px rgba(20, 45, 78, 0.18);
+            border: 2px solid #e2e8f0;
+        }
+
+        .school-text-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 0.12rem;
+        }
+
+        .school-name-line {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.55rem;
+        }
+
+        .school-name {
+            font-size: clamp(1.1rem, 2.2vw, 1.42rem);
+            font-weight: 900;
+            color: var(--navy-950);
+            letter-spacing: -0.015em;
+            line-height: 1.2;
+        }
+
+        .school-pill {
+            display: inline-flex;
+            align-items: center;
+            background: var(--gold-100);
+            color: #92400e;
+            border: 1px solid #fcd34d;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            padding: 0.18rem 0.6rem;
+            border-radius: 999px;
+        }
+
+        .school-dept {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--teal-700);
+            letter-spacing: 0.01em;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+        }
+
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            background: #ffffff;
+            color: var(--navy-900);
+            border: 1.5px solid var(--border-strong);
+            padding: 0.48rem 0.92rem;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            box-shadow: var(--shadow-xs);
+            transition: background 0.18s ease, border-color 0.18s ease, transform 0.15s ease;
+        }
+
+        .btn-outline:hover {
+            background: var(--surface-soft);
+            border-color: var(--navy-800);
+        }
+
+        .btn-outline:active {
+            transform: scale(0.97);
+        }
+
+        /* Main Hero Two-Column Content */
+        .hero-main {
+            display: grid;
+            grid-template-columns: minmax(0, 1.45fr) minmax(300px, 1fr);
+            gap: 1.75rem;
+            align-items: center;
+        }
+
+        .hero-title-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.05rem;
+        }
+
+        .hero-crest {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: linear-gradient(145deg, #eff6ff, #f0fdfa);
+            border: 1.5px solid #bfdbfe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
+        }
+
+        .hero-title {
+            font-size: clamp(1.5rem, 2.9vw, 2.15rem);
+            font-weight: 800;
+            line-height: 1.24;
+            letter-spacing: -0.015em;
+            color: var(--navy-950);
+        }
+
+        .hero-title-en {
+            display: inline-block;
+            font-size: clamp(0.88rem, 1.4vw, 1.02rem);
+            font-weight: 700;
+            color: var(--teal-700);
+            margin-top: 0.3rem;
+            letter-spacing: 0.01em;
+        }
+
+        .hero-desc {
+            margin-top: 0.55rem;
+            font-size: 0.89rem;
+            color: var(--ink-700);
+            max-width: 560px;
+            line-height: 1.6;
+        }
+
+        /* Highlighted Teacher Profile Card on White */
+        .teacher-panel {
+            position: relative;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+            border: 1.5px solid #cbd5e1;
+            border-left: 5px solid var(--navy-900);
+            border-radius: 18px;
+            padding: 1.15rem 1.3rem;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+        }
+
+        .teacher-row {
+            display: flex;
+            align-items: center;
+            gap: 0.95rem;
+        }
+
+        .teacher-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--navy-900) 0%, var(--teal-700) 100%);
+            color: #ffffff;
+            font-weight: 900;
+            font-size: 1.05rem;
+            letter-spacing: 0.03em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 6px 14px rgba(20, 45, 78, 0.22);
+            border: 2px solid var(--gold-500);
+        }
+
+        .teacher-meta-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--gold-600);
+            background: var(--gold-50);
+            border: 1px solid #fde68a;
+            padding: 0.12rem 0.52rem;
+            border-radius: 999px;
+            font-weight: 800;
+            margin-bottom: 0.28rem;
+        }
+
+        .teacher-name {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: var(--navy-950);
+            line-height: 1.2;
+            letter-spacing: -0.01em;
+        }
+
+        .teacher-role {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--ink-700);
+            margin-top: 0.14rem;
+        }
+
+        .hero-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.65rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .metric-box {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0.52rem 0.78rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+
+        .metric-left {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .metric-value {
+            font-size: 1.22rem;
+            font-weight: 900;
+            color: var(--navy-900);
+            line-height: 1.15;
+            display: flex;
+            align-items: center;
+            gap: 0.42rem;
+        }
+
+        .metric-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18);
+        }
+
+        .metric-label {
+            font-size: 0.72rem;
+            color: var(--ink-500);
+            margin-top: 0.12rem;
+            font-weight: 700;
+        }
+
+        /* ================= MAIN WORKSPACE ================= */
+        main {
+            max-width: 1180px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 1.65rem 1.5rem 3.25rem;
+            flex-grow: 1;
+        }
+
+        /* Control Bar */
+        .control-bar {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 0.95rem 1.15rem;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.9rem;
+            margin-bottom: 1.35rem;
+        }
+
+        .search-group {
+            position: relative;
+            flex: 1 1 280px;
+            max-width: 410px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.95rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            color: var(--ink-500);
+            pointer-events: none;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.66rem 0.95rem 0.66rem 2.65rem;
+            border: 1.5px solid var(--border-strong);
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            color: var(--ink-900);
+            background: var(--surface-soft);
+            transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+        }
+
+        .search-input::placeholder {
+            color: #94a3b8;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--navy-800);
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(26, 56, 99, 0.12);
+        }
+
+        .controls-right {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .filter-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.42rem;
+        }
+
+        .filter-btn {
+            border: 1.5px solid var(--border);
+            background: var(--surface-soft);
+            color: var(--ink-700);
+            padding: 0.45rem 0.9rem;
+            border-radius: 999px;
+            font-size: 0.81rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.18s ease;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--border-strong);
+            background: #eef2f6;
+            color: var(--ink-900);
+        }
+
+        .filter-btn.active {
+            background: var(--navy-900);
+            border-color: var(--navy-900);
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(20, 45, 78, 0.22);
+        }
+
+        .view-toggle {
+            display: inline-flex;
+            background: var(--surface-soft);
+            border: 1.5px solid var(--border);
+            border-radius: 11px;
+            padding: 0.18rem;
+            gap: 0.15rem;
+        }
+
+        .view-btn {
+            border: none;
+            background: transparent;
+            color: var(--ink-500);
+            width: 34px;
+            height: 32px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .view-btn:hover {
+            color: var(--ink-900);
+        }
+
+        .view-btn.active {
+            background: #ffffff;
+            color: var(--navy-900);
+            box-shadow: var(--shadow-xs);
+        }
+
+        /* Section Subheader */
+        .section-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.15rem;
+            padding: 0 0.2rem;
+        }
+
+        .section-label {
+            font-size: 0.86rem;
+            font-weight: 800;
+            color: var(--navy-900);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-label::before {
+            content: "";
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+            background: var(--gold-500);
+            display: inline-block;
+        }
+
+        .result-summary {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--ink-500);
+        }
+
+        /* ================= SIMULATION CARDS — GRID VIEW ================= */
+        .sim-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(335px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .sim-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background: var(--surface);
+            border-radius: var(--radius-xl);
+            border: 1.5px solid var(--border);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+                        box-shadow 0.24s ease,
+                        border-color 0.24s ease;
+        }
+
+        .sim-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--card-accent, #2563eb);
+        }
+
+        .card-main-link {
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .card-main-link:focus-visible {
+            outline: 3px solid var(--card-accent, #2563eb);
+            outline-offset: -3px;
+        }
+
+        /* Visual SVG Banner inside each card */
+        .card-visual {
+            position: relative;
+            height: 148px;
+            background: var(--card-banner-bg);
+            overflow: hidden;
+            border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+        }
+
+        .card-visual svg.preview-svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+            transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .sim-card:hover .card-visual svg.preview-svg {
+            transform: scale(1.04);
+        }
+
+        .visual-badges {
+            position: absolute;
+            top: 0.8rem;
+            left: 0.9rem;
+            right: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+
+        .card-number {
+            background: rgba(15, 23, 42, 0.62);
+            color: #ffffff;
+            backdrop-filter: blur(6px);
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 0.22rem 0.6rem;
+            border-radius: 999px;
+            letter-spacing: 0.04em;
+        }
+
+        .card-topic-pill {
+            background: rgba(255, 255, 255, 0.94);
+            color: var(--card-accent-dark, var(--navy-900));
+            backdrop-filter: blur(6px);
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 0.24rem 0.7rem;
+            border-radius: 999px;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
+        }
+
+        /* Card Body */
+        .card-content {
+            padding: 1.25rem 1.35rem 1.1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            flex-grow: 1;
+        }
+
+        .card-titles {
+            display: flex;
+            flex-direction: column;
+            gap: 0.18rem;
+        }
+
+        .card-title-ta {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--navy-900);
+            line-height: 1.32;
+        }
+
+        .card-title-en {
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: var(--card-accent, #2563eb);
+            letter-spacing: 0.005em;
+        }
+
+        .card-desc {
+            font-size: 0.87rem;
+            color: var(--ink-700);
+            line-height: 1.58;
+            flex-grow: 1;
+        }
+
+        .feature-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.38rem;
+            padding-top: 0.2rem;
+        }
+
+        .feature-chip {
+            font-size: 0.71rem;
+            font-weight: 700;
+            color: var(--ink-700);
+            background: var(--surface-soft);
+            border: 1px solid var(--border);
+            padding: 0.2rem 0.56rem;
+            border-radius: 7px;
+        }
+
+        /* Card Footer */
+        .card-footer {
+            padding: 0.85rem 1.25rem 0.85rem 1.35rem;
+            background: var(--surface-soft);
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+        }
+
+        .author-block {
+            display: flex;
+            align-items: center;
+            gap: 0.48rem;
+            min-width: 0;
+        }
+
+        .author-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--card-accent, #2563eb);
+            flex-shrink: 0;
+        }
+
+        .author-name {
+            font-size: 0.76rem;
+            font-weight: 700;
+            color: var(--ink-500);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-actions {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            flex-shrink: 0;
+        }
+
+        .launch-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.38rem;
+            text-decoration: none;
+            background: var(--card-accent, var(--navy-900));
+            color: #ffffff;
+            font-size: 0.79rem;
+            font-weight: 800;
+            padding: 0.44rem 0.88rem;
+            border-radius: 10px;
+            transition: filter 0.18s ease, transform 0.15s ease;
+        }
+
+        .launch-btn:hover {
+            filter: brightness(1.08);
+        }
+
+        .launch-btn svg {
+            transition: transform 0.18s ease;
+        }
+
+        .sim-card:hover .launch-btn svg {
+            transform: translateX(3px);
+        }
+
+        .newtab-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 9px;
+            border: 1.5px solid var(--border-strong);
+            background: #ffffff;
+            color: var(--ink-500);
+            text-decoration: none;
+            transition: all 0.16s ease;
+        }
+
+        .newtab-btn:hover {
+            border-color: var(--card-accent, var(--navy-900));
+            color: var(--card-accent, var(--navy-900));
+            background: var(--surface-soft);
+        }
+
+        /* ================= COMPACT LIST VIEW ================= */
+        .sim-grid.list-view {
+            grid-template-columns: 1fr;
+            gap: 0.9rem;
+        }
+
+        .sim-grid.list-view .sim-card {
+            flex-direction: row;
+            align-items: stretch;
+            border-radius: var(--radius-lg);
+        }
+
+        .sim-grid.list-view .card-main-link {
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .sim-grid.list-view .card-visual {
+            width: 210px;
+            height: auto;
+            min-height: 118px;
+            align-self: stretch;
+            flex-shrink: 0;
+            border-bottom: none;
+            border-right: 1px solid var(--border);
+        }
+
+        .sim-grid.list-view .card-content {
+            padding: 0.95rem 1.25rem;
+            gap: 0.35rem;
+        }
+
+        .sim-grid.list-view .card-desc {
+            font-size: 0.84rem;
+        }
+
+        .sim-grid.list-view .card-footer {
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-end;
+            border-top: none;
+            border-left: 1px solid var(--border);
+            min-width: 195px;
+            padding: 0.95rem 1.15rem;
+        }
+
+        /* Empty / Loading Box */
+        .state-box {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3.5rem 1.5rem;
+            background: var(--surface);
+            border-radius: var(--radius-xl);
+            border: 1.5px dashed var(--border-strong);
+            color: var(--ink-500);
+        }
+
+        .state-box h3 {
+            font-size: 1.1rem;
+            color: var(--navy-900);
+            margin-bottom: 0.4rem;
+        }
+
+        /* ================= FOOTER ================= */
+        footer {
+            background: #ffffff;
+            border-top: 1px solid var(--border);
+            padding: 1.35rem 1.5rem;
+        }
+
+        .footer-inner {
+            max-width: 1180px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.85rem;
+            font-size: 0.82rem;
+            color: var(--ink-500);
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-school {
+            color: var(--navy-900);
+            font-weight: 800;
+        }
+
+        .sync-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.42rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--teal-700);
+            background: #f0fdfa;
+            border: 1px solid #99f6e4;
+            padding: 0.28rem 0.72rem;
+            border-radius: 999px;
+        }
+
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 900px) {
+            .hero-main {
+                grid-template-columns: 1fr;
+            }
+            .sim-grid.list-view .sim-card,
+            .sim-grid.list-view .card-main-link {
+                flex-direction: column;
+            }
+            .sim-grid.list-view .card-visual {
+                width: 100%;
+                height: 135px;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+            .sim-grid.list-view .card-footer {
+                flex-direction: row;
+                align-items: center;
+                border-left: none;
+                border-top: 1px solid var(--border);
+                min-width: auto;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .hero-inner {
+                padding: 1.15rem 1rem 1.5rem;
+            }
+            .school-banner {
+                padding-bottom: 0.95rem;
+                margin-bottom: 1.1rem;
+            }
+            .hero-title-group {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            .hero-crest {
+                width: 52px;
+                height: 52px;
+            }
+            main {
+                padding: 1.25rem 1rem 2.5rem;
+            }
+            .sim-grid {
+                grid-template-columns: 1fr;
+            }
+            .footer-inner {
+                justify-content: center;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ================= CLEAN WHITE HERO HEADER ================= -->
+    <header class="hero">
+        <div class="hero-top-stripe" aria-hidden="true"></div>
+
+        <!-- Subtle Light Mathematical Blueprint Accent -->
+        <svg class="hero-bg-art" viewBox="0 0 1440 340" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <defs>
+                <pattern id="heroGridLight" width="44" height="44" patternUnits="userSpaceOnUse">
+                    <path d="M 44 0 L 0 0 0 44" fill="none" stroke="#e2e8f0" stroke-width="0.9"/>
+                </pattern>
+            </defs>
+            <rect width="1440" height="340" fill="url(#heroGridLight)"/>
+            <path d="M -20 280 C 160 175, 310 330, 480 225 C 650 120, 810 295, 990 195 C 1150 105, 1300 265, 1470 165"
+                  fill="none" stroke="#cbd5e1" stroke-width="1.8" stroke-dasharray="6 6"/>
+            <g transform="translate(1150, 62)" stroke="#cbd5e1" stroke-width="1.5" fill="none">
+                <polygon points="0,165 185,165 185,40"/>
+                <rect x="169" y="149" width="16" height="16"/>
+                <path d="M 38,165 A 38,38 0 0,0 32,143"/>
+            </g>
+        </svg>
+
+        <div class="hero-inner">
+            <!-- Prominent Highlighted School Identity Strip -->
+            <div class="school-banner">
+                <div class="school-identity">
+                    <div class="school-emblem" aria-hidden="true">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                            <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                        </svg>
+                    </div>
+                    <div class="school-text-wrap">
+                        <div class="school-name-line">
+                            <span class="school-name">Government High School, Ottimedu</span>
+                            <span class="school-pill">GHS, Ottimedu</span>
+                        </div>
+                        <span class="school-dept">Department of Mathematics • Interactive Digital Lab</span>
+                    </div>
+                </div>
+
+                <div class="hero-actions">
+                    <button type="button" id="fullscreenBtn" class="btn-outline" title="முழுத்திரை (Smartboard Fullscreen)">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polyline points="15 3 21 3 21 9"></polyline>
+                            <polyline points="9 21 3 21 3 15"></polyline>
+                            <line x1="21" y1="3" x2="14" y2="10"></line>
+                            <line x1="3" y1="21" x2="10" y2="14"></line>
+                        </svg>
+                        <span id="fullscreenLabel">முழுத்திரை</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Title + Highlighted Teacher Card -->
+            <div class="hero-main">
+                <div class="hero-title-group">
+                    <div class="hero-crest" aria-hidden="true">
+                        <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+                            <path d="M9 10H31L19 20L31 30H9" stroke="#142d4e" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="31" cy="20" r="3.2" fill="#0d9488"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="hero-title">
+                            கணிதக் காட்சிப்படுத்தல்கள்
+                            <span class="hero-title-en">Interactive Mathematics Simulations Hub</span>
+                        </h1>
+                        <p class="hero-desc">
+                            வகுப்பறை கற்பித்தல் மற்றும் மாணவர் சுய பயிற்சிக்காக உருவாக்கப்பட்ட நேரடி கணித மாதிரிகள். கீழே உள்ள எந்தத் தலைப்பையும் சொடுக்கி உடனே இயக்கலாம்.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Highlighted Teacher Profile & Live Metrics -->
+                <aside class="teacher-panel" aria-label="ஆசிரியர் மற்றும் தொகுப்பு விவரம்">
+                    <div class="teacher-row">
+                        <div class="teacher-avatar" aria-hidden="true">AC</div>
+                        <div>
+                            <span class="teacher-meta-label">Created By</span>
+                            <div class="teacher-name">A. Christuraj</div>
+                            <div class="teacher-role">B.T. Asst. (Mathematics) &bull; GHS, Ottimedu</div>
+                        </div>
+                    </div>
+                    <div class="hero-metrics">
+                        <div class="metric-box">
+                            <div class="metric-left">
+                                <div class="metric-value">
+                                    <span class="metric-dot" aria-hidden="true"></span>
+                                    <span id="metricTotalCount">—</span>
+                                </div>
+                                <div class="metric-label">கணித மாதிரிகள்</div>
+                            </div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-left">
+                                <div class="metric-value" id="metricCategoryCount">—</div>
+                                <div class="metric-label">கணிதப் பிரிவுகள்</div>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </header>
+
+    <!-- ================= MAIN WORKSPACE ================= -->
+    <main>
+        <!-- Search, Category Filters & View Switcher -->
+        <section class="control-bar" aria-label="தேடல் மற்றும் வடிகட்டிகள்">
+            <div class="search-group">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input
+                    type="search"
+                    id="searchInput"
+                    class="search-input"
+                    placeholder="தலைப்பு தேடுக... (Search Tamil / English)"
+                    aria-label="கணிதக் காட்சிப்படுத்தல் தேடுக"
+                >
+            </div>
+
+            <div class="controls-right">
+                <div id="filterBar" class="filter-pills" role="group" aria-label="பிரிவு தேர்வு"></div>
+                <div class="view-toggle" role="group" aria-label="காட்சி வடிவம்">
+                    <button type="button" id="btnGridView" class="view-btn active" title="அட்டைக் காட்சி (Grid View)" aria-label="அட்டைக் காட்சி">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                            <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                            <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                            <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                        </svg>
+                    </button>
+                    <button type="button" id="btnListView" class="view-btn" title="பட்டியல் காட்சி (List View)" aria-label="பட்டியல் காட்சி">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="8" y1="6" x2="21" y2="6"></line>
+                            <line x1="8" y1="12" x2="21" y2="12"></line>
+                            <line x1="8" y1="18" x2="21" y2="18"></line>
+                            <circle cx="4" cy="6" r="1.2" fill="currentColor"></circle>
+                            <circle cx="4" cy="12" r="1.2" fill="currentColor"></circle>
+                            <circle cx="4" cy="18" r="1.2" fill="currentColor"></circle>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-head">
+            <div class="section-label">கிடைக்கும் கணிதக் காட்சிப்படுத்தல்கள் (Available Simulations)</div>
+            <div id="resultSummary" class="result-summary">ஏற்றுகிறது...</div>
+        </div>
+
+        <section id="simGrid" class="sim-grid" aria-live="polite"></section>
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <span class="footer-school">Government High School (GHS), Ottimedu</span>
+                <span>&bull;</span>
+                <span>Created by <strong>A. Christuraj, B.T. Asst. (Mathematics)</strong></span>
+            </div>
+            <div id="syncStatus" class="sync-pill">
+                <span style="width:7px;height:7px;border-radius:50%;background:#10b981;display:inline-block;"></span>
+                <span id="syncStatusText">Initializing...</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        /* =========================================================================
+           CONFIGURATION — AUTOMATIC GITHUB DISCOVERY + CURATED VISUAL METADATA
+           -------------------------------------------------------------------------
+           • Any new .html simulation uploaded to the same GitHub repository folder
+             is AUTOMATICALLY detected and displayed with a matching visual banner,
+             neat Tamil/English title, and clickable card — zero manual edits needed!
+           • Leave GITHUB_CONFIG blank ("") for automatic *.github.io detection.
+             Set owner/repo only if deploying under a custom domain.
+           ========================================================================= */
+        const GITHUB_CONFIG = {
+            owner: "",      // Optional override, e.g. "yourusername"
+            repo: "",       // Optional override, e.g. "ghs-ottimedu-math"
+            folderPath: ""  // Optional subfolder path, e.g. "simulations"
+        };
+
+        /* Curated entries for existing simulations (matched by filename OR keyword) */
+        const CURATED_METADATA = [
+            {
+                file: "laws_of_exponents (5).html",
+                matchKeywords: ["exponent", "laws_of_exponents", "அடுக்குக்குறி"],
+                titleTa: "அடுக்குக்குறி விதிகள்",
+                titleEn: "Laws of Exponents",
+                category: "இயற்கணிதம்",
+                tag: "8-ம் வகுப்பு • இயற்கணிதம்",
+                visualType: "exponents",
+                description: "பெருக்கல், வகுத்தல், அடுக்கின் அடுக்கு, பூஜ்ஜிய மற்றும் எதிர்மறை ஆகிய 5 விதிகளுக்கான நேரடி காட்சிப்படுத்தல், படிப்படியான தீர்வு மற்றும் பயிற்சி.",
+                features: ["5 விதிகள்", "காட்சி வரைபடம்", "மாணவர் பயிற்சி"],
+                author: "A. Christuraj (GHS, Ottimedu)",
+                accent: "#4338ca",
+                accentDark: "#312e81",
+                bannerBg: "linear-gradient(135deg, #312e81 0%, #4f46e5 58%, #7c3aed 100%)"
+            },
+            {
+                file: "trigonometry_simulation_tamil (5) (1).html",
+                matchKeywords: ["trigonometry", "trig", "முக்கோணவியல்"],
+                titleTa: "முக்கோணவியல் விகிதங்கள்",
+                titleEn: "Trigonometric Ratios Simulation",
+                category: "முக்கோணவியல்",
+                tag: "6 விகிதங்கள் • 0° – 90°",
+                visualType: "trigonometry",
+                description: "செங்கோண முக்கோணத்தில் முனைகளை நகர்த்தி 0°, 30°, 45°, 60°, 90° நிலையான கோணங்கள் மற்றும் 6 முக்கோணவியல் விகிதங்களை அறியும் மாதிரி.",
+                features: ["வரைபட இழுத்தல்", "6 விகிதங்கள்", "சுய வினாடி-வினா"],
+                author: "A. Christuraj (GHS, Ottimedu)",
+                accent: "#0f766e",
+                accentDark: "#115e59",
+                bannerBg: "linear-gradient(135deg, #0f3d4c 0%, #0f766e 56%, #059669 100%)"
+            },
+            {
+                file: "matrix_multiplication_visualizer (3) (1).html",
+                matchKeywords: ["matrix", "matrices", "அணி"],
+                titleTa: "அணி பெருக்கல் பயிற்சி",
+                titleEn: "Matrix Multiplication Visualizer",
+                category: "அணிகள்",
+                tag: "பயிற்சி & அனிமேஷன்",
+                visualType: "matrix",
+                description: "அணிகளின் நிரை–நிரல் பெருக்கலை நிற அடையாளங்களுடன் படிப்படியாகக் காட்டும் அனிமேஷன் மற்றும் மாணவர்களுக்கான ஊடாடும் வினாடி-வினா.",
+                features: ["வினாடி-வினா முறை", "படிவாரி அனிமேஷன்", "4×4 அணிகள்"],
+                author: "A. Christuraj & D. Neethirajan",
+                accent: "#9333ea",
+                accentDark: "#6b21a8",
+                bannerBg: "linear-gradient(135deg, #4c1d95 0%, #7e22ce 55%, #db2777 100%)"
+            }
+        ];
+
+        /* Smart auto-styling themes for future simulations discovered on GitHub */
+        const AUTO_THEMES = [
+            {
+                visualType: "geometry",
+                accent: "#0369a1",
+                accentDark: "#0c4a6e",
+                bannerBg: "linear-gradient(135deg, #0c4a6e 0%, #0284c7 60%, #0ea5e9 100%)"
+            },
+            {
+                visualType: "graph",
+                accent: "#b45309",
+                accentDark: "#78350f",
+                bannerBg: "linear-gradient(135deg, #78350f 0%, #d97706 60%, #f59e0b 100%)"
+            },
+            {
+                visualType: "algebra",
+                accent: "#be123c",
+                accentDark: "#881337",
+                bannerBg: "linear-gradient(135deg, #881337 0%, #be123c 55%, #e11d48 100%)"
+            },
+            {
+                visualType: "numbers",
+                accent: "#15803d",
+                accentDark: "#14532d",
+                bannerBg: "linear-gradient(135deg, #14532d 0%, #15803d 55%, #10b981 100%)"
+            }
+        ];
+
+        /* Bespoke Inline SVG Preview Illustrations (Zero external images / Offline ready) */
+        function getPreviewSVG(type) {
+            switch (type) {
+                case "exponents":
+                    return `
+                        <svg class="preview-svg" viewBox="0 0 360 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                            <defs>
+                                <pattern id="gridExp" width="24" height="24" patternUnits="userSpaceOnUse">
+                                    <path d="M 24 0 L 0 0 0 24" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+                                </pattern>
+                            </defs>
+                            <rect width="360" height="150" fill="url(#gridExp)"/>
+                            <path d="M 24 128 Q 145 122, 220 92 T 338 26" fill="none" stroke="rgba(251,191,36,0.5)" stroke-width="2.5" stroke-dasharray="5 5"/>
+                            <g transform="translate(36, 56)">
+                                <rect x="0" y="0" width="96" height="58" rx="12" fill="rgba(255,255,255,0.13)" stroke="rgba(167,243,208,0.6)" stroke-width="1.5"/>
+                                <circle cx="26" cy="29" r="13" fill="#10b981" stroke="#ffffff" stroke-width="2"/>
+                                <text x="26" y="34" text-anchor="middle" fill="#ffffff" font-size="13" font-weight="800">2</text>
+                                <text x="48" y="34" text-anchor="middle" fill="#e0e7ff" font-size="13" font-weight="800">×</text>
+                                <circle cx="70" cy="29" r="13" fill="#10b981" stroke="#ffffff" stroke-width="2"/>
+                                <text x="70" y="34" text-anchor="middle" fill="#ffffff" font-size="13" font-weight="800">2</text>
+                            </g>
+                            <text x="150" y="92" text-anchor="middle" fill="#fde68a" font-size="22" font-weight="900">×</text>
+                            <g transform="translate(168, 56)">
+                                <rect x="0" y="0" width="60" height="58" rx="12" fill="rgba(255,255,255,0.13)" stroke="rgba(253,230,138,0.65)" stroke-width="1.5"/>
+                                <circle cx="30" cy="29" r="13" fill="#f59e0b" stroke="#ffffff" stroke-width="2"/>
+                                <text x="30" y="34" text-anchor="middle" fill="#ffffff" font-size="13" font-weight="800">2</text>
+                            </g>
+                            <text x="246" y="92" text-anchor="middle" fill="#ffffff" font-size="22" font-weight="900">=</text>
+                            <g transform="translate(264, 52)">
+                                <rect x="0" y="0" width="72" height="66" rx="14" fill="rgba(255,255,255,0.2)" stroke="#ffffff" stroke-width="1.8"/>
+                                <text x="32" y="46" text-anchor="middle" fill="#ffffff" font-size="28" font-weight="900">a</text>
+                                <text x="51" y="29" text-anchor="middle" fill="#fde68a" font-size="13" font-weight="900">m+n</text>
+                            </g>
+                        </svg>
+                    `;
+                case "trigonometry":
+                    return `
+                        <svg class="preview-svg" viewBox="0 0 360 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                            <defs>
+                                <pattern id="gridTrig" width="22" height="22" patternUnits="userSpaceOnUse">
+                                    <path d="M 22 0 L 0 0 0 22" fill="none" stroke="rgba(255,255,255,0.13)" stroke-width="1"/>
+                                </pattern>
+                            </defs>
+                            <rect width="360" height="150" fill="url(#gridTrig)"/>
+                            <g transform="translate(48, 22)">
+                                <polygon points="18,104 166,104 166,24" fill="rgba(255,255,255,0.12)"/>
+                                <line x1="18" y1="104" x2="166" y2="104" stroke="#60a5fa" stroke-width="4" stroke-linecap="round"/>
+                                <line x1="166" y1="104" x2="166" y2="24" stroke="#fb7185" stroke-width="4" stroke-linecap="round"/>
+                                <line x1="18" y1="104" x2="166" y2="24" stroke="#fbbf24" stroke-width="4" stroke-linecap="round"/>
+                                <rect x="150" y="88" width="16" height="16" fill="rgba(255,255,255,0.18)" stroke="#ffffff" stroke-width="1.5"/>
+                                <path d="M 52,104 A 34,34 0 0,0 47,88" fill="none" stroke="#34d399" stroke-width="2.5"/>
+                                <text x="64" y="96" fill="#a7f3d0" font-size="13" font-weight="800">θ</text>
+                                <circle cx="18" cy="104" r="5" fill="#ffffff" stroke="#34d399" stroke-width="2.5"/>
+                                <circle cx="166" cy="104" r="5" fill="#ffffff" stroke="#60a5fa" stroke-width="2.5"/>
+                                <circle cx="166" cy="24" r="5.5" fill="#ffffff" stroke="#fb7185" stroke-width="2.5"/>
+                            </g>
+                            <g transform="translate(242, 46)">
+                                <rect x="0" y="0" width="90" height="26" rx="8" fill="rgba(255,255,255,0.16)" stroke="rgba(255,255,255,0.35)"/>
+                                <text x="45" y="17" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="800">sin θ = O/H</text>
+                                <rect x="0" y="34" width="90" height="26" rx="8" fill="rgba(255,255,255,0.16)" stroke="rgba(255,255,255,0.35)"/>
+                                <text x="45" y="51" text-anchor="middle" fill="#fde68a" font-size="12" font-weight="800">cos θ = A/H</text>
+                                <rect x="0" y="68" width="90" height="26" rx="8" fill="rgba(255,255,255,0.16)" stroke="rgba(255,255,255,0.35)"/>
+                                <text x="45" y="85" text-anchor="middle" fill="#a7f3d0" font-size="12" font-weight="800">tan θ = O/A</text>
+                            </g>
+                        </svg>
+                    `;
+                case "matrix":
+                    return `
+                        <svg class="preview-svg" viewBox="0 0 360 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                            <defs>
+                                <pattern id="gridMat" width="24" height="24" patternUnits="userSpaceOnUse">
+                                    <path d="M 24 0 L 0 0 0 24" fill="none" stroke="rgba(255,255,255,0.11)" stroke-width="1"/>
+                                </pattern>
+                            </defs>
+                            <rect width="360" height="150" fill="url(#gridMat)"/>
+                            <g transform="translate(26, 48)">
+                                <path d="M 8 0 H 0 V 72 H 8" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round"/>
+                                <path d="M 76 0 H 84 V 72 H 76" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round"/>
+                                <rect x="10" y="8" width="64" height="25" rx="6" fill="rgba(96,165,250,0.42)" stroke="#93c5fd" stroke-width="1.4"/>
+                                <text x="27" y="25" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="800">2</text>
+                                <text x="57" y="25" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="800">4</text>
+                                <rect x="10" y="39" width="28" height="25" rx="6" fill="rgba(255,255,255,0.14)"/>
+                                <rect x="46" y="39" width="28" height="25" rx="6" fill="rgba(255,255,255,0.14)"/>
+                                <text x="24" y="56" text-anchor="middle" fill="#e2e8f0" font-size="14" font-weight="700">1</text>
+                                <text x="60" y="56" text-anchor="middle" fill="#e2e8f0" font-size="14" font-weight="700">3</text>
+                            </g>
+                            <text x="128" y="90" text-anchor="middle" fill="#fde68a" font-size="20" font-weight="900">×</text>
+                            <g transform="translate(144, 48)">
+                                <path d="M 8 0 H 0 V 72 H 8" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round"/>
+                                <path d="M 76 0 H 84 V 72 H 76" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round"/>
+                                <rect x="10" y="8" width="28" height="56" rx="6" fill="rgba(52,211,153,0.4)" stroke="#6ee7b7" stroke-width="1.4"/>
+                                <text x="24" y="25" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="800">5</text>
+                                <text x="24" y="56" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="800">2</text>
+                                <rect x="46" y="8" width="28" height="25" rx="6" fill="rgba(255,255,255,0.14)"/>
+                                <rect x="46" y="39" width="28" height="25" rx="6" fill="rgba(255,255,255,0.14)"/>
+                                <text x="60" y="25" text-anchor="middle" fill="#e2e8f0" font-size="14" font-weight="700">1</text>
+                                <text x="60" y="56" text-anchor="middle" fill="#e2e8f0" font-size="14" font-weight="700">6</text>
+                            </g>
+                            <text x="244" y="90" text-anchor="middle" fill="#ffffff" font-size="20" font-weight="900">=</text>
+                            <g transform="translate(260, 48)">
+                                <path d="M 8 0 H 0 V 72 H 8" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round"/>
+                                <path d="M 68 0 H 76 V 72 H 68" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round"/>
+                                <rect x="10" y="8" width="26" height="25" rx="6" fill="#ec4899" stroke="#ffffff" stroke-width="1.6"/>
+                                <text x="23" y="25" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="900">18</text>
+                                <rect x="41" y="8" width="25" height="25" rx="6" fill="rgba(255,255,255,0.16)"/>
+                                <rect x="10" y="39" width="26" height="25" rx="6" fill="rgba(255,255,255,0.16)"/>
+                                <rect x="41" y="39" width="25" height="25" rx="6" fill="rgba(255,255,255,0.16)"/>
+                                <text x="53" y="25" text-anchor="middle" fill="#fde68a" font-size="12" font-weight="800">?</text>
+                            </g>
+                        </svg>
+                    `;
+                case "geometry":
+                    return `
+                        <svg class="preview-svg" viewBox="0 0 360 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                            <defs>
+                                <pattern id="gridGeo" width="24" height="24" patternUnits="userSpaceOnUse">
+                                    <path d="M 24 0 L 0 0 0 24" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+                                </pattern>
+                            </defs>
+                            <rect width="360" height="150" fill="url(#gridGeo)"/>
+                            <circle cx="122" cy="84" r="44" fill="rgba(255,255,255,0.12)" stroke="#fde68a" stroke-width="2.4"/>
+                            <line x1="122" y1="84" x2="166" y2="84" stroke="#ffffff" stroke-width="2" stroke-dasharray="4 3"/>
+                            <circle cx="122" cy="84" r="4" fill="#fde68a"/>
+                            <polygon points="225,124 272,44 319,124" fill="rgba(255,255,255,0.16)" stroke="#ffffff" stroke-width="2.4" stroke-linejoin="round"/>
+                            <text x="144" y="78" text-anchor="middle" fill="#fde68a" font-size="12" font-weight="800">r</text>
+                        </svg>
+                    `;
+                case "graph":
+                    return `
+                        <svg class="preview-svg" viewBox="0 0 360 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                            <defs>
+                                <pattern id="gridGrp" width="24" height="24" patternUnits="userSpaceOnUse">
+                                    <path d="M 24 0 L 0 0 0 24" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
+                                </pattern>
+                            </defs>
+                            <rect width="360" height="150" fill="url(#gridGrp)"/>
+                            <line x1="36" y1="116" x2="326" y2="116" stroke="rgba(255,255,255,0.65)" stroke-width="2"/>
+                            <line x1="180" y1="30" x2="180" y2="132" stroke="rgba(255,255,255,0.65)" stroke-width="2"/>
+                            <path d="M 78 44 Q 180 170, 282 44" fill="none" stroke="#fef08a" stroke-width="3.2" stroke-linecap="round"/>
+                            <circle cx="180" cy="107" r="5" fill="#ffffff"/>
+                        </svg>
+                    `;
+                case "algebra":
+                    return `
+                        <svg class="preview-svg" viewBox="0 0 360 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                            <defs>
+                                <pattern id="gridAlg" width="24" height="24" patternUnits="userSpaceOnUse">
+                                    <path d="M 24 0 L 0 0 0 24" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+                                </pattern>
+                            </defs>
+                            <rect width="360" height="150" fill="url(#gridAlg)"/>
+                            <rect x="64" y="48" width="232" height="62" rx="16" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.45)" stroke-width="1.6"/>
+                            <text x="180" y="88" text-anchor="middle" fill="#ffffff" font-size="24" font-weight="900">ax² + bx + c = 0</text>
+                        </svg>
+                    `;
+                default:
+                    return `
+                        <svg class="preview-svg" viewBox="0 0 360 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                            <defs>
+                                <pattern id="gridNum" width="24" height="24" patternUnits="userSpaceOnUse">
+                                    <path d="M 24 0 L 0 0 0 24" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+                                </pattern>
+                            </defs>
+                            <rect width="360" height="150" fill="url(#gridNum)"/>
+                            <line x1="42" y1="88" x2="318" y2="88" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+                            <circle cx="96" cy="88" r="10" fill="#fbbf24" stroke="#ffffff" stroke-width="2.5"/>
+                            <circle cx="180" cy="88" r="12" fill="#34d399" stroke="#ffffff" stroke-width="2.5"/>
+                            <circle cx="264" cy="88" r="10" fill="#60a5fa" stroke="#ffffff" stroke-width="2.5"/>
+                            <text x="180" y="56" text-anchor="middle" fill="#fef3c7" font-size="18" font-weight="900">∑  π  √x  ÷</text>
+                        </svg>
+                    `;
+            }
+        }
+
+        const EXCLUDED_FILES = new Set(["index.html", "index.htm", "404.html"]);
+
+        let allSimulations = [];
+        let activeCategory = "ALL";
+        let searchQuery = "";
+        let currentView = "grid";
+
+        function encodeFilePath(filename) {
+            return filename
+                .split("/")
+                .map(segment => encodeURIComponent(segment))
+                .join("/");
+        }
+
+        function prettifyFilename(filename) {
+            const base = filename
+                .replace(/\.html?$/i, "")
+                .replace(/\s*\(\d+\)\s*/g, " ")
+                .replace(/[_-]+/g, " ")
+                .replace(/\s+/g, " ")
+                .trim();
+            return base
+                .split(" ")
+                .map(w => w ? w.charAt(0).toUpperCase() + w.slice(1) : "")
+                .join(" ");
+        }
+
+        function splitTitleParts(rawTitle, fallbackFilename) {
+            const cleaned = (rawTitle || "")
+                .replace(/\s*[-–|]\s*GHS,?\s*OTTIMEDU\s*$/i, "")
+                .trim();
+
+            if (!cleaned) {
+                return { titleTa: prettifyFilename(fallbackFilename), titleEn: "Interactive Math Simulation" };
+            }
+
+            const parenMatch = cleaned.match(/^(.+?)\s*\(([^()]+)\)\s*$/);
+            if (parenMatch) {
+                return {
+                    titleTa: parenMatch[1].trim(),
+                    titleEn: parenMatch[2].trim()
+                };
+            }
+
+            const dashParts = cleaned.split(/\s+[-–|]\s+/);
+            if (dashParts.length >= 2) {
+                return {
+                    titleTa: dashParts[0].trim(),
+                    titleEn: dashParts.slice(1).join(" • ").trim()
+                };
+            }
+
+            const hasTamil = /[\u0B80-\u0BFF]/.test(cleaned);
+            return {
+                titleTa: cleaned,
+                titleEn: hasTamil ? prettifyFilename(fallbackFilename) : "Interactive Math Simulation"
+            };
+        }
+
+        /* Auto-categorize and assign matching visual illustration for future simulations */
+        function inferTopicProfile(filename, rawTitle, idx) {
+            const text = `${filename} ${rawTitle}`.toLowerCase();
+            if (/tri|angle|circle|geo|pythag|area|volume|mensur|வடிவியல்|முக்கோண|வட்டம்|பரப்பளவு/.test(text)) {
+                return { category: "வடிவியல்", tag: "வடிவியல் & அளவியல்", ...AUTO_THEMES[0] };
+            }
+            if (/graph|coord|line|parabola|stat|prob|வரைபடம்|ஆயத்தொலை|நிகழ்தகவு/.test(text)) {
+                return { category: "வரைபடம்", tag: "வரைபடம் & புள்ளியியல்", ...AUTO_THEMES[1] };
+            }
+            if (/alg|poly|eq|quad|factor|identit|இயற்கணிதம்|சமன்பாடு|பல்லுறுப்பு/.test(text)) {
+                return { category: "இயற்கணிதம்", tag: "இயற்கணிதம்", ...AUTO_THEMES[2] };
+            }
+            if (/frac|ratio|int|num|percent|lcm|hcf|பின்னம்|விகிதம்|எண்கள்|சதவீதம்/.test(text)) {
+                return { category: "எண்ணியல்", tag: "எண்ணியல்", ...AUTO_THEMES[3] };
+            }
+            return {
+                category: "புதியவை",
+                tag: "கணிதக் காட்சிப்படுத்தல்",
+                ...AUTO_THEMES[idx % AUTO_THEMES.length]
+            };
+        }
+
+        function findCuratedMatch(filename) {
+            const lower = filename.toLowerCase();
+            return CURATED_METADATA.find(item => {
+                if (item.file.toLowerCase() === lower) return true;
+                return (item.matchKeywords || []).some(kw => lower.includes(kw.toLowerCase()));
+            }) || null;
+        }
+
+        async function inspectHtmlMetadata(filename) {
+            try {
+                const resp = await fetch(encodeFilePath(filename), { cache: "no-cache" });
+                if (!resp.ok) return null;
+                const text = await resp.text();
+                const doc = new DOMParser().parseFromString(text, "text/html");
+                const titleEl = doc.querySelector("title");
+                const h1El = doc.querySelector("h1");
+                const metaDesc = doc.querySelector('meta[name="description"]');
+                return {
+                    title: (titleEl && titleEl.textContent.trim()) || (h1El && h1El.textContent.trim()) || "",
+                    description: (metaDesc && metaDesc.getAttribute("content")) || ""
+                };
+            } catch (_) {
+                return null;
+            }
+        }
+
+        function detectGitHubTargets() {
+            const targets = [];
+            if (GITHUB_CONFIG.owner && GITHUB_CONFIG.repo) {
+                targets.push({
+                    owner: GITHUB_CONFIG.owner,
+                    repo: GITHUB_CONFIG.repo,
+                    path: GITHUB_CONFIG.folderPath.replace(/^\/+|\/+$/g, "")
+                });
+                return targets;
+            }
+
+            const host = window.location.hostname;
+            if (!host.endsWith(".github.io")) return targets;
+
+            const owner = host.slice(0, -".github.io".length);
+            const parts = window.location.pathname.split("/").filter(Boolean);
+
+            if (parts.length && /\.html?$/i.test(parts[parts.length - 1])) {
+                parts.pop();
+            }
+
+            if (parts.length === 0) {
+                targets.push({ owner, repo: `${owner}.github.io`, path: "" });
+            } else {
+                targets.push({ owner, repo: parts[0], path: parts.slice(1).join("/") });
+                targets.push({ owner, repo: `${owner}.github.io`, path: parts.join("/") });
+            }
+            return targets;
+        }
+
+        async function fetchRepoHtmlFiles() {
+            const targets = detectGitHubTargets();
+            for (const t of targets) {
+                const apiUrl = t.path
+                    ? `https://api.github.com/repos/${t.owner}/${t.repo}/contents/${t.path}`
+                    : `https://api.github.com/repos/${t.owner}/${t.repo}/contents`;
+                try {
+                    const res = await fetch(apiUrl, {
+                        headers: { "Accept": "application/vnd.github.v3+json" }
+                    });
+                    if (!res.ok) continue;
+                    const items = await res.json();
+                    if (!Array.isArray(items)) continue;
+
+                    const htmlFiles = items
+                        .filter(item =>
+                            item.type === "file" &&
+                            /\.html?$/i.test(item.name) &&
+                            !EXCLUDED_FILES.has(item.name.toLowerCase())
+                        )
+                        .map(item => item.name);
+
+                    return { files: htmlFiles, repoLabel: `${t.owner}/${t.repo}` };
+                } catch (_) {
+                    continue;
+                }
+            }
+            return null;
+        }
+
+        async function loadSimulations() {
+            const syncText = document.getElementById("syncStatusText");
+            renderLoadingState();
+
+            const repoResult = await fetchRepoHtmlFiles();
+
+            if (repoResult && repoResult.files.length > 0) {
+                const enriched = await Promise.all(
+                    repoResult.files.map(async (filename, idx) => {
+                        const curated = findCuratedMatch(filename);
+                        if (curated) {
+                            return { ...curated, file: filename, order: CURATED_METADATA.indexOf(curated) };
+                        }
+
+                        const inspected = await inspectHtmlMetadata(filename);
+                        const rawTitle = inspected ? inspected.title : "";
+                        const titles = splitTitleParts(rawTitle, filename);
+                        const profile = inferTopicProfile(filename, rawTitle, idx);
+
+                        return {
+                            file: filename,
+                            titleTa: titles.titleTa,
+                            titleEn: titles.titleEn,
+                            category: profile.category,
+                            tag: profile.tag,
+                            visualType: profile.visualType,
+                            description: (inspected && inspected.description)
+                                ? inspected.description
+                                : "வகுப்பறை விளக்கம் மற்றும் மாணவர் பயிற்சிக்கான ஊடாடும் கணிதக் காட்சிப்படுத்தல்.",
+                            features: ["ஊடாடும் மாதிரி", "வகுப்பறைப் பயன்பாடு"],
+                            author: "A. Christuraj (GHS, Ottimedu)",
+                            accent: profile.accent,
+                            accentDark: profile.accentDark,
+                            bannerBg: profile.bannerBg,
+                            order: 1000 + idx
+                        };
+                    })
+                );
+
+                enriched.sort((a, b) => a.order - b.order);
+                allSimulations = enriched;
+                syncText.textContent = `GitHub Auto-Sync • ${repoResult.repoLabel}`;
+            } else {
+                allSimulations = CURATED_METADATA.map((item, idx) => ({ ...item, order: idx }));
+                syncText.textContent = "GHS Ottimedu • Ready";
+            }
+
+            updateHeroMetrics();
+            buildFilterButtons();
+            renderGrid();
+        }
+
+        function updateHeroMetrics() {
+            const uniqueCategories = new Set(allSimulations.map(s => s.category));
+            document.getElementById("metricTotalCount").textContent = allSimulations.length;
+            document.getElementById("metricCategoryCount").textContent = uniqueCategories.size;
+        }
+
+        function renderLoadingState() {
+            document.getElementById("simGrid").innerHTML = `
+                <div class="state-box">
+                    <h3>காட்சிப்படுத்தல்கள் ஏற்றப்படுகின்றன...</h3>
+                    <p>Loading GHS Ottimedu Mathematics Simulations...</p>
+                </div>
+            `;
+        }
+
+        function buildFilterButtons() {
+            const filterBar = document.getElementById("filterBar");
+            const categories = ["ALL", ...new Set(allSimulations.map(s => s.category))];
+            filterBar.innerHTML = "";
+
+            categories.forEach(cat => {
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "filter-btn" + (cat === activeCategory ? " active" : "");
+                btn.textContent = cat === "ALL" ? "அனைத்தும்" : cat;
+                btn.addEventListener("click", () => {
+                    activeCategory = cat;
+                    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+                    btn.classList.add("active");
+                    renderGrid();
+                });
+                filterBar.appendChild(btn);
+            });
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;");
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById("simGrid");
+            const summary = document.getElementById("resultSummary");
+            const q = searchQuery.trim().toLowerCase();
+
+            const filtered = allSimulations.filter(sim => {
+                const matchesCat = activeCategory === "ALL" || sim.category === activeCategory;
+                if (!matchesCat) return false;
+                if (!q) return true;
+                const haystack = `${sim.titleTa} ${sim.titleEn} ${sim.tag} ${sim.category} ${sim.description} ${sim.author} ${sim.file}`.toLowerCase();
+                return haystack.includes(q);
+            });
+
+            summary.textContent = filtered.length === allSimulations.length
+                ? `மொத்தம் ${allSimulations.length} காட்சிப்படுத்தல்கள்`
+                : `${filtered.length} / ${allSimulations.length} காட்டப்படுகிறது`;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="state-box">
+                        <h3>பொருத்தமான காட்சிப்படுத்தல் கிடைக்கவில்லை</h3>
+                        <p>வேறு தலைப்பைத் தேடவும் அல்லது "அனைத்தும்" என்பதைத் தேர்ந்தெடுக்கவும்.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map((sim, idx) => {
+                const href = encodeFilePath(sim.file);
+                const numLabel = String(idx + 1).padStart(2, "0");
+                const chipsHtml = (sim.features || [])
+                    .map(f => `<span class="feature-chip">${escapeHtml(f)}</span>`)
+                    .join("");
+
+                return `
+                    <article class="sim-card"
+                             style="--card-accent: ${sim.accent}; --card-accent-dark: ${sim.accentDark}; --card-banner-bg: ${sim.bannerBg};">
+                        <a class="card-main-link" href="${href}">
+                            <div class="card-visual">
+                                ${getPreviewSVG(sim.visualType)}
+                                <div class="visual-badges">
+                                    <span class="card-number">#${numLabel}</span>
+                                    <span class="card-topic-pill">${escapeHtml(sim.tag)}</span>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="card-titles">
+                                    <h2 class="card-title-ta">${escapeHtml(sim.titleTa)}</h2>
+                                    <div class="card-title-en">${escapeHtml(sim.titleEn)}</div>
+                                </div>
+                                <p class="card-desc">${escapeHtml(sim.description)}</p>
+                                <div class="feature-chips">${chipsHtml}</div>
+                            </div>
+                        </a>
+                        <div class="card-footer">
+                            <div class="author-block" title="${escapeHtml(sim.author)}">
+                                <span class="author-dot" aria-hidden="true"></span>
+                                <span class="author-name">${escapeHtml(sim.author)}</span>
+                            </div>
+                            <div class="card-actions">
+                                <a class="launch-btn" href="${href}">
+                                    <span>திறக்கவும்</span>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                                        <polyline points="12 5 19 12 12 19"></polyline>
+                                    </svg>
+                                </a>
+                                <a class="newtab-btn" href="${href}" target="_blank" rel="noopener noreferrer" title="புதிய தாவலில் திற (Open in New Tab)" aria-label="Open ${escapeHtml(sim.titleEn)} in new tab">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                        <polyline points="15 3 21 3 21 9"></polyline>
+                                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            }).join("");
+        }
+
+        /* View Toggle (Grid / List) */
+        const btnGridView = document.getElementById("btnGridView");
+        const btnListView = document.getElementById("btnListView");
+        const simGridEl = document.getElementById("simGrid");
+
+        btnGridView.addEventListener("click", () => {
+            currentView = "grid";
+            simGridEl.classList.remove("list-view");
+            btnGridView.classList.add("active");
+            btnListView.classList.remove("active");
+        });
+
+        btnListView.addEventListener("click", () => {
+            currentView = "list";
+            simGridEl.classList.add("list-view");
+            btnListView.classList.add("active");
+            btnGridView.classList.remove("active");
+        });
+
+        /* Smartboard Fullscreen Toggle */
+        const fullscreenBtn = document.getElementById("fullscreenBtn");
+        const fullscreenLabel = document.getElementById("fullscreenLabel");
+
+        fullscreenBtn.addEventListener("click", () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen?.().catch(() => {});
+            } else {
+                document.exitFullscreen?.().catch(() => {});
+            }
+        });
+
+        document.addEventListener("fullscreenchange", () => {
+            fullscreenLabel.textContent = document.fullscreenElement ? "வெளியேறு" : "முழுத்திரை";
+        });
+
+        /* Live Search */
+        document.getElementById("searchInput").addEventListener("input", (e) => {
+            searchQuery = e.target.value;
+            renderGrid();
+        });
+
+        window.addEventListener("DOMContentLoaded", loadSimulations);
+    </script>
+</body>
+</html>
